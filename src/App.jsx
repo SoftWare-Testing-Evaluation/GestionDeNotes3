@@ -1,21 +1,34 @@
+// REACT IMPORTS
 import React from 'react'
-import Loader from './components/Loader/Loader.jsx'
-import Button from './components/Button/Button.jsx'
-import InputText from './components/InputText/InputText.jsx'
-import Checkbox from './components/Checkbox/Checkbox.jsx'
-import SearchBar from './components/SearchBar/SearchBar.jsx'
-import { Typography } from '@mui/joy'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
-export default function App() {
+// PAGES
+import NotFound from './pages/NotFound.jsx'
+import SignIn from './pages/SignIn.jsx'
+import SignUp from './pages/SignUp.jsx'
+
+// UTILS
+import ScrollToTop from './utils/ScrollToTop.jsx'
+// import Layout from '@/containers/Layout/Layout'
+
+function App() {
+
     return (
-        <div className='bg-red-400'>
-            Hello world here
-            <Button text={'Submit'} isLoading={false}/>
-            <InputText />
-            <Checkbox />
-            <SearchBar text={'Search'} withFilter={true} />
-            <Typography text={'Hello World'} isGradient={true}/>
-            {/* <Loader bg='red'/> */}
-        </div>
+        <>
+            <BrowserRouter>
+                <ScrollToTop />
+                <Routes>
+                    <Route path="*" element={<Navigate to="/notfound" replace />} />
+                    <Route path="/notfound" element={<NotFound />}></Route>
+                    <Route index element={<SignIn />} />
+                    <Route path="/signup" element={<SignUp />} />
+                    {/* <Route path="/" element={<Layout />}>
+
+                    </Route> */}
+                </Routes>
+            </BrowserRouter>
+        </>
     )
 }
+
+export default App
