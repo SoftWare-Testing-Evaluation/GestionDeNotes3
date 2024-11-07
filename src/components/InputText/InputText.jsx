@@ -7,7 +7,7 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css'
 import './input_text.css';
 
-const InputText = ({label, helper, icon, type, handler, name, isTextArea, isCategory=false,defaultValue}) => {
+const InputText = ({label, helper, icon, type, handler, name, isTextArea, isCategory=false,defaultValue, className}) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const togglePasswordVisibility = () => {
@@ -15,7 +15,7 @@ const InputText = ({label, helper, icon, type, handler, name, isTextArea, isCate
   };
 
   return (
-    <FormControl className='input'>
+    <FormControl className='input' style={{width:'100%'}}>
       <FormLabel>{label}</FormLabel>
       <div className="input-container">
         {isTextArea ? (

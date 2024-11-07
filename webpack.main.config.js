@@ -8,4 +8,7 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
   },
+  devServer: {
+    historyApiFallback: true, // This tells the dev server to serve index.html for all 404s
+  },
 };

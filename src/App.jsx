@@ -1,6 +1,6 @@
 // REACT IMPORTS
 import React from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 // PAGES
 import NotFound from './pages/NotFound.jsx'
@@ -15,18 +15,18 @@ function App() {
 
     return (
         <>
-            <BrowserRouter>
+            <HashRouter>
                 <ScrollToTop />
                 <Routes>
                     <Route path="*" element={<Navigate to="/notfound" replace />} />
                     <Route path="/notfound" element={<NotFound />}></Route>
-                    <Route index element={<SignIn />} />
+                    <Route index  element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />
                     {/* <Route path="/" element={<Layout />}>
 
                     </Route> */}
                 </Routes>
-            </BrowserRouter>
+            </HashRouter>
         </>
     )
 }

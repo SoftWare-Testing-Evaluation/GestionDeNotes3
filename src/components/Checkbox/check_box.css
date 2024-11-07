@@ -23,8 +23,7 @@ input[type="checkbox"] {
 }
 
 .checkbox-box {
-    /* fill: rgba(207, 205, 205, 0.425); */
-    fill: var(--bg);
+    fill: rgba(207, 205, 205, 0.425);
     stroke: var(--secondary);
     stroke-dasharray: 800;
     stroke-dashoffset: 800;
