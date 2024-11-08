@@ -107,12 +107,11 @@ a {
   height: 2rem;
    /* border: 2px dashed var(--white); */
   border-radius: 100px;
-  padding: 0.125rem 0.25rem;
-  background-color: var(--secondary);
+  padding: 20px;
+  background-color: #f7020244;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-
 }

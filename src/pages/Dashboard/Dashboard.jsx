@@ -51,17 +51,17 @@ const Dashboard = () => {
                         {
                             user === null ?
                                 <Skeleton variant="rectangular" width='100%' height={25} /> :
-                                <Typography text={`Hi ${user}, welcome to your dashboard`} className='title' />
+                                <Typography text={`Hi ${user}, welcome to your dashboard`} className={'text-xl font-medium'} />
                         }
-                        <Typography text={'Dashboard'} className='title' />
+                        <Typography text={'Dashboard'} className='title' isGradient/>
                     </div>
 
-                    <Tooltip title='Logout' placement='bottom'>
-                        <div className='logout' onClick={(e) => handleLogout(e)}>
+                    <Tooltip title='Logout' placement='top'>
+                        <div className='logout ease-in-out duration-300 hover:scale-105' onClick={(e) => handleLogout(e)}>
                             {
                                 isLogingOut ?
                                     <Loader size='25px' /> :
-                                    <Logout />
+                                    <Logout className='text-[#cb1313]' />
                             }
                         </div>
                     </Tooltip>

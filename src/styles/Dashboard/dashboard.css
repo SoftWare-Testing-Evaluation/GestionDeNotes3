@@ -36,7 +36,7 @@
 }
 
 .admin-dashboard .container header .texts .title {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     font-weight: 600;
 }
 
@@ -66,10 +66,13 @@
     width: 17.5rem;
     margin: 0.5rem;
     cursor: pointer;
+    transition: all ease-in-out 300ms;
 }
-
+.admin-dashboard .container section.stats section.numbers aside:hover {
+    transform: scale(1.05);
+}
 .admin-dashboard .container section.stats section.numbers aside:nth-of-type(odd) {
-    background-color: var(--white);
+    background-color: #99000022;
 }
 
 .admin-dashboard .container section.stats section.numbers aside:nth-of-type(odd) .icon {
@@ -91,16 +94,17 @@
 }
 .admin-dashboard .container section.stats section.numbers aside:nth-of-type(odd) .content .title {
     font-weight: 600;
-    font-size: 1.25rem;
-    color: var(--black);
+    font-size: 1.5rem;
+    color: var(--primary);
 }
 
 .admin-dashboard .container section.stats section.numbers aside:nth-of-type(odd) .content .number {
-    color: var(--black);
+    color: var(--primary);
+    font-size: 1.25rem;
 }
 
 .admin-dashboard .container section.stats section.numbers aside:nth-of-type(even) {
-    background-color: var(--black);
+    background-color: #F2610022;
 }
 
 .admin-dashboard .container section.stats section.numbers aside:nth-of-type(even) .icon {
@@ -123,12 +127,13 @@
 
 .admin-dashboard .container section.stats section.numbers aside:nth-of-type(even) .content .title {
     font-weight: 600;
-    font-size: 1.25rem;
-    color: var(--bg);
+    font-size: 1.5rem;
+    color: var(--secondary);
 }
 
 .admin-dashboard .container section.stats section.numbers aside:nth-of-type(even) .content .number {
-    color: var(--bg);
+    color: var(--secondary);
+    font-size: 1.25rem;
 }
 
 .admin-dashboard .container section.stats section.graphs {
