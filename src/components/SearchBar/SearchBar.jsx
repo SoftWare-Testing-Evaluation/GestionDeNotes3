@@ -6,7 +6,7 @@ import Button from '../Button/Button.jsx'
 import { Option, Select, selectClasses }from '@mui/joy';
 import { KeyboardArrowDown, Search } from '@mui/icons-material';
 
-const SearchBar = ({withFilter, width, text=null, icon=null, handleChange, handleSearch, isLoading}) => {
+const SearchBar = ({withFilter, width, text=null, icon=null, handleChange, handleSearch, isLoading, className}) => {
 
     const filters = ['town','brand','carType'];
 
@@ -19,7 +19,7 @@ const SearchBar = ({withFilter, width, text=null, icon=null, handleChange, handl
     //   };
 
     return (
-        <div className='search-bar' style={{width:width}}>
+        <div className={`search-bar ${className}`} style={{width:width}}>
             <InputText helper={'Enter some text...'} type="text" handler={(e) => handleChange(e)} name="keyOfSearch" />
 
             <div className="options">
