@@ -1,0 +1,95 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    width: 20rem;
+    height: 100vh;
+    /* background: $primary; */
+    font-size: 0.65em;
+    overflow-y: scroll;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+.sidebar .nav {
+    position: relative;
+    text-align: right;
+    /* background-color: red; */
+    font-weight: bold;
+    width: 70%;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.sidebar .nav ul {
+    list-style: none;
+    /* background-color: green; */
+    max-height: 95%;
+    /* margin: auto 0; */
+    /* overflow-y: scroll; */
+    padding: 0 !important;
+}
+
+
+.sidebar .nav ul li {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    margin: 2em 0;
+    /* background-color: orange; */
+    width: 100%;
+}
+
+
+.sidebar .nav ul li .active {
+    color: #FFF;
+
+    &:not(.active)::after {
+        opacity: 0.4;
+    }
+}
+
+.sidebar .nav ul li a {
+    line-height: 3.75em;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.4em;
+    color: rgba(#FFF, 0.35);
+    display: block;
+    transition: all ease-out 300ms;
+}
+
+.sidebar .nav ul li.active a {
+    color: white;
+}
+
+.sidebar .nav ul li:not(.active)::after {
+    opacity: 1;
+}
+
+.sidebar .nav ul li:not(.active):hover a {
+    color: rgba(#FFF, 0.75);
+}
+
+.sidebar .nav ul li::after {
+    content: '';
+    position: absolute;
+    width: 30%;
+    height: 0.25em;
+    background: rgb(226, 226, 226);
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(to right, white, #cacaca)
+}

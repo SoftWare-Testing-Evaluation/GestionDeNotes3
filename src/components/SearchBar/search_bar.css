@@ -6,9 +6,8 @@
 }
 
 /* min-width: 400px; */
-.input {
+.search-bar .input {
     padding: 0;
-
 }
 
 .input .MuiFormHelperText-root,
