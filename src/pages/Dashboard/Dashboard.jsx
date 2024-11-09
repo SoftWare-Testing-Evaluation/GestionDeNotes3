@@ -124,6 +124,7 @@ const Dashboard = () => {
                             ))
                         }
                     </section>
+
                     <section className="graphs">
                         <Typography text={'Charts'} isGradient={true} style={{ marginBottom: '0.5rem', fontSize: '2rem', fontWeight: 700 }} />
                         <div className="graphs-content">
