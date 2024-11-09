@@ -1,7 +1,8 @@
 .sidebar {
     position: fixed;
     left: 0;
-    width: 20rem;
+    top: 40px;
+    width: 300px;
     height: 100vh;
     /* background: $primary; */
     font-size: 0.65em;
@@ -47,7 +48,7 @@
     align-items: center;
     justify-content: flex-end;
     position: relative;
-    margin: 2em 0;
+    margin: 3rem 0;
     /* background-color: orange; */
     width: 100%;
 }
@@ -63,6 +64,7 @@
 
 .sidebar .nav ul li a {
     line-height: 3.75em;
+    font-size: 1.025rem;
     text-transform: uppercase;
     text-decoration: none;
     letter-spacing: 0.4em;
@@ -73,6 +75,7 @@
 
 .sidebar .nav ul li.active a {
     color: white;
+    transition: all ease-out 300ms;
 }
 
 .sidebar .nav ul li:not(.active)::after {
@@ -80,6 +83,7 @@
 }
 
 .sidebar .nav ul li:not(.active):hover a {
+    transform: scale(1.05);
     color: rgba(#FFF, 0.75);
 }
 

@@ -5,6 +5,7 @@ import Loader from '../../components/Loader/Loader.jsx';
 import { Skeleton, Tooltip } from '@mui/joy';
 import { BarChart, pieArcLabelClasses, PieChart } from '@mui/x-charts';
 import '../../styles/Dashboard/dashboard.css'
+import { home } from '../../assets/lordicons/index.js';
 
 const Dashboard = () => {
     const user = 'Essi Junior'
@@ -13,38 +14,38 @@ const Dashboard = () => {
         {
             id: 0,
             label: 'Admins',
-            icon: 'mebvgwrs.json',
+            icon: home,
             value: 10
         },
         {
             id: 1,
             label: 'Students',
-            icon: 'piolrlvu.json',
+            icon: home,
             value: 10
         },
         {
             id: 2,
             label: 'Teachers',
-            icon: 'cosvjkbu.json',
+            icon: home,
             value: 10
         },
         {
             id: 3,
             label: 'Notes',
-            icon: 'pcllgpqm.json',
+            icon: home,
             value: 10
         },
         {
             id: 4,
             label: 'Absences',
-            icon: 'egmlnyku.json',
+            icon: home,
             value: 10
         }
     ]
 
     return (
 
-        <main className='admin-dashboard w-full bg-white'>
+        <main className='admin-dashboard bg-white'>
             <div className="container">
                 <header>
                     <div className="texts">
@@ -70,7 +71,7 @@ const Dashboard = () => {
                     <section className="numbers">
                         {
                             cards.map(card => (
-                                <aside className="card">
+                                <aside className="card" key={card.id}>
                                     <div className="icon">
                                         <lord-icon
                                             src={`https://cdn.lordicon.com/${card.icon}`}
