@@ -4,14 +4,9 @@ import { NavLink, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Player } from '@lordicon/react';
 import { dashboard, home, teacher, user } from '../../assets/lordicons';
+import { onPlayPress } from '../../utils/utilities.jsx';
 
 const Sidebar = () => {
-    const playerRef = useRef(null);
-
-    const onPlayPress = (ref) => {
-        ref?.current?.playFromBeginning();
-    }
-
     const params = useParams()
     const [path, setPath] = useState(window.location.pathname)
     const [paths, setPaths] = useState([
