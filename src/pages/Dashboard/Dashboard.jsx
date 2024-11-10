@@ -127,14 +127,15 @@ const Dashboard = () => {
 
                     <section className="graphs">
                         <Typography text={'Charts'} isGradient={true} style={{ marginBottom: '0.5rem', fontSize: '2rem', fontWeight: 700 }} />
-                        <div className="graphs-content">
-                            <aside className="pie">
+                        <div className="graphs-content flex flex-wrap">
+                            <aside className="pie flex flex-col gap-2 !px-5">
+                                <Typography text='Statistiques de l’année scolaire' className={'text-xl'} />
                                 <PieChart
                                     sx={{
                                         [`& .${pieArcLabelClasses.root}`]: {
                                             fill: 'white',
                                             fontWeight: 'bold',
-                                        },
+                                        }
                                     }}
                                     series={[
                                         {
@@ -144,14 +145,15 @@ const Dashboard = () => {
                                     ]}
                                 />
                             </aside>
-                            <aside className="line">
+                            <aside className="line flex flex-col gap-2 !px-5">
+                                <Typography text='Statistiques par trimestre par classe' className={'text-xl'} />
                                 <BarChart
                                     series={[
-                                        { data: [35, 44, 24] },
-                                        { data: [51, 6, 49] },
-                                        { data: [15, 25, 10] },
-                                        { data: [30, 50, 10] },
-                                        { data: [15, 25, 10] },
+                                        { data: [35, 44, 24, 23,23] },
+                                        { data: [51, 6, 49, 23,23] },
+                                        { data: [15, 25, 10, 23,23] },
+                                        { data: [30, 50, 10, 23,23] },
+                                        { data: [15, 25, 10, 23,23] },
                                     ]}
                                     xAxis={[{ data: ['s1', 's2', 's3'], scaleType: 'band' }]}
                                     margin={{ top: 10, bottom: 30, left: 40, right: 10 }}

@@ -157,8 +157,6 @@
 
 .admin-dashboard .container section.stats section.graphs .graphs-content {
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
 }
 
 
@@ -168,9 +166,10 @@
     justify-content: space-between;
     background-color: var(--white);
     border-radius: 10px;
-    height: 15rem;
+    height: 20rem;
     padding: 2rem 0.5rem;
-    width: 90%;
+    min-width: 400px;
+    flex: 1;
     /* margin: 0.5rem 0; */
 }
 
