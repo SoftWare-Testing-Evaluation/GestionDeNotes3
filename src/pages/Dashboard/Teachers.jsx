@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 import "../../styles/Dashboard/teachers.css";
 
@@ -10,14 +10,16 @@ import { Link, useNavigate } from "react-router-dom";
 import Typography from "../../components/Typography/Typography.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import Button from "../../components/Button/Button.jsx";
-// import { AdminRow } from "../../components/Utils/TableRows/TableRows";
+// import { TeacherRow } from "../../components/Utils/TableRows/TableRows";
 import Loader from "../../components/Loader/Loader.jsx";
 import { Player } from "@lordicon/react";
-import { folderOrange } from "../../assets/lordicons/index.js";
+import { folderOrange, teacher } from "../../assets/lordicons/index.js";
+import { onPlayPress } from "../../utils/utilities.jsx";
 
 const Teachers = () => {
     //State for translation
     const navigate = useNavigate()
+    const ref = useRef(1)
 
     const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -33,6 +35,9 @@ const Teachers = () => {
             lastName: 'Junior',
             email: 'essi@gmail.com',
             phone_number: '0612345678',
+            sex: 'M',
+            age: '30',
+            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
         },
         {
             id: 2,
@@ -40,6 +45,9 @@ const Teachers = () => {
             lastName: 'Junior',
             email: 'essi@gmail.com',
             phone_number: '0612345678',
+            sex: 'M',
+            age: '30',
+            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
         },
         {
             id: 3,
@@ -47,6 +55,39 @@ const Teachers = () => {
             lastName: 'Junior',
             email: 'essi@gmail.com',
             phone_number: '0612345678',
+            sex: 'M',
+            age: '30',
+            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
+        },
+        {
+            id: 4,
+            firstName: 'Essi',
+            lastName: 'Junior',
+            email: 'essi@gmail.com',
+            phone_number: '0612345678',
+            sex: 'M',
+            age: '30',
+            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
+        },
+        {
+            id: 5,
+            firstName: 'EKO',
+            lastName: 'Samuela',
+            email: 'eko@gmail.com',
+            phone_number: '0612345678',
+            sex: 'F',
+            age: '30',
+            subjects: ['French'],
+        },
+        {
+            id: 6,
+            firstName: 'Essi',
+            lastName: 'Junior',
+            email: 'essi@gmail.com',
+            phone_number: '0612345678',
+            sex: 'M',
+            age: '30',
+            subjects: ['Maths', 'Physics', 'French'],
         },
     ]
     const alert = useAlert()
@@ -61,13 +102,22 @@ const Teachers = () => {
 
     }
 
-    function AdminRow({ id, firstName, lastName, email, phone_number }) {
+    function TeacherRow({ id, firstName, lastName, email, phone_number, sex, age, subjects }) {
         return (
             <tr>
                 <td>{firstName}</td>
                 <td>{lastName}</td>
                 <td>{email}</td>
                 <td>{phone_number}</td>
+                <td>{sex}</td>
+                <td>{age}</td>
+                <td>
+                    {
+                        subjects.map((subject, index) => (
+                            <p key={index}>{subject}</p>
+                        ))
+                    }
+                </td>
                 <td className="option-buttons option">
                     <div className="delete-admin" onClick={() =>
                         alert.open({
@@ -122,12 +172,12 @@ const Teachers = () => {
                         <Typography text={'Enseignants'} className='title' />
                     </div>
 
-                    <Tooltip title='Logout' placement='bottom'>
-                        <div className='logout' onClick={(e) => handleLogout(e)}>
+                    <Tooltip title='Logout' placement='top'>
+                        <div className='logout ease-in-out duration-300 hover:scale-105' onClick={(e) => handleLogout(e)}>
                             {
                                 isLogingOut ?
                                     <Loader size='25px' /> :
-                                    <Logout />
+                                    <Logout className='text-[#cb1313]' />
                             }
                         </div>
                     </Tooltip>
@@ -138,18 +188,18 @@ const Teachers = () => {
 
                             isRefreshing ?
                                 <Skeleton variant="rectangular" width='100%' height={100} /> :
-                                <aside className="products">
-                                    <div className="icon">
+
+                                <aside className="products !bg-secondary" onMouseEnter={() => onPlayPress(ref)}>
+                                    <div className="icon cursor-pointer">
                                         <Player
-                                            ref={null}
-                                            icon={folderOrange}
+                                            ref={ref}
+                                            icon={teacher}
                                             size={40}
                                         />
                                     </div>
-
                                     <div className="content">
-                                        <Typography text={'Enseignants'} className='title' />
-                                        <Typography text={`100+`} />
+                                        <Typography text={'Enseignants'} className='title !text-white' />
+                                        <Typography text={'Nombre de lignes: 32'} className='number !text-white' />
                                     </div>
                                 </aside>
                         }
@@ -181,11 +231,14 @@ const Teachers = () => {
                                         <th>Prenom</th>
                                         <th>Email</th>
                                         <th>Contact</th>
+                                        <th>Sexe</th>
+                                        <th>Age</th>
+                                        <th>Matieres</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <Pagination data={teachers} RenderComponent={AdminRow} pageLimit={1} dataLimit={5} tablePagination={true} />
+                                    <Pagination data={teachers} RenderComponent={TeacherRow} pageLimit={1} dataLimit={5} tablePagination={true} />
                                 </tbody>
                             </table>
                     }

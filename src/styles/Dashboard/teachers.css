@@ -88,6 +88,9 @@
     border-radius: 0;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .teachers .container section.stats section.numbers aside .content {
@@ -129,6 +132,7 @@
     position: relative;
     width: 95%;
     margin: 1rem auto;
+    margin-bottom: 100px;
     /* height: 100vh!important; */
     /* background-color: red; */
     /* overflow-y: scroll; */
@@ -137,7 +141,7 @@
 
 .teachers .container .data table tr td {
     text-align: center;
-    border: 1px solid rgb(2, 178, 175);
+    border: 1px solid var(--primary);
 }
 
 .teachers .container .data table tr th.option {
@@ -150,12 +154,12 @@
 }
 
 .teachers .container .data table thead tr th {
-    background-color: rgb(2, 178, 175);
+    background-color: var(--primary);
     color: var(--white);
     width: 15rem;
     height: 3.5rem;
     font-size: 1.25rem;
-    border-right: 2px dashed rgb(2, 178, 175);
+    border-right: 2px dashed var(--primary);
 }
 
 .teachers .container .data table tbody tr:nth-of-type(odd) {
@@ -163,6 +167,6 @@
 }
 
 .teachers .container .data table tbody tr:nth-of-type(even) td {
-    background-color: rgb(156, 182, 181);
+    background-color: #99000021;
     border: 1px solid white;
 }

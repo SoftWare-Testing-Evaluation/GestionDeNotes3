@@ -1,0 +1,73 @@
+.profile {
+  height: 80vh;
+  width: calc(100% - 300px);
+  margin: auto 0;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile .container {
+  width: 99%;
+  height: 98%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.profile .container header {
+  width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-between;
+  margin: 2rem 0;
+}
+.profile .container header .texts {
+  height: 100%;
+  margin: 0 auto;
+}
+.profile .container header .texts .title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.profile .container header .profile {
+  width: 3%;
+  height: 70%;
+  border: 1px solid var(--black);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile .container form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  /* background-color: red; */
+  /* padding: 3rem 1.5rem ; */
+  border-radius: 10px;
+}
+@media screen and (max-width: 800px) {
+  .profile .container form {
+    padding: 0 1.5rem;
+  }
+  .profile .container form .inputs {
+    grid-template-columns: 1fr;
+  }
+}
+.profile .container form .inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  width: 100%;
+  /* background-color: green;     */
+}
+.profile .container form .inputs .input {
+  width: 90% !important;
+}

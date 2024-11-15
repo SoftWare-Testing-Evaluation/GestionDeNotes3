@@ -14,7 +14,7 @@
 
   --linear-gradient: linear-gradient(hsl(24, 100%, 47%), #990000);
   --drop-shadow: drop-shadow(0 0 2em var(--primary));
-  --font-family: Founders Grotesk, monospace, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-family: monospace, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   --border-radius: 0.25rem;
 
   --breakpoint-es: 500px;

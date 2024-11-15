@@ -30,7 +30,7 @@ const Sidebar = () => {
         },
         {
             name: 'Profile',
-            link: '/dashboard/admin_setting',
+            link: '/profile',
             icon: user,
             ref: useRef(4)
         },
