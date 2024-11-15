@@ -1,4 +1,4 @@
-.teachers {
+.subjects {
     /* background-color: $primary; */
     height: 100%;
     width: calc(100% - 300px);
@@ -9,7 +9,7 @@
     align-items: center;
 }
 
-.teachers .container {
+.subjects .container {
     width: 99%;
     height: 98%;
     background-color: var(--bg);
@@ -21,7 +21,7 @@
     overflow: hidden;
 }
 
-.teachers .container header {
+.subjects .container header {
     width: 95%;
     /* background-color: red; */
     display: flex;
@@ -30,20 +30,20 @@
     margin: 2rem 0;
 }
 
-.teachers .container header .texts {
+.subjects .container header .texts {
     width: 90%;
     height: 100%;
 
     /* background-color: green; */
 }
 
-.teachers .container header .texts .title {
+.subjects .container header .texts .title {
     font-size: 1.5rem;
     font-weight: 600;
 
 }
 
-.teachers .container header .profile {
+.subjects .container header .profile {
     width: 3%;
     height: 70%;
     border: 1px solid var(--black);
@@ -55,14 +55,14 @@
 
 }
 
-.teachers .container section.stats {
+.subjects .container section.stats {
     /* background-color: green; */
     width: 95%;
 
 }
 
-.teachers .container section.stats section.numbers {
-    /* background-color: #fdba74; */
+.subjects .container section.stats section.numbers {
+    /* background-color: yellow; */
     width: 100%;
     height: 7rem;
     display: grid;
@@ -70,7 +70,7 @@
 
 }
 
-.teachers .container section.stats section.numbers aside {
+.subjects .container section.stats section.numbers aside {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,7 +81,7 @@
     cursor: pointer;
 }
 
-.teachers .container section.stats section.numbers aside .icon {
+.subjects .container section.stats section.numbers aside .icon {
     width: 30%;
     height: 100%;
     /* background-color:red; */
@@ -93,7 +93,7 @@
     align-items: center;
 }
 
-.teachers .container section.stats section.numbers aside .content {
+.subjects .container section.stats section.numbers aside .content {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -103,13 +103,13 @@
 
 }
 
-.teachers .container section.stats section.numbers aside .content .title {
+.subjects .container section.stats section.numbers aside .content .title {
     font-weight: 600;
     font-size: 1.25rem;
     color: var(--black);
 }
 
-.teachers .container .actions {
+.subjects .container .actions {
     display: flex;
     justify-content: start;
     margin: 1rem 0;
@@ -119,7 +119,7 @@
 
 }
 
-.teachers .container .actions .refresh {
+.subjects .container .actions .refresh {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -128,7 +128,7 @@
     cursor: pointer;
 }
 
-.teachers .container .data {
+.subjects .container .data {
     position: relative;
     width: 95%;
     margin: 1rem auto;
@@ -139,21 +139,21 @@
 
 }
 
-.teachers .container .data table tr td {
+.subjects .container .data table tr td {
     text-align: center;
     border: 1px solid #fdba74;
 }
 
-.teachers .container .data table tr th.option {
+.subjects .container .data table tr th.option {
     width: 15rem;
     background-color: var(--white);
 }
 
-.teachers .container .data table tr .option {
+.subjects .container .data table tr .option {
     border: white;
 }
 
-.teachers .container .data table thead tr th {
+.subjects .container .data table thead tr th {
     background-color: #fdba74;
     color: var(--black);
     width: 15rem;
@@ -162,11 +162,11 @@
     border-right: 2px dashed #fdba74;
 }
 
-.teachers .container .data table tbody tr:nth-of-type(odd) {
+.subjects .container .data table tbody tr:nth-of-type(odd) {
     background-color: var(--white);
 }
 
-.teachers .container .data table tbody tr:nth-of-type(even) td {
+.subjects .container .data table tbody tr:nth-of-type(even) td {
     background-color: #fdbb742f;
     border: 1px solid white;
 }

@@ -9,6 +9,7 @@ import SignUp from './pages/SignUp.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import Teachers from './pages/Dashboard/Teachers.jsx'
 import Profile from './pages/Dashboard/Profile.jsx'
+import Subjects from './pages/Dashboard/Subjects.jsx'
 
 // UTILS
 import ScrollToTop from './utils/ScrollToTop.jsx'
@@ -31,6 +32,7 @@ function App() {
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="teachers" element={<Teachers />} />
                         <Route path="profile" element={<Profile />} />
+                        <Route path="subjects" element={<Subjects />} />
 
                     </Route>
                 </Routes>

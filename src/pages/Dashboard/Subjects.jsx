@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
-import "../../styles/Dashboard/teachers.css";
+import "../../styles/Dashboard/subjects.css";
 
 import { useAlert } from 'react-alert-with-buttons'
 import { DeleteOutline, Logout, Person2Outlined, RefreshOutlined } from "@mui/icons-material";
@@ -17,7 +17,7 @@ import { folderOrange, teacher } from "../../assets/lordicons/index.js";
 import { onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 
-const Teachers = () => {
+const Subjects = () => {
     //State for translation
     const navigate = useNavigate()
 
@@ -28,66 +28,48 @@ const Teachers = () => {
     const admin = 'Essi Junior'
     // const navigate = useNavigate()
 
-    const teachers = [
+    const subjects = [
         {
             id: 1,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
+            coef: 6,
+            name: 'Maths',
+            teachers: ['Essi Junior', 'EKO Samuela'],
         },
         {
             id: 2,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
+            coef: 2,
+            name: 'Maths',
+            teachers: ['Essi Junior'],
         },
         {
             id: 3,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
+            coef: 6,
+            name: 'French',
+            teachers: ['Kobe', 'Essi Junior'],
         },
         {
             id: 4,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
+            coef: 6,
+            name: 'English',
+            teachers: ['Kouabitchou Raphael', 'EKO Samuela'],
         },
         {
             id: 5,
-            firstName: 'EKO',
-            lastName: 'Samuela',
-            email: 'eko@gmail.com',
-            phone_number: '0612345678',
-            sex: 'F',
-            age: '30',
-            subjects: ['French'],
+            coef: 6,
+            name: 'Maths',
+            teachers: ['Essi Junior', 'EKO Samuela'],
         },
         {
             id: 6,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'French'],
+            coef: 6,
+            name: 'Maths',
+            teachers: ['Essi Junior', 'EKO Samuela'],
+        },
+        {
+            id: 7,
+            coef: 6,
+            name: 'Maths',
+            teachers: ['Essi Junior', 'EKO Samuela'],
         },
     ]
     const alert = useAlert()
@@ -102,18 +84,15 @@ const Teachers = () => {
 
     }
 
-    function TeacherRow({ id, firstName, lastName, email, phone_number, sex, age, subjects }) {
+    function TeacherRow({ id, coef, name, teachers }) {
         return (
             <tr>
-                <td>{firstName}</td>
-                <td>{lastName}</td>
-                <td>{email}</td>
-                <td>{phone_number}</td>
-                <td>{sex}</td>
-                <td>{age}</td>
+                <td>{id}</td>
+                <td>{coef}</td>
+                <td>{name}</td>
                 <td>
                     {
-                        subjects.map((subject, index) => (
+                        teachers.map((subject, index) => (
                             <p key={index}>{subject}</p>
                         ))
                     }
@@ -121,7 +100,7 @@ const Teachers = () => {
                 <td className="option-buttons option">
                     <div className="delete-admin" onClick={() =>
                         alert.open({
-                            message: `Really delete, ${firstName} ${lastName} ?`,
+                            message: `Really delete, ${name} ?`,
                             buttons: [
                                 {
                                     label: "Yes",
@@ -160,10 +139,9 @@ const Teachers = () => {
     // }, [admin])
 
     return (
-        <div className="teachers" >
+        <div className="subjects" >
             <div className="container">
-                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={teacher} title={'Enseignants'} count={teachers.length} />
-
+                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={teacher} title={'Matières'} count={subjects.length} />
 
                 <div className="actions">
                     <Button text={'New'} />
@@ -186,18 +164,15 @@ const Teachers = () => {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Nom</th>
-                                        <th>Prenom</th>
-                                        <th>Email</th>
-                                        <th>Contact</th>
-                                        <th>Sexe</th>
-                                        <th>Age</th>
-                                        <th>Matieres</th>
+                                        <th>ID</th>
+                                        <th>Coefficient</th>
+                                        <th>Nom de la matière</th>
+                                        <th>Enseignants</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <Pagination data={teachers} RenderComponent={TeacherRow} pageLimit={1} dataLimit={5} tablePagination={true} />
+                                    <Pagination data={subjects} RenderComponent={TeacherRow} pageLimit={1} dataLimit={5} tablePagination={true} />
                                 </tbody>
                             </table>
                     }
@@ -208,4 +183,4 @@ const Teachers = () => {
     );
 };
 
-export default Teachers;
+export default Subjects;
