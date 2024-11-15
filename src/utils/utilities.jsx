@@ -1,6 +1,6 @@
 // import React from "react"
 
-import { dashboard, home, teacher, user } from "../assets/lordicons";
+import { dashboard, home, hours, reportCard, students, teacher, user } from "../assets/lordicons";
 
 export function capitalise(string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
@@ -21,31 +21,31 @@ export const classLinks = (refs) => [
     {
         name: 'Matières',
         link: '/subjects',
-        icon: dashboard,
+        icon: reportCard,
         ref: refs[0]
     },
     {
         name: 'élèves',
         link: '/students',
-        icon: home,
+        icon: students,
         ref: refs[1]
     },
     {
         name: 'Absences',
         link: '/hours',
-        icon: teacher,
+        icon: hours,
         ref: refs[2]
     },
     {
         name: 'Notes',
         link: '/results',
-        icon: user,
+        icon: reportCard,
         ref: refs[3]
     },
     {
         name: 'Bulletins',
         link: '/report-cards',
-        icon: user,
+        icon: reportCard,
         ref: refs[4]
     },
 ]
