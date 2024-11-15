@@ -1,0 +1,172 @@
+.classes {
+    /* background-color: $primary; */
+    height: 100%;
+    width: calc(100% - 300px);
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.classes .container {
+    width: 99%;
+    height: 98%;
+    background-color: var(--bg);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.classes .container header {
+    width: 95%;
+    /* background-color: red; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2rem 0;
+}
+
+.classes .container header .texts {
+    width: 90%;
+    height: 100%;
+
+    /* background-color: green; */
+}
+
+.classes .container header .texts .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+
+}
+
+.classes .container header .profile {
+    width: 3%;
+    height: 70%;
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.25rem;
+
+}
+
+.classes .container section.stats {
+    /* background-color: green; */
+    width: 95%;
+
+}
+
+.classes .container section.stats section.numbers {
+    /* background-color: #fdba74; */
+    width: 100%;
+    height: 7rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+}
+
+.classes .container section.stats section.numbers aside {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-content: space-between;
+    background-color: var(--white);
+    border-radius: 10px;
+    height: 100%;
+    cursor: pointer;
+}
+
+.classes .container section.stats section.numbers aside .icon {
+    width: 30%;
+    height: 100%;
+    /* background-color:red; */
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.classes .container section.stats section.numbers aside .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 65%;
+    height: 100%;
+
+}
+
+.classes .container section.stats section.numbers aside .content .title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--black);
+}
+
+.classes .container .actions {
+    display: flex;
+    justify-content: start;
+    margin: 1rem 0;
+    width: 95%;
+
+    /* background-color: orange; */
+
+}
+
+.classes .container .actions .refresh {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+    color: white;
+    cursor: pointer;
+}
+
+.classes .container .data {
+    position: relative;
+    width: 95%;
+    margin: 1rem auto;
+    margin-bottom: 100px;
+    /* height: 100vh!important; */
+    /* background-color: red; */
+    /* overflow-y: scroll; */
+
+}
+
+.classes .container .data table tr td {
+    text-align: center;
+    border: 1px solid #fdba74;
+}
+
+.classes .container .data table tr th.option {
+    width: 15rem;
+    background-color: var(--white);
+}
+
+.classes .container .data table tr .option {
+    border: white;
+}
+
+.classes .container .data table thead tr th {
+    background-color: #fdba74;
+    color: var(--black);
+    width: 15rem;
+    height: 3.5rem;
+    font-size: 1.25rem;
+    border-right: 2px dashed #fdba74;
+}
+
+.classes .container .data table tbody tr:nth-of-type(odd) {
+    background-color: var(--white);
+}
+
+.classes .container .data table tbody tr:nth-of-type(even) td {
+    background-color: #fdbb742f;
+    border: 1px solid white;
+}

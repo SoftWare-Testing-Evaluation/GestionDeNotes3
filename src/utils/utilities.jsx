@@ -59,7 +59,7 @@ export const mainLinks = (refs) => [
     },
     {
         name: 'Classes',
-        link: '/subjects',
+        link: '/classes',
         icon: home,
         ref: refs[1]
     },

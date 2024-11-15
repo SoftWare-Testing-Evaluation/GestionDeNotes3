@@ -12,6 +12,7 @@ import Profile from './pages/Dashboard/Profile.jsx'
 import Subjects from './pages/Dashboard/Subjects.jsx'
 import Students from './pages/Dashboard/Students.jsx'
 import Hours from './pages/Dashboard/Hours.jsx'
+import Classes from './pages/Dashboard/Classes.jsx'
 import Notes from './pages/Dashboard/Notes.jsx'
 
 // UTILS
@@ -34,6 +35,7 @@ function App() {
                     <Route path="/" element={<Layout />}>
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="teachers" element={<Teachers />} />
+                        <Route path="classes" element={<Classes />} />
                         <Route path="profile" element={<Profile />} />
                         <Route path="subjects" element={<Subjects />} />
                         <Route path="students" element={<Students />} />
