@@ -55,7 +55,7 @@
 
 
 .sidebar .nav ul li .active {
-    color: #FFF;
+    color: rgb(253, 253, 61);
 
     &:not(.active)::after {
         opacity: 0.4;

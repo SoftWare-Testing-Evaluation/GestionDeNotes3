@@ -23,7 +23,7 @@ const Students = () => {
     const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState(false);
-    const [classe, setClasse] = useState(classes[0]);
+    const [classe, setClasse] = useState(localStorage.getItem('class'));
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
 

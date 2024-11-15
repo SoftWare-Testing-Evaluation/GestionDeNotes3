@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../styles/Dashboard/teachers.css";
 
 import { useAlert } from 'react-alert-with-buttons'
-import { DeleteOutline, Logout, Person2Outlined, RefreshOutlined } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined, Logout, Person2Outlined, RefreshOutlined } from "@mui/icons-material";
 
 import { Skeleton, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
@@ -118,8 +118,10 @@ const Teachers = () => {
                         ))
                     }
                 </td>
-                <td className="option-buttons option">
-                    <div className="delete-admin" onClick={() =>
+                <td className="option-buttons option  py-2 ">
+                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
+
+                    <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer ml-2" onClick={() =>
                         alert.open({
                             message: `Really delete, ${firstName} ${lastName} ?`,
                             buttons: [
@@ -142,10 +144,7 @@ const Teachers = () => {
                                     },
                                 },
                             ],
-                        })}>
-                        <DeleteOutline />Delete
-                    </div>
-
+                        })} />
                 </td>
             </tr>
         );

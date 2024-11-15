@@ -38,7 +38,7 @@ const Sidebar = () => {
                     {
                         paths.map((item, index) => (
                             // <li key={index} style={path === '/dashboard/admin' ? {margin:'1.5em 0'}:{}}>
-                            <li key={index} className='text-gray-200' onMouseEnter={() => onPlayPress(item.ref)}>
+                            <li key={index} className='!text-white' onMouseEnter={() => onPlayPress(item.ref)}>
                                 <NavLink to={item.link} activeclassname='active' className={sidebarCriteria(pathname) ? 'hover:text-secondary' : 'hover:text-primary'}>{item.name}</NavLink>
                                 <div className="icon cursor-pointer">
                                     <Player

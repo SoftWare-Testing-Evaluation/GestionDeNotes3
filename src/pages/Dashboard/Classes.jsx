@@ -88,7 +88,7 @@ const Classes = () => {
         return (
             <tr>
                 <td>
-                    <Link to={'/students'} className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer">
+                    <Link to={'/students'} className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() => localStorage.setItem('class', name)}>
                         <ArrowRightAlt className="text-emerald-800  !w-[35px] !h-[35px] " />
                         <span className="text-2xl">Acceder</span>
                     </Link>

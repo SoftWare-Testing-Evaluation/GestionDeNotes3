@@ -7,58 +7,60 @@ import { BarChart, pieArcLabelClasses, PieChart } from '@mui/x-charts';
 import '../../styles/Dashboard/dashboard.css'
 import { folder, folderOrange, folderRed, home, teacher } from '../../assets/lordicons/index.js';
 import { Player } from '@lordicon/react';
-import { onPlayPress } from '../../utils/utilities.jsx';
+import { classes, onPlayPress } from '../../utils/utilities.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+    const navigate = useNavigate()
     const user = 'Essi Junior'
     const tRefs = useRef(10);
     const [isLogingOut, setIsLogingOut] = useState(false);
     const cards = [
         {
             id: 0,
-            label: 'Sixième (6e)',
+            label: classes[0],
             icon: home,
             value: 10,
             ref: useRef(0)
         },
         {
             id: 1,
-            label: 'Cinquième (5e)',
+            label: classes[1],
             icon: home,
             value: 100,
             ref: useRef(1)
         },
         {
             id: 2,
-            label: 'Quatrième (4e)',
+            label: classes[2],
             icon: home,
             value: 80,
             ref: useRef(2)
         },
         {
             id: 3,
-            label: 'Troisième (3e)',
+            label: classes[3],
             icon: home,
             value: 30,
             ref: useRef(3)
         },
         {
             id: 4,
-            label: 'Seconde (2nd)',
+            label: classes[4],
             icon: home,
             value: 50,
             ref: useRef(4)
         },
         {
             id: 5,
-            label: 'Première (1ere)',
+            label: classes[5],
             icon: home,
             value: 60,
             ref: useRef(5)
         },
         {
             id: 5,
-            label: 'Terminale',
+            label: classes[6],
             icon: home,
             value: 30,
             ref: useRef(5)
@@ -108,7 +110,10 @@ const Dashboard = () => {
                     <section className="numbers">
                         {
                             cards.map((card, index) => (
-                                <aside className="card min-w-[300px]" key={card.id} onMouseEnter={() => onPlayPress(card.ref)}>
+                                <aside className="card min-w-[300px]" key={card.id} onMouseEnter={() => onPlayPress(card.ref)} onClick={() => {
+                                    localStorage.setItem('class', card.label)
+                                    navigate('/students')
+                                }}>
                                     <div className="icon cursor-pointer">
                                         <Player
                                             ref={card.ref}
@@ -149,11 +154,11 @@ const Dashboard = () => {
                                 <Typography text='Statistiques par trimestre par classe' className={'text-xl'} />
                                 <BarChart
                                     series={[
-                                        { data: [35, 44, 24, 23,23] },
-                                        { data: [51, 6, 49, 23,23] },
-                                        { data: [15, 25, 10, 23,23] },
-                                        { data: [30, 50, 10, 23,23] },
-                                        { data: [15, 25, 10, 23,23] },
+                                        { data: [35, 44, 24, 23, 23] },
+                                        { data: [51, 6, 49, 23, 23] },
+                                        { data: [15, 25, 10, 23, 23] },
+                                        { data: [30, 50, 10, 23, 23] },
+                                        { data: [15, 25, 10, 23, 23] },
                                     ]}
                                     xAxis={[{ data: ['s1', 's2', 's3'], scaleType: 'band' }]}
                                     margin={{ top: 10, bottom: 30, left: 40, right: 10 }}

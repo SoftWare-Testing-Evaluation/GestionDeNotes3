@@ -55,7 +55,7 @@ a {
 }
 
 .active {
-  color: var(--primary);
+  color: yellow;
 }
 
 .gradient__text {
