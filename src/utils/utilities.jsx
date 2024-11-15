@@ -16,7 +16,8 @@ export const generateRef = (refID, useRef) => {
     return ref
 }
 
-export const sidebarCriteria = (pathname) => pathname === '/subjects' || pathname === '/classes' || pathname === '/hours' || pathname === '/results' || pathname === '/report-cards'
+export const classes = ['Sixième (6e)','Cinquième (5e)','Quatrième (4e)','Troisième (3e)','Seconde (2nde)','Première (1ere)', 'Terminale (Tle)']
+export const sidebarCriteria = (pathname) => pathname === '/subjects' || pathname === '/students' || pathname === '/hours' || pathname === '/notes' || pathname === '/report-cards'
 export const classLinks = (refs) => [
     {
         name: 'Matières',
@@ -38,7 +39,7 @@ export const classLinks = (refs) => [
     },
     {
         name: 'Notes',
-        link: '/results',
+        link: '/notes',
         icon: reportCard,
         ref: refs[3]
     },
@@ -75,3 +76,4 @@ export const mainLinks = (refs) => [
         ref: refs[3]
     },
 ]
+

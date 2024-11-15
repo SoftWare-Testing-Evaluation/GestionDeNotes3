@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Loader from '../../components/Loader/Loader.jsx'
 import Typography from '../../components/Typography/Typography.jsx'
 import { Tooltip } from '@mui/joy'
@@ -6,8 +6,13 @@ import { Player } from '@lordicon/react'
 import { Logout } from "@mui/icons-material";
 import { onPlayPress } from '../../utils/utilities.jsx'
 
-const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon, title, count }) => {
+const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon, title, count, classe }) => {
     const iconRef = useRef(null)
+    const [text, setText] = useState(classe ? title + ' en classe de ' + classe : title)
+    useEffect(() => {
+        if (classe)
+            setText(title + ' en classe de ' + classe)
+    }, [classe])
     return (
         <>
             <header>
@@ -17,7 +22,7 @@ const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon,
                             <Skeleton variant="rectangular" width='100%' height={25} /> :
                             <Typography text={`Hi ${admin}`} />
                     }
-                    <Typography text={title} className='title' />
+                    <Typography text={text} className='title' />
                 </div>
 
                 <Tooltip title='Logout' placement='top'>
@@ -37,7 +42,7 @@ const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon,
                         isRefreshing ?
                             <Skeleton variant="rectangular" width='100%' height={100} /> :
 
-                            <aside className="products !bg-secondary" onMouseEnter={() => onPlayPress(iconRef)}>
+                            <aside className="products !bg-secondary !h-auto" onMouseEnter={() => onPlayPress(iconRef)}>
                                 <div className="icon cursor-pointer">
                                     <Player
                                         ref={iconRef}
@@ -46,7 +51,7 @@ const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon,
                                     />
                                 </div>
                                 <div className="content">
-                                    <Typography text={title} className='title !text-white' />
+                                    <Typography text={text} className='title !text-white' />
                                     <Typography text={`Nombre de lignes: ${count}`} className='number !text-white' />
                                 </div>
                             </aside>

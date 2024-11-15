@@ -10,6 +10,9 @@ import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import Teachers from './pages/Dashboard/Teachers.jsx'
 import Profile from './pages/Dashboard/Profile.jsx'
 import Subjects from './pages/Dashboard/Subjects.jsx'
+import Students from './pages/Dashboard/Students.jsx'
+import Hours from './pages/Dashboard/Hours.jsx'
+import Notes from './pages/Dashboard/Notes.jsx'
 
 // UTILS
 import ScrollToTop from './utils/ScrollToTop.jsx'
@@ -33,6 +36,9 @@ function App() {
                         <Route path="teachers" element={<Teachers />} />
                         <Route path="profile" element={<Profile />} />
                         <Route path="subjects" element={<Subjects />} />
+                        <Route path="students" element={<Students />} />
+                        <Route path="hours" element={<Hours />} />
+                        <Route path="notes" element={<Notes />} />
 
                     </Route>
                 </Routes>

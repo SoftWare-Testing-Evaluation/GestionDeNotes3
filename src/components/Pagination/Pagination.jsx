@@ -4,7 +4,7 @@ import { ArrowCircleLeft, ArrowCircleRight } from "@mui/icons-material";
 
 //Pagination component
 //This component permit you to do pagination on data
-export default function Pagination({ data, RenderComponent, isProduct, pageLimit, dataLimit, tablePagination}) {
+export default function Pagination({ data, RenderComponent, isProduct, pageLimit, dataLimit, tablePagination }) {
     const pages = Math.floor(data.length / dataLimit) + 1;
     const [currentPage, setCurrentPage] = useState(1);
     //Go to the next page
@@ -32,23 +32,28 @@ export default function Pagination({ data, RenderComponent, isProduct, pageLimit
         return new Array(pageLimit).fill().map((_, idx) => start + idx + 1);
     };
 
- 
+
     return (
         <>
             {tablePagination ? (
-                getPaginatedData().map((data, idx) => <RenderComponent key={idx} {...data} />)
+
+                getPaginatedData().length === 0 ?
+                    <div className="bg-red-400 w-full text-center text-white">Empty</div>
+                    :
+                    getPaginatedData().map((data, idx) => <RenderComponent key={idx} {...data} />)
             ) : (
                 <div>
-                    {getPaginatedData().map((data, idx) => (
-                        <RenderComponent key={idx} {...data} />
-                    ))}
+                    {
+                        getPaginatedData().map((data, idx) => (
+                            <RenderComponent key={idx} {...data} />
+                        ))}
                 </div>
             )}
 
             {data.length > dataLimit && (
-                <div className="pagination" style={isProduct ? {right:"2%", top:'-130%'}:{}}>
+                <div className="pagination" style={isProduct ? { right: "2%", top: '-130%' } : {}}>
                     <div onClick={goToPreviousPage} className={`prev ${currentPage === 1 ? "disabled" : ""}`}>
-                        <ArrowCircleLeft/>
+                        <ArrowCircleLeft />
                     </div>
                     {getPaginationGroup().map((item, index) => (
                         <div key={index} className={`paginationItem ${currentPage === item ? "active" : ""}`}>
@@ -56,7 +61,7 @@ export default function Pagination({ data, RenderComponent, isProduct, pageLimit
                         </div>
                     ))}
                     <div onClick={goToNextPage} className={`next ${currentPage >= pages ? "disabled" : ""}`}>
-                        <ArrowCircleRight/>
+                        <ArrowCircleRight />
                     </div>
                 </div>
             )}

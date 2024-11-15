@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../styles/Dashboard/subjects.css";
 
 import { useAlert } from 'react-alert-with-buttons'
-import { DeleteOutline, Logout, Person2Outlined, RefreshOutlined } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined, Logout, Person2Outlined, RefreshOutlined } from "@mui/icons-material";
 
 import { Skeleton, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import Button from "../../components/Button/Button.jsx";
 // import { TeacherRow } from "../../components/Utils/TableRows/TableRows";
 import Loader from "../../components/Loader/Loader.jsx";
 import { Player } from "@lordicon/react";
-import { folderOrange, teacher } from "../../assets/lordicons/index.js";
+import { folderOrange, reportCard, teacher } from "../../assets/lordicons/index.js";
 import { onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 
@@ -97,8 +97,10 @@ const Subjects = () => {
                         ))
                     }
                 </td>
-                <td className="option-buttons option">
-                    <div className="delete-admin" onClick={() =>
+                <td className="option-buttons option flex items-center justify-center py-2 gap-2 ">
+                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
+
+                    <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() =>
                         alert.open({
                             message: `Really delete, ${name} ?`,
                             buttons: [
@@ -121,10 +123,7 @@ const Subjects = () => {
                                     },
                                 },
                             ],
-                        })}>
-                        <DeleteOutline />Delete
-                    </div>
-
+                        })}/>
                 </td>
             </tr>
         );
@@ -141,7 +140,7 @@ const Subjects = () => {
     return (
         <div className="subjects" >
             <div className="container">
-                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={teacher} title={'Matières'} count={subjects.length} />
+                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Matières'} count={subjects.length} />
 
                 <div className="actions">
                     <Button text={'New'} />

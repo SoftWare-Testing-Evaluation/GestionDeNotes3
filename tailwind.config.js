@@ -9,7 +9,6 @@ module.exports = {
         bg: '#F2F2F2',
         white: '#FFFFFF',
         black: '#000000',
-        red: '#cb1313',
         green: '#00B517'
       },
     }
