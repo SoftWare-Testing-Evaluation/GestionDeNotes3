@@ -82,7 +82,7 @@ const Dashboard = () => {
                     </div>
 
                     <Tooltip title='Logout' placement='top'>
-                        <div className='logout ease-in-out duration-300 hover:scale-105' onClick={(e) => handleLogout(e)}>
+                        <div className='logout ease-in-out duration-300 hover:scale-105' onClick={(e) =>  navigate('/signin')}>
                             {
                                 isLogingOut ?
                                     <Loader size='25px' /> :

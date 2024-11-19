@@ -5,9 +5,11 @@ import { Tooltip } from '@mui/joy'
 import { Player } from '@lordicon/react'
 import { Logout } from "@mui/icons-material";
 import { onPlayPress } from '../../utils/utilities.jsx'
+import { useNavigate } from 'react-router-dom'
 
 const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon, title, count, classe }) => {
     const iconRef = useRef(null)
+    const navigate = useNavigate()
     const [text, setText] = useState(classe ? title + ' en classe de ' + classe : title)
     useEffect(() => {
         if (classe)
@@ -26,7 +28,7 @@ const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon,
                 </div>
 
                 <Tooltip title='Logout' placement='top'>
-                    <div className='logout ease-in-out duration-300 hover:scale-105' onClick={(e) => handleLogout(e)}>
+                    <div className='logout ease-in-out duration-300 hover:scale-105' onClick={(e) => navigate('/signin')}>
                         {
                             isLogingOut ?
                                 <Loader size='25px' /> :

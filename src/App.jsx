@@ -14,6 +14,7 @@ import Students from './pages/Dashboard/Students.jsx'
 import Hours from './pages/Dashboard/Hours.jsx'
 import Classes from './pages/Dashboard/Classes.jsx'
 import Notes from './pages/Dashboard/Notes.jsx'
+import ReportCards from './pages/Dashboard/ReportCards.jsx'
 
 // UTILS
 import ScrollToTop from './utils/ScrollToTop.jsx'
@@ -41,7 +42,8 @@ function App() {
                         <Route path="students" element={<Students />} />
                         <Route path="hours" element={<Hours />} />
                         <Route path="notes" element={<Notes />} />
-
+                        <Route path="report-cards" element={<ReportCards />} />
+                        
                     </Route>
                 </Routes>
             </HashRouter>
