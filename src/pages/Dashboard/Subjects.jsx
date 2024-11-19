@@ -17,6 +17,8 @@ import { folderOrange, reportCard, teacher } from "../../assets/lordicons/index.
 import { onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 
+import ModalContainer from "../../components/ModalContainer.jsx";
+import SubjectForm from "../../components/Forms/SubjectForm.jsx";
 const Subjects = () => {
     //State for translation
     const navigate = useNavigate()
@@ -143,10 +145,9 @@ const Subjects = () => {
                 <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Matières'} count={subjects.length} />
 
                 <div className="actions">
-                    <Button text={'New'} />
-                    <Button text={"Refresh"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                    <ModalContainer triggerText={'Nouveau'} formToDisplay={<SubjectForm />} />
+                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
                 </div>
-
                 <div className="data">
                     {
                         isRefreshing ?

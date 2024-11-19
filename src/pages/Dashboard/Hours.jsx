@@ -18,6 +18,8 @@ import { classes, onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 import { Option, Select, selectClasses } from '@mui/joy';
 
+import ModalContainer from "../../components/ModalContainer.jsx";
+import StudentForm from "../../components/Forms/StudentForm.jsx";
 const Hours = () => {
     //State for translation
     const navigate = useNavigate()
@@ -162,9 +164,8 @@ const Hours = () => {
                 <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Heures d\'absence elèves'} count={students.length} classe={classe} />
 
                 <div className="flex !justify-between items-center w-[95%]">
-                    <div className="actions !w-auto">
-                        <Button text={'New'} />
-                        <Button text={"Refresh"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                    <div className="actions h-full">
+                        <Button text={"Rafraishir"} bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
                     </div>
                     <div>
                         <p className="text-secondary font-bold">Classe</p>

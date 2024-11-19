@@ -11,9 +11,9 @@ import Typography from "../../components/Typography/Typography.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import Button from "../../components/Button/Button.jsx";
 import TeacherForm from '../../components/Forms/TeacherForm.jsx'
+import {  teacher } from "../../assets/lordicons/index.js";
 import  ModalContainer from "../../components/ModalContainer.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
-import {  teacher } from "../../assets/lordicons/index.js";
 
 const Teachers = () => {
     //State for translation

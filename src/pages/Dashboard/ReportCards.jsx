@@ -14,8 +14,6 @@ import { classes, onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 import { students } from "../../assets/lordicons/index.js";
 import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
-import  ModalContainer from "../../components/ModalContainer.jsx";
-import User from "../../components/Forms/User.jsx";
 
 const ReportCards = () => {
     //State for translation
@@ -191,9 +189,7 @@ const ReportCards = () => {
 
                 <div className="flex !justify-between items-center w-[95%]">
                     <div className="actions !w-auto">
-                        <ModalContainer triggerText={'Nouveau'} formToDisplay={<User role='MARCHAND' />}/>
-
-                        <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                        <Button text={"Rafraishir"} bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
                     </div>
                 </div>
 
