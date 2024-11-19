@@ -12,7 +12,7 @@ const Button = ({text = null, width, icon, bg, fontWeight=600,height,margin,hand
                 <>
                     {icon}
                     
-                    {text !== null && <span style={{fontWeight: fontWeight,color:color,textTransform:lowercase,fontSize:fontSize}}>{text}</span>}          
+                    {text !== null && <span className='ml-2' style={{fontWeight: fontWeight,color:color,textTransform:lowercase,fontSize:fontSize}}>{text}</span>}          
                 </>
                 
             }

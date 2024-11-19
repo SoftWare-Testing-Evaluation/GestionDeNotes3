@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, rUseref } from "react";
 // import { useNavigate } from "react-router-dom";
 import "../../styles/Dashboard/students.css";
 
 import { useAlert } from 'react-alert-with-buttons'
-import { DeleteOutline, EditOutlined, RefreshOutlined } from "@mui/icons-material";
+import { DeleteOutline, Download, EditOutlined, RefreshOutlined } from "@mui/icons-material";
 
 import { Skeleton, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,9 +12,10 @@ import Button from "../../components/Button/Button.jsx";
 // import { TeacherRow } from "../../components/Utils/TableRows/TableRows";
 import { classes, onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
-import { Option, Select, selectClasses } from '@mui/joy';
 import { students } from "../../assets/lordicons/index.js";
 import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
+import  ModalContainer from "../../components/ModalContainer.jsx";
+import User from "../../components/Forms/User.jsx";
 
 const ReportCards = () => {
     //State for translation
@@ -134,7 +135,10 @@ const ReportCards = () => {
                 <td>{emergencyContacts}</td>
 
                 <td className="option-buttons option flex items-center justify-center py-2 gap-2 ">
-                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
+
+                    <Tooltip title='Afficher' placement='top'>
+                        <Download className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
+                    </Tooltip>
 
                     <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() =>
                         alert.open({
@@ -187,8 +191,9 @@ const ReportCards = () => {
 
                 <div className="flex !justify-between items-center w-[95%]">
                     <div className="actions !w-auto">
-                        <Button text={'New'} />
-                        <Button text={"Refresh"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                        <ModalContainer triggerText={'Nouveau'} formToDisplay={<User role='MARCHAND' />}/>
+
+                        <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
                     </div>
                 </div>
 

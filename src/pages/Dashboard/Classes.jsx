@@ -16,6 +16,8 @@ import { Player } from "@lordicon/react";
 import { folderOrange, teacher } from "../../assets/lordicons/index.js";
 import { classes, onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
+import ClassForm from '../../components/Forms/ClassForm.jsx'
+import ModalContainer from "../../components/ModalContainer.jsx";
 
 const Classes = () => {
     //State for translation
@@ -142,10 +144,9 @@ const Classes = () => {
             <div className="container">
                 <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={teacher} title={'Classes'} count={classes.length} />
 
-
                 <div className="actions">
-                    <Button text={'New'} />
-                    <Button text={"Refresh"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                    <ModalContainer triggerText={'Nouveau'} formToDisplay={<ClassForm />} />
+                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
                 </div>
 
                 <div className="data">

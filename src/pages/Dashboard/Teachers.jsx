@@ -10,12 +10,10 @@ import { Link, useNavigate } from "react-router-dom";
 import Typography from "../../components/Typography/Typography.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import Button from "../../components/Button/Button.jsx";
-// import { TeacherRow } from "../../components/Utils/TableRows/TableRows";
-import Loader from "../../components/Loader/Loader.jsx";
-import { Player } from "@lordicon/react";
-import { folderOrange, teacher } from "../../assets/lordicons/index.js";
-import { onPlayPress } from "../../utils/utilities.jsx";
+import TeacherForm from '../../components/Forms/TeacherForm.jsx'
+import  ModalContainer from "../../components/ModalContainer.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
+import {  teacher } from "../../assets/lordicons/index.js";
 
 const Teachers = () => {
     //State for translation
@@ -163,10 +161,9 @@ const Teachers = () => {
             <div className="container">
                 <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={teacher} title={'Enseignants'} count={teachers.length} />
 
-
                 <div className="actions">
-                    <Button text={'New'} />
-                    <Button text={"Refresh"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                    <ModalContainer triggerText={'Nouveau'} formToDisplay={<TeacherForm />} />
+                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
                 </div>
 
                 <div className="data">
