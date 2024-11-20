@@ -14,7 +14,7 @@ const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon,
     useEffect(() => {
         if (classe)
             setText(title + ' en classe de ' + classe)
-    }, [classe])
+    }, [classe, title])
     return (
         <>
             <header>
