@@ -128,7 +128,7 @@
     cursor: pointer;
 }
 
-.students .container .data {
+.data {
     position: relative;
     width: 95%;
     margin: 1rem auto;
@@ -139,21 +139,21 @@
 
 }
 
-.students .container .data table tr td {
+.data table tr td {
     text-align: center;
     border: 1px solid #fdba74;
 }
 
-.students .container .data table tr th.option {
+.data table tr th.option {
     width: 15rem;
     background-color: var(--white);
 }
 
-.students .container .data table tr .option {
+.data table tr .option {
     border: white;
 }
 
-.students .container .data table thead tr th {
+.data table thead tr th {
     background-color: #fdba74;
     color: var(--black);
     width: 15rem;
@@ -162,11 +162,11 @@
     border-right: 2px dashed #fdba74;
 }
 
-.students .container .data table tbody tr:nth-of-type(odd) {
+.data table tbody tr:nth-of-type(odd) {
     background-color: var(--white);
 }
 
-.students .container .data table tbody tr:nth-of-type(even) td {
+.data table tbody tr:nth-of-type(even) td {
     background-color: #fdbb742f;
     border: 1px solid white;
 }

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, rUseref } from "react";
+import React, { useState, useEffect, rUseref, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
+
 import "../../styles/Dashboard/students.css";
 
 import { useAlert } from 'react-alert-with-buttons'
@@ -14,10 +15,13 @@ import { classes, onPlayPress, sequences } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 import { students } from "../../assets/lordicons/index.js";
 import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
+import { useReactToPrint } from "react-to-print";
 
 const ReportCards = () => {
     //State for translation
     const navigate = useNavigate()
+    const contentRef = useRef(null);
+    const handlePrint = useReactToPrint({ contentRef });
 
     const [isLoading, setIsLoading] = useState(false);
     const [classe, setClasse] = useState(localStorage.getItem('class'));
@@ -231,10 +235,12 @@ const ReportCards = () => {
                         <SNMSelect label={'Elève'} placeholder={'Choisir l\'élève'} options={studentsArr} handleChange={handleEleve} className={'ml-10'} />
                         <SNMSelect label={'Séquence'} placeholder={'Choisir la séquence'} options={sequences} handleChange={handleSequence} className={'ml-10'} />
                     </div>
-                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10" onClick={() => { }}>
+
+                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10" onClick={handlePrint}>
                         <Download className="text-emerald-800  !w-[35px] !h-[35px] " />
                         <span className="text-3xl font-bold">Imprimer</span>
                     </div>
+
                 </div>
                 <div className="data">
                     {
@@ -371,6 +377,130 @@ const ReportCards = () => {
                     }
                 </div>
 
+            </div>
+
+            <div style={{ display: "none" }}>
+                <div className="py-5" ref={contentRef} style={{ fontSize: "1.5rem", padding: "1.5rem" }}>
+                    <div className="data">
+                        {
+                            isRefreshing ?
+                                <div>
+                                    <Skeleton variant="rectangular" width='100%' height={55} />
+                                    <div style={{ marginTop: '0.2rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }}>
+                                        {
+                                            Array.apply(null, { length: 25 }).map((value, index) =>
+                                                <Skeleton key={index} variant="rounded" width={'98%'} height={40} style={{ margin: '0.125rem auto' }} />
+                                            )
+                                        }
+                                    </div>
+                                </div> :
+                                <div className="overflow-x-auto">
+                                    <table className="">
+                                        <thead>
+                                            <tr className="[&>*]:uppercase">
+                                                <th>Matière/enseignant</th>
+                                                {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
+                                                    <th>{sequences[sequences.indexOf(sequence) - 1]}</th>
+                                                }
+                                                <th>{sequence}</th>
+                                                {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
+                                                    <th>trim</th>
+                                                }
+                                                <th>cf</th>
+                                                <th>total</th>
+                                                <th>compétence(s) visée(s)</th>
+                                                <th>App/Visa Prof</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.literatureSubjects.map((result, index) => (
+                                                    <tr key={index}>
+                                                        <td className="flex flex-col items-center">
+                                                            <span className="text-2xl font-semibold">{result.subject}</span>
+                                                            <span>{result.teacher}</span>
+                                                        </td>
+                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
+                                                            <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
+                                                        }
+                                                        <td>{result.sequences[sequences.indexOf(sequence)]}</td>
+
+                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
+                                                            <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
+                                                        }
+                                                        <td>{result.coef}</td>
+                                                        <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
+                                                        <td>{result.competence}</td>
+                                                        <td>{result.visa}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                            <tr>
+                                                <td aria-colspan={'100%'} className="!bg-secondary text-white">
+                                                    Matieres literraires
+                                                </td>
+                                            </tr>
+                                            {
+                                                results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.scientificSubjects.map((result, index) => (
+                                                    <tr key={index}>
+                                                        <td className="flex flex-col items-center">
+                                                            <span className="text-2xl font-semibold">{result.subject}</span>
+                                                            <span>{result.teacher}</span>
+                                                        </td>
+                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
+                                                            <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
+                                                        }
+                                                        <td>{result.sequences[sequences.indexOf(sequence)]}</td>
+
+                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
+                                                            <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
+                                                        }
+                                                        <td>{result.coef}</td>
+                                                        <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
+                                                        <td>{result.competence}</td>
+                                                        <td>{result.visa}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                            <tr>
+                                                <td aria-colspan={'100%'} className="!bg-secondary text-white">
+                                                    Matieres scientifiques
+                                                </td>
+                                            </tr>
+                                            {
+                                                results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.generalSubjects.map((result, index) => (
+                                                    <tr key={index}>
+                                                        <td className="flex flex-col items-center">
+                                                            <span className="text-2xl font-semibold">{result.subject}</span>
+                                                            <span>{result.teacher}</span>
+                                                        </td>
+                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
+                                                            <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
+                                                        }
+                                                        <td>{result.sequences[sequences.indexOf(sequence)]}</td>
+
+                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
+                                                            <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
+                                                        }
+                                                        <td>{result.coef}</td>
+                                                        <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
+                                                        <td>{result.competence}</td>
+                                                        <td>{result.visa}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                            <tr>
+                                                <td aria-colspan={'100%'} className="!bg-secondary text-white">
+                                                    Matieres complementaires
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     );
