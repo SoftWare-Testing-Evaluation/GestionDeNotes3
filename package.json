@@ -4,8 +4,14 @@
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
+  "build": {
+    "name": "MgrNKOU-college",
+    "productName": "MgrNKOU-college"
+  },
   "scripts": {
-    "start": "electron-forge start",
+    "start:backend": "node server/app.js",
+    "start:electron": "electron-forge start",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:electron\"",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
@@ -60,6 +66,15 @@
     "react-dom": "^18.3.1",
     "react-phone-number-input": "^3.4.9",
     "react-router-dom": "^6.27.0",
-    "react-to-print": "^3.0.2"
+    "react-to-print": "^3.0.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.7",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }

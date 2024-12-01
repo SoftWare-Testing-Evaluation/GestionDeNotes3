@@ -1,0 +1,1389 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API de Gestion des Classes d'Étude",
+      "version": "1.0.0",
+      "description": "API pour gérer les classes d'étude, les étudiants et les notes."
+    },
+    "servers": [
+      {
+        "url": "http://localhost:8080"
+      }
+    ],
+    "paths": {
+      "/auth": {
+        "post": {
+          "summary": "Authentification du préfet d'étude",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "login": {
+                      "type": "string"
+                    },  
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Authentification réussie",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "token": {
+                        "type": "string",
+                        "description": "Token JWT pour l'accès aux routes protégées"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Identifiants invalides"
+            },
+            "404": {
+              "description": "Préfet d'étude non trouvé"
+            },
+            "500": {
+              "description": "Erreur serveur"
+            }
+          }
+        }
+      },
+      "/classeEtude": {
+        "get": {
+          "summary": "Récupérer toutes les classes d'étude",
+          "responses": {
+            "200": {
+              "description": "Liste des classes d'étude",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ClasseEtude"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Créer une nouvelle classe d'étude",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClasseEtude"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Classe d'étude créée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ClasseEtude"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/eleves": {
+        "get": {
+          "summary": "Récupérer tous les élèves",
+          "responses": {
+            "200": {
+              "description": "Liste des élèves",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Eleve"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Créer un nouvel élève",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Eleve"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Élève créé",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Eleve"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Erreur lors de la création de l'élève"
+            }
+          }
+        }
+      },
+      "/eleves/{id}": {
+        "get": {
+          "summary": "Récupérer un élève par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Élève trouvé",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Eleve"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Élève non trouvé"
+            }
+          }
+        },
+        "put": {
+          "summary": "Mettre à jour un élève par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Eleve"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Élève mis à jour",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Eleve"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Élève non trouvé"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Supprimer un élève par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Élève supprimé"
+            },
+            "404": {
+              "description": "Élève non trouvé"
+            }
+          }
+        }
+      },
+      "/eleves/matricule/{matricule}": {
+        "get": {
+          "summary": "Récupérer un élève par matricule",
+          "parameters": [
+            {
+              "name": "matricule",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Élève trouvé",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Eleve"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Élève non trouvé"
+            }
+          }
+        }
+      },
+      "/eleves/classe/{idClasseEtude}/{annee}": {
+        "get": {
+          "summary": "Récupérer les élèves par classe",
+          "parameters": [
+            {
+              "name": "idClasseEtude",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "annee",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Liste des élèves dans la classe spécifiée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Eleve"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/eleves/retirer/{idEleve}/{idClasse}": {
+        "delete": {
+          "summary": "Retirer un élève d'une classe",
+          "parameters": [
+            {
+              "name": "idEleve",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "idClasse",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Élève retiré de la classe avec succès",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Eleve"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/prefetEtudes": {
+        "post": {
+          "summary": "Créer un préfet d'étude",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrefetEtude"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Préfet d'étude créé",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PrefetEtude"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Erreur lors de la création du préfet d'étude"
+            }
+          }
+        },
+        "get": {
+          "summary": "Récupérer tous les préfets d'étude",
+          "responses": {
+            "200": {
+              "description": "Liste des préfets d'étude",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PrefetEtude"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/prefetEtudes/{id}": {
+        "get": {
+          "summary": "Récupérer un préfet d'étude par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Préfet d'étude trouvé",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PrefetEtude"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Préfet d'étude non trouvé"
+            }
+          }
+        },
+        "put": {
+          "summary": "Mettre à jour un préfet d'étude par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrefetEtude"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Préfet d'étude mis à jour",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PrefetEtude"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Préfet d'étude non trouvé"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Supprimer un préfet d'étude par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Préfet d'étude supprimé"
+            },
+            "404": {
+              "description": "Préfet d'étude non trouvé"
+            }
+          }
+        }
+      },
+      "/enseignants": {
+        "get": {
+          "summary": "Récupérer tous les enseignants",
+          "responses": {
+            "200": {
+              "description": "Liste des enseignants",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Enseignant"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Créer un nouvel enseignant",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enseignant"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Enseignant créé",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Enseignant"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Erreur lors de la création de l'enseignant"
+            }
+          }
+        }
+      },
+      "/enseignants/{id}": {
+        "get": {
+          "summary": "Récupérer un enseignant par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Enseignant trouvé",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Enseignant"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Enseignant non trouvé"
+            }
+          }
+        },
+        "put": {
+          "summary": "Mettre à jour un enseignant par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enseignant"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Enseignant mis à jour",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Enseignant"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Enseignant non trouvé"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Supprimer un enseignant par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Enseignant supprimé"
+            },
+            "404": {
+              "description": "Enseignant non trouvé"
+            }
+          }
+        }
+      },
+      "/enseignants/classe/{idClasseEtude}/{annee}": {
+        "get": {
+          "summary": "Récupérer les enseignants par classe",
+          "parameters": [
+            {
+              "name": "idClasseEtude",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "annee",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Liste des enseignants pour la classe spécifiée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Enseignant"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/matieres": {
+        "get": {
+          "summary": "Récupérer toutes les matières",
+          "responses": {
+            "200": {
+              "description": "Liste des matières",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Matiere"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Créer une nouvelle matière",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Matiere"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Matière créée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Matiere"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Erreur lors de la création de la matière"
+            }
+          }
+        }
+      },
+      "/matieres/{id}": {
+        "get": {
+          "summary": "Récupérer une matière par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Matière trouvée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Matiere"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Matière non trouvée"
+            }
+          }
+        },
+        "put": {
+          "summary": "Mettre à jour une matière par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Matiere"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Matière mise à jour",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Matiere"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Matière non trouvée"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Supprimer une matière par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Matière supprimée"
+            },
+            "404": {
+              "description": "Matière non trouvée"
+            }
+          }
+        }
+      },
+      "/matieres/classe/{idClasseEtude}/{annee}": {
+        "get": {
+          "summary": "Récupérer les matières par classe",
+          "parameters": [
+            {
+              "name": "idClasseEtude",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "annee",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Liste des matières pour la classe spécifiée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Matiere"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/matieres/enseignant/{idEnseignant}/{annee}": {
+        "get": {
+          "summary": "Récupérer les matières par enseignant",
+          "parameters": [
+            {
+              "name": "idEnseignant",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "annee",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Liste des matières pour l'enseignant spécifié",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Matiere"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/dispensations": {
+        "get": {
+          "summary": "Récupérer toutes les dispensations",
+          "responses": {
+            "200": {
+              "description": "Liste des dispensations",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Dispenser"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Créer une nouvelle dispensation",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dispenser"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Dispensation créée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Dispenser"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Erreur lors de la création de la dispensation"
+            }
+          }
+        }
+      },
+      "/dispensations/{id}": {
+        "get": {
+          "summary": "Récupérer une dispensation par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Dispensation trouvée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Dispenser"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Dispensation non trouvée"
+            }
+          }
+        },
+        "put": {
+          "summary": "Mettre à jour une dispensation par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dispenser"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Dispensation mise à jour",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Dispenser"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Dispensation non trouvée"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Supprimer une dispensation par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Dispensation supprimée"
+            },
+            "404": {
+              "description": "Dispensation non trouvée"
+            }
+          }
+        }
+      },
+      "/notes": {
+        "post": {
+          "summary": "Créer une nouvelle note",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Note créée",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Note"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Erreur lors de la création de la note"
+            }
+          }
+        }
+      },
+      "/notes/matiere-classe/{idMatiere}/{idClasseEtude}":{
+        "get": {
+          "summary": "Récupérer les notes par matière et classe",
+          "parameters": [
+            {
+              "name": "idMatiere",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "idClasseEtude",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "annee",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Liste des notes",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Note"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/notes/{id}": {
+        "put": {
+          "summary": "Mettre à jour une note par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Note mise à jour",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Note"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Note non trouvée"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Supprimer une note par ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Note supprimée"
+            },
+            "404": {
+              "description": "Note non trouvée"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "ClasseEtude": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "idPrefet": {
+              "type": "integer",
+              "example": 1
+            },
+            "nom": {
+              "type": "string",
+              "example": "Mathématiques"
+            }
+          },
+          "required": ["idPrefet", "nom"]
+        },
+        "PrefetEtude": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "nom": {
+              "type": "string",
+              "example": "Dupont"
+            },
+            "prenom": {
+              "type": "string",
+              "example": "Jean"
+            },
+            "email": {
+              "type": "string",
+              "example": "jean.dupont@example.com"
+            },
+            "password": {
+              "type": "string",
+              "example": "password123"
+            },
+            "login": {
+              "type": "string",
+              "example": "jdupont"
+            }
+          },
+          "required": ["nom", "prenom", "email", "password", "login"]
+        },
+        "Eleve": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "idClasseEtude": {
+              "type": "integer",
+              "example": 1
+            },
+            "matricule": {
+              "type": "string",
+              "example": "23A1234"
+            },
+            "nom": {
+              "type": "string",
+              "example": "Martin"
+            },
+            "prenom": {
+              "type": "string",
+              "example": "Alice"
+            },
+            "dateNaissance": {
+              "type": "string",
+              "format": "date",
+              "example": "2005-06-15"
+            },
+            "lieuNaissance": {
+              "type": "string",
+              "example": "Paris"
+            },
+            "nomPere": {
+              "type": "string",
+              "example": "Martin"
+            },
+            "nomMere": {
+              "type": "string",
+              "example": "Dupont"
+            },
+            "sexe": {
+              "type": "string",
+              "example": "F"
+            },
+            "urlPhoto": {
+              "type": "string",
+              "example": "http://example.com/photo.jpg"
+            }
+          },
+          "required": ["idClasseEtude", "nom", "prenom", "dateNaissance", "lieuNaissance", "nomPere", "nomMere", "sexe"]
+        },
+        "Enseignant": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "nom": {
+              "type": "string",
+              "example": "Dupont"
+            },
+            "prenom": {
+              "type": "string",
+              "example": "Marie"
+            },
+            "email": {
+              "type": "string",
+              "example": "marie.dupont@example.com"
+            },
+            "specialite": {
+              "type": "string",
+              "example": "Mathématiques"
+            },
+            "grade": {
+              "type": "string",
+              "example": "PLEG"
+            }
+          },
+          "required": ["nom", "prenom", "email", "specialite", "grade"]
+        },
+        "Matiere": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "designation": {
+              "type": "string",
+              "example": "Mathématiques"
+            },
+            "coefficient": {
+              "type": "integer",
+              "example": 3
+            }
+          },
+          "required": ["designation", "coefficient"]
+        },
+        "Dispenser": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "idClasseEtude": {
+              "type": "integer",
+              "example": 1
+            },
+            "idMatiere": {
+              "type": "integer",
+              "example": 2
+            },
+            "idEnseignant": {
+              "type": "integer",
+              "example": 3
+            },
+            "annee": {
+              "type": "integer",
+              "example": 2024
+            }
+          },
+          "required": ["idClasseEtude", "idMatiere", "idEnseignant", "annee"]
+        },
+        "Note": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "idEleve": {
+              "type": "integer",
+              "example": 1
+            },
+            "idMatiere": {
+              "type": "integer",
+              "example": 2
+            },
+            "seq1": {
+              "type": "number",
+              "example": 15.5
+            },
+            "seq2": {
+              "type": "number",
+              "example": 16.0
+            },
+            "seq3": {
+              "type": "number",
+              "example": 14.0
+            },
+            "seq4": {
+              "type": "number",
+              "example": 17.5
+            },
+            "seq5": {
+              "type": "number",
+              "example": 18.0
+            },
+            "seq6": {
+              "type": "number",
+              "example": 19.0
+            }
+          },
+          "required": ["idEleve", "idMatiere", "seq1", "seq2", "seq3", "seq4", "seq5", "seq6"]
+        }
+      },
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "security": [
+  {
+    "bearerAuth": []
+  }
+]
+  }
+  
