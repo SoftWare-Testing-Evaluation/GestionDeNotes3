@@ -1,3 +1,4 @@
+//webpack.renderer.config.js
 const rules = require("./webpack.rules");
 
 rules.push({
@@ -21,4 +22,11 @@ module.exports = {
   module: {
     rules,
   },
+  devServer: {  
+    headers: {  
+      "Content-Security-Policy": "default-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.lordicon.com; connect-src 'self' http://localhost:8080; style-src 'self' 'unsafe-inline';",  
+    },  
+    historyApiFallback: true,
+    hot: true, // Active le Hot Module Replacement    
+  },  
 };

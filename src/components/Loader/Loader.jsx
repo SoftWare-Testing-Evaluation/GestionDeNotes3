@@ -1,6 +1,6 @@
 // STYLE
 import './loader.css'
-
+import React, { useState } from 'react'
 const Loader = ({size = '54px', bg='#fff'}) => {
     return (
         <div className="loader" style={{width:size, height:size }}>
