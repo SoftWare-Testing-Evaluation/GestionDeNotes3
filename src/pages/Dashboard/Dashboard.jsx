@@ -7,12 +7,15 @@ import { BarChart, pieArcLabelClasses, PieChart } from '@mui/x-charts';
 import '../../styles/Dashboard/dashboard.css'
 import { folder, folderOrange, folderRed, home, teacher } from '../../assets/lordicons/index.js';
 import { Player } from '@lordicon/react';
+import { useDispatch, useSelector } from 'react-redux';
 import { classes, onPlayPress } from '../../utils/utilities.jsx';
 import { useNavigate } from 'react-router-dom';
 
+
 const Dashboard = () => {
+    const dispatch = useDispatch();
+    const { user, token } = useSelector((state) => state.auth); // Récupérer les informations de l'utilisateur et le token
     const navigate = useNavigate()
-    const user = 'Essi Junior'
     const tRefs = useRef(10);
     const [isLogingOut, setIsLogingOut] = useState(false);
     const cards = [
@@ -66,6 +69,14 @@ const Dashboard = () => {
             ref: useRef(5)
         }
     ]
+    const handleLogout = () => {
+        setIsLogingOut(true);
+        // Simulez une opération de déconnexion
+        setTimeout(() => {
+            localStorage.removeItem('token'); // Supprimez le token d'authentification
+            navigate('/'); // Redirigez vers la page de connexion
+        }, 1000);
+    };
 
     return (
 
@@ -76,13 +87,13 @@ const Dashboard = () => {
                         {
                             user === null ?
                                 <Skeleton variant="rectangular" width='100%' height={25} /> :
-                                <Typography text={`Hi ${user}, welcome to your dashboard`} className={'text-xl font-medium'} />
+                                <Typography text={`Hi ${user.nom} ${user.prenom}, welcome to your dashboard`} className={'text-xl font-medium'} />
                         }
                         <Typography text={'Dashboard'} className='title' isGradient />
                     </div>
 
                     <Tooltip title='Logout' placement='top'>
-                        <div className='logout ease-in-out duration-300 hover:scale-105' onClick={(e) =>  navigate('/signin')}>
+                        <div className='logout ease-in-out duration-300 hover:scale-105' onClick={handleLogout}>
                             {
                                 isLogingOut ?
                                     <Loader size='25px' /> :

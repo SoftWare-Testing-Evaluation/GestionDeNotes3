@@ -7,7 +7,7 @@
     },
     "servers": [
       {
-        "url": "https://noteapp-backend-qya0.onrender.com"
+        "url": "http://localhost:8080"
       }
     ],
     "paths": {
@@ -1200,9 +1200,13 @@
             "login": {
               "type": "string",
               "example": "jdupont"
+            },
+            "telephone": {
+              "type": "string",
+              "example": "676485746"
             }
           },
-          "required": ["nom", "prenom", "email", "password", "login"]
+          "required": ["nom", "prenom", "email", "password", "login","telephone"]
         },
         "Eleve": {
           "type": "object",

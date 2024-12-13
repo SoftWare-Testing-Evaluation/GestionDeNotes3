@@ -29,6 +29,10 @@ const PrefetEtude = sequelize.define('PrefetEtude', {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true // Rendre le login unique
+  },
+  telephone:{
+    type:DataTypes.STRING,
+    allowNull:false
   }
 }, {
   hooks: {

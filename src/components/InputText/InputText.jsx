@@ -22,7 +22,7 @@ const InputText = ({label, helper, icon, type, handler, name, isTextArea, isCate
           <textarea name={name} onChange={handler} className="input-field text-area" placeholder={helper} />
         ) : (
           <>
-            {type === 'number' ? (
+            {type === 'tel' ? (
               <PhoneInput
               defaultValue={defaultValue}
               placeholder={helper}

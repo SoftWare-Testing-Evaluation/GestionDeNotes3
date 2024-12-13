@@ -3,7 +3,7 @@ const PrefetEtude = require('../models/PrefetEtude');
 const { Op } = require('sequelize');
 exports.createPrefetEtude = async (req, res) => {
   try {
-    const { nom, prenom, email, password, login } = req.body;
+    const { nom, prenom, email, password, login,telephone } = req.body;
 
     // Vérifier si l'email ou le login existe déjà
     const existingPrefet = await PrefetEtude.findOne({
@@ -19,7 +19,7 @@ exports.createPrefetEtude = async (req, res) => {
       return res.status(400).json({ message: 'L\'email ou le login existe déjà.' });
     }
 
-    const prefetEtude = await PrefetEtude.create({ nom, prenom, email, password, login });
+    const prefetEtude = await PrefetEtude.create({ nom, prenom, email, password, login,telephone });
     res.status(201).json(prefetEtude);
   } catch (error) {
     res.status(400).json({ message: error.message });

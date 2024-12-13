@@ -18,6 +18,7 @@ router.post('/', async (req, res) => {
             }
         });
 
+        // Vérifier si le préfet existe
         if (!prefet) {
             return res.status(404).json({ message: 'Préfet d\'étude non trouvé' });
         }
@@ -30,9 +31,13 @@ router.post('/', async (req, res) => {
         
         // Générer un token
         const token = jwt.sign({ id: prefet.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-        res.json({ token });
+        
+        // Exclure le mot de passe des données de l'utilisateur
+        const { password: _, ...userWithoutPassword } = prefet.dataValues;
+       
+        res.json({ token, user: userWithoutPassword }); // Renvoie le token et les données de l'utilisateur
     } catch (error) {
+        console.error(error); // Log l'erreur pour le débogage
         res.status(500).json({ message: 'Erreur serveur' });
     }
 });

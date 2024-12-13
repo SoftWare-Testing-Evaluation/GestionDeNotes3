@@ -30,14 +30,6 @@ const handleError = (error) => {
  * @param {string} password - Le mot de passe du préfet.
  * @returns {Promise<Object>} - Les données de réponse contenant le token.
  */
-const authenticatePrefet = async (login, email, password) => {
-    try {
-        const response = await apiClient.post('/auth', { login, email, password });
-        return response.data; // Retourne le token
-    } catch (error) {
-        throw new Error(handleError(error));
-    }
-};
 
 // --- Classes d'Étude ---
 
@@ -65,9 +57,18 @@ apiClient.interceptors.request.use((config) => {
     return config;
 });
 
+const createPrefetEtude = async (prefetData) => {
+    try {
+        const response = await apiClient.post('/prefetEtudes', prefetData);
+        return response.data; // Retourne les données du préfet créé
+    } catch (error) {
+        throw new Error(handleError(error)); // Gère les erreurs
+    }
+};
+
 // Exporter les fonctions API
 export {
-    authenticatePrefet,
     fetchClassesEtude,
     apiClient, // Exporter apiClient pour une utilisation dans d'autres fichiers
+    createPrefetEtude,
 };
