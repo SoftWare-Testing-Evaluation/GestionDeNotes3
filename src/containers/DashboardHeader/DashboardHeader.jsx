@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Loader from '../../components/Loader/Loader.jsx'
 import Typography from '../../components/Typography/Typography.jsx'
-import { Tooltip } from '@mui/joy'
+import { Skeleton, Tooltip } from '@mui/joy';
 import { Player } from '@lordicon/react'
 import { Logout } from "@mui/icons-material";
 import { onPlayPress } from '../../utils/utilities.jsx'
@@ -28,7 +28,7 @@ const DashboardHeader = ({ admin, handleLogout, isLogingOut, isRefreshing, icon,
                 </div>
 
                 <Tooltip title='Logout' placement='top'>
-                    <div className='logout ease-in-out duration-300 hover:scale-105' onClick={(e) => navigate('/signin')}>
+                    <div className='logout ease-in-out duration-300 hover:scale-105' onClick={handleLogout}>
                         {
                             isLogingOut ?
                                 <Loader size='25px' /> :

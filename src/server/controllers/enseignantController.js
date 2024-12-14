@@ -56,9 +56,14 @@ exports.deleteEnseignant = async (req, res) => {
     await enseignant.destroy();
     res.status(204).json();
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Erreur lors de la suppression de l\'enseignant:', error); // Log détaillé de l'erreur
+    res.status(500).json({ 
+      message: 'Erreur lors de la suppression de l\'enseignant', 
+      error: error.message // Détails de l'erreur
+    });
   }
 };
+
 
 exports.getEnseignantsParClasse = async (req, res) => {
   try {

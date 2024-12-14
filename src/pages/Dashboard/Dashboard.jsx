@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect,useRef, useState } from 'react'
 import Typography from '../../components/Typography/Typography.jsx';
 import { Logout } from '@mui/icons-material';
 import Loader from '../../components/Loader/Loader.jsx';
@@ -10,14 +10,20 @@ import { Player } from '@lordicon/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { classes, onPlayPress } from '../../utils/utilities.jsx';
 import { useNavigate } from 'react-router-dom';
-
+import { loadEnseignants } from '../../slices/enseignantSlice'; // Assurez-vous d'importer le thunk
 
 const Dashboard = () => {
     const dispatch = useDispatch();
     const { user, token } = useSelector((state) => state.auth); // Récupérer les informations de l'utilisateur et le token
+    const enseignants = useSelector((state) => state.enseignants.enseignants); // Récupérer la liste des enseignants
     const navigate = useNavigate()
     const tRefs = useRef(10);
     const [isLogingOut, setIsLogingOut] = useState(false);
+      // Charger les enseignants lors du montage du composant
+      useEffect(() => {
+        dispatch(loadEnseignants());
+    }, [dispatch]);
+
     const cards = [
         {
             id: 0,
@@ -113,7 +119,7 @@ const Dashboard = () => {
                         </div>
                         <div className="content">
                             <Typography text={'Enseignants'} className='title !text-white' />
-                            <Typography text={'32' + '+'} className='number !text-white' />
+                            <Typography text={`${enseignants.length} +`} className='number !text-white' /> {/* Affiche le nombre d'enseignants */}
                         </div>
                     </aside>
 

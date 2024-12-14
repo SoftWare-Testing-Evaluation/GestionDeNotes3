@@ -14,119 +14,76 @@ import TeacherForm from '../../components/Forms/TeacherForm.jsx'
 import {  teacher } from "../../assets/lordicons/index.js";
 import  ModalContainer from "../../components/ModalContainer.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
+import {useDispatch,useSelector}from 'react-redux';
+import { loadEnseignants, deleteEnseignant, updateEnseignant, createEnseignant} from '../../slices/enseignantSlice'; // Assurez-vous d'importer le thunk
 
 const Teachers = () => {
     //State for translation
+    const dispatch = useDispatch();
     const navigate = useNavigate()
-
+    const { user, token } = useSelector((state) => state.auth); // Récupérer les informations de l'utilisateur et le token
+    const enseignants = useSelector((state) => state.enseignants.enseignants); // Récupérer la liste des enseignants
+    const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
+    useEffect(() => {
+        dispatch(loadEnseignants()); // Charger les enseignants au montage du composant
+    }, [dispatch]);
 
-    const admin = 'Essi Junior'
-    // const navigate = useNavigate()
-
-    const teachers = [
-        {
-            id: 1,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
-        },
-        {
-            id: 2,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
-        },
-        {
-            id: 3,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
-        },
-        {
-            id: 4,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'Chemistry', 'French'],
-        },
-        {
-            id: 5,
-            firstName: 'EKO',
-            lastName: 'Samuela',
-            email: 'eko@gmail.com',
-            phone_number: '0612345678',
-            sex: 'F',
-            age: '30',
-            subjects: ['French'],
-        },
-        {
-            id: 6,
-            firstName: 'Essi',
-            lastName: 'Junior',
-            email: 'essi@gmail.com',
-            phone_number: '0612345678',
-            sex: 'M',
-            age: '30',
-            subjects: ['Maths', 'Physics', 'French'],
-        },
-    ]
+   
+   
     const alert = useAlert()
 
     async function deleteAdmin(id) {
-        setIsRefreshing(true)
+        setIsRefreshing(true);
+        // Dispatch the delete action
+        await dispatch(deleteEnseignant(id));
+        setIsRefreshing(false);
     }
+    const handleEdit = (enseignant) => {
+        setSelectedTeacher(enseignant);
+    };
 
-    const handleLogout = (e) => {
-        e.preventDefault()
-        setIsLogingOut(true)
+    const handleLogout = () => {
+        setIsLogingOut(true);
+        // Simulez une opération de déconnexion
+        setTimeout(() => {
+            localStorage.removeItem('token'); // Supprimez le token d'authentification
+            navigate('/'); // Redirigez vers la page de connexion
+        }, 1000);
+    };
+    const handleTeacherSubmit = async (data) => {
+        if (selectedTeacher) {
+            await dispatch(updateEnseignant({ id: selectedTeacher.id, enseignantData: data }));
+        } else {
+            await dispatch(createEnseignant(data));
+        }
+        setSelectedTeacher(null);
+        dispatch(loadEnseignants());
+    };
 
-    }
-
-    function TeacherRow({ id, firstName, lastName, email, phone_number, sex, age, subjects }) {
+    function TeacherRow({ id, nom, prenom, email, specialite, grade}) {
         return (
             <tr>
-                <td>{firstName}</td>
-                <td>{lastName}</td>
+                <td>{nom}</td>
+                <td>{prenom}</td>
                 <td>{email}</td>
-                <td>{phone_number}</td>
-                <td>{sex}</td>
-                <td>{age}</td>
-                <td>
-                    {
-                        subjects.map((subject, index) => (
-                            <p key={index}>{subject}</p>
-                        ))
-                    }
-                </td>
+                <td>{specialite}</td>
+                <td>{grade}</td>
                 <td className="option-buttons option  py-2 ">
-                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
-
+                <EditOutlined 
+                        className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white cursor-pointer" 
+                        onClick={() => handleEdit({ id, nom, prenom, email, specialite, grade })} 
+                    /> 
                     <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer ml-2" onClick={() =>
                         alert.open({
-                            message: `Really delete, ${firstName} ${lastName} ?`,
+                            message: `Really delete, ${nom} ${prenom} ?`,
                             buttons: [
                                 {
                                     label: "Yes",
                                     onClick: () => {
-                                        deleteAdmin(id)
+                                        deleteAdmin(id);
                                         alert.close()
                                     },
                                     style: {
@@ -159,11 +116,11 @@ const Teachers = () => {
     return (
         <div className="teachers" >
             <div className="container">
-                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={teacher} title={'Enseignants'} count={teachers.length} />
+                <DashboardHeader admin={user ? user.nom : 'Administrateur'}  handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={teacher} title={'Enseignants'} count={enseignants.length} />
 
                 <div className="actions">
-                    <ModalContainer triggerText={'Nouveau'} formToDisplay={<TeacherForm />} />
-                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                    <ModalContainer triggerText={'Nouveau'} formToDisplay={<TeacherForm teacher={selectedTeacher} onSubmit={handleTeacherSubmit}/>} />
+                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => dispatch(loadEnseignants())}  isLoading={isRefreshing} size={'25px'} />
                 </div>
 
                 <div className="data">
@@ -183,21 +140,25 @@ const Teachers = () => {
                                 <thead>
                                     <tr>
                                         <th>Nom</th>
-                                        <th>Prenom</th>
+                                        <th>Prénom</th>
                                         <th>Email</th>
-                                        <th>Contact</th>
-                                        <th>Sexe</th>
-                                        <th>Age</th>
-                                        <th>Matieres</th>
+                                        <th>Spécialité</th>
+                                        <th>Grade</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <Pagination data={teachers} RenderComponent={TeacherRow} pageLimit={1} dataLimit={5} tablePagination={true} />
+                                    <Pagination data={enseignants} RenderComponent={TeacherRow} pageLimit={1} dataLimit={5} tablePagination={true} />
                                 </tbody>
                             </table>
                     }
                 </div>
+                {selectedTeacher && (
+                    <ModalContainer 
+                        triggerText={'Modifier'} 
+                        formToDisplay={<TeacherForm teacher={selectedTeacher} onSubmit={handleTeacherSubmit} />} 
+                    />
+                )}
 
             </div>
         </div>
