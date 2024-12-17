@@ -4,6 +4,7 @@ import authReducer from '../slices/authSlice'; // Assurez-vous d'importer votre 
 import prefetReducer from '../slices/prefetSlice'; // Nouveau slice pour le préfet
 import enseignantReducer from '../slices/enseignantSlice'; // Importez le slice des enseignants
 import classReducer from '../slices/classSlice';
+import eleveReducer from '../slices/eleveSlice'//Importez le slice des eleves
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,7 @@ const store = configureStore({
         prefet: prefetReducer,
         classes: classReducer,
         enseignants: enseignantReducer, // Ajoutez le reducer des enseignants
-
+        eleves:eleveReducer,
         // Ajoutez d'autres reducers ici
     },
 });

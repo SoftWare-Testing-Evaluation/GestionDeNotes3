@@ -53,6 +53,13 @@ exports.deleteEnseignant = async (req, res) => {
     if (!enseignant) {
       return res.status(404).json({ message: 'Enseignant non trouvé' });
     }
+     // Supprimer les dispensations associées
+     await Dispenser.destroy({
+      where: {
+        idEnseignant: enseignant.id
+      }
+    });
+
     await enseignant.destroy();
     res.status(204).json();
   } catch (error) {

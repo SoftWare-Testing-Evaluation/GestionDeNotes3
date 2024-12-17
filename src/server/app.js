@@ -1,4 +1,4 @@
-// app.js
+//src/server/app.js
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./docs/swagger.json'); // Chemin vers votre swagger.json
