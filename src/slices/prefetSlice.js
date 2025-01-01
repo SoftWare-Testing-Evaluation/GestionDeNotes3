@@ -15,6 +15,7 @@ export const registerPrefet = createAsyncThunk(
     }
 );
 
+
 const prefetSlice = createSlice({
     name: 'prefet',
     initialState: {

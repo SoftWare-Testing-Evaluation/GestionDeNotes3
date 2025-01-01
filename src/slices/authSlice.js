@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { apiClient } from '../services/api.service';
+import { apiClient,updateUserProfile } from '../services/api.service';
 
 export const authenticatePrefet = createAsyncThunk(
     'auth/authenticatePrefet',
@@ -16,6 +16,21 @@ export const authenticatePrefet = createAsyncThunk(
         }
     }
 );
+// Nouvelle action pour mettre à jour le profil
+export const updateProfile = createAsyncThunk(
+    'auth/updateUserProfile',
+    async ({ userId, userData },{ rejectWithValue }) => {
+        try {
+          
+            const response = await updateUserProfile(userId,userData);
+            
+            return response.data; // Retourne les données mises à jour
+        } catch (error) {
+            return rejectWithValue(error.response.data); // Gère l'erreur
+        }
+    }
+);
+
 
 const authSlice = createSlice({
     name: 'auth',
@@ -45,6 +60,18 @@ const authSlice = createSlice({
                 localStorage.setItem('token', action.payload.token); // Stocke le token dans le localStorage
             })
             .addCase(authenticatePrefet.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload; // Gère l'erreur
+            })
+            .addCase(updateProfile.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateProfile.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload; // Met à jour les données de l'utilisateur
+            })
+            .addCase(updateProfile.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload; // Gère l'erreur
             });

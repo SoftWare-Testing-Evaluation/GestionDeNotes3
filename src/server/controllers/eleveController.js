@@ -7,7 +7,7 @@ const { Op } = require('sequelize');
 
 exports.createEleve = async (req, res) => {
   try {
-    const { idClasseEtude, nom, prenom, dateNaissance, lieuNaissance, nomPere, nomMere, sexe, urlPhoto } = req.body;
+    const { idClasseEtude, nom, prenom, dateNaissance, lieuNaissance, nomPere, nomMere, sexe} = req.body;
 
     // Générer le matricule
     const anneeInscription = new Date().getFullYear() ;
@@ -15,7 +15,7 @@ exports.createEleve = async (req, res) => {
     const chiffres = Math.floor(1000 + Math.random() * 9000);
     const matricule = `${anneeInscription% 100}${lettre}${chiffres}`;
 
-    const eleve = await Eleve.create({ matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere, nomMere, sexe, urlPhoto });
+    const eleve = await Eleve.create({ matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere, nomMere, sexe});
     
     // Récupérer la dernière inscription pour calculer le numéro d'ordre
     const dernierNumeroOrdre = await Inscription.max('numeroDordre', {

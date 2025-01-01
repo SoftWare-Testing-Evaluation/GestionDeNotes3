@@ -43,7 +43,7 @@ const Eleve = sequelize.define('Eleve', {
   },
   urlPhoto: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   }
 });
 

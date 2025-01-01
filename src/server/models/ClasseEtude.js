@@ -20,6 +20,10 @@ const ClasseEtude = sequelize.define('ClasseEtude', {
   nom: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  scolarite: {
+    type: DataTypes.DOUBLE,
+    allowNull: true,
   }
 });
 

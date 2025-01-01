@@ -66,9 +66,21 @@ const createPrefetEtude = async (prefetData) => {
     }
 };
 
+// Nouvelle action pour mettre à jour le profil
+const updateUserProfile = async (userId,userData) => {
+        try {
+            console.log(userData);
+            const response = await apiClient.put(`/prefetEtudes/${userId}`, userData);
+            
+            return response.data; // Retourne les données mises à jour
+        } catch (error) {
+            throw new Error(handleError(error)); // Gère les erreurs
+        }
+    }
 // Exporter les fonctions API
 export {
     fetchClassesEtude,
     apiClient, // Exporter apiClient pour une utilisation dans d'autres fichiers
     createPrefetEtude,
+    updateUserProfile,
 };

@@ -33,11 +33,21 @@ export const deleteEleve = createAsyncThunk('eleves/deleteEleve', async (id) => 
 });
 
 // Thunk pour récupérer les élèves par classe
-export const fetchElevesParClasse = createAsyncThunk('eleves/fetchElevesParClasse', async ({ idClasseEtude, annee }) => {
-    const response = await apiClient.get(`/eleves/classe/${idClasseEtude}/${annee}`);
-    console.log(response.data);
-    return response.data;
+export const fetchElevesParClasse = createAsyncThunk('eleves/fetchElevesParClasse', async ({ idClasseEtude, annee }, { rejectWithValue }) => {
+    try {
+        const response = await apiClient.get(`/eleves/classe/${idClasseEtude}/${annee}`);
+        return response.data;
+    } catch (error) {
+        // Retourner une valeur de rejet personnalisée
+        return rejectWithValue(error.response ? error.response.data : { message: 'Erreur de connexion au serveur' });
+    }
 });
+// Thunk pour retirer un élève d'une classe
+export const removeEleveFromClass = createAsyncThunk('eleves/removeEleveFromClass', async ({ idEleve, idClasse }) => {
+    await apiClient.delete(`/eleves/retirer/${idEleve}/${idClasse}`);
+    return idEleve; // Retourner l'ID pour supprimer l'élève du state
+});
+
 
 // Création du slice
 const eleveSlice = createSlice({
@@ -73,14 +83,23 @@ const eleveSlice = createSlice({
             .addCase(deleteEleve.fulfilled, (state, action) => {
                 state.eleves = state.eleves.filter(eleve => eleve.id !== action.payload);
             })
+            
             .addCase(fetchElevesParClasse.fulfilled, (state, action) => {
-                if (Array.isArray(action.payload) && action.payload.length > 0) {
-                    state.eleves = action.payload;
-                    state.elevesParClasse[action.meta.arg.idClasseEtude] = action.payload.length;
-                } else {
-                    state.error = 'Aucun élève trouvé pour cette classe et cette année';
-                }
+                state.elevesParClasse[action.meta.arg.idClasseEtude] = action.payload.length;
+                state.eleves = action.payload; // Mettre à jour les élèves
                 state.status = 'succeeded';
+                state.error = null; // Réinitialiser l'erreur
+            })
+            .addCase(fetchElevesParClasse.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload.message; // Utiliser le message d'erreur personnalisé
+                // Réinitialiser les élèves si aucune donnée n'est trouvée
+                state.eleves = []; 
+                state.elevesParClasse[action.meta.arg.idClasseEtude] = 0; // Mettre à jour le compteur d'élèves
+            })
+            .addCase(removeEleveFromClass.fulfilled, (state, action) => {
+                // Filtrer l'élève retiré de l'état
+                state.eleves = state.eleves.filter(eleve => eleve.id !== action.payload);
             })
             
             .addMatcher(

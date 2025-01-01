@@ -18,171 +18,167 @@ import { classes, onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 import ClassForm from '../../components/Forms/ClassForm.jsx'
 import ModalContainer from "../../components/ModalContainer.jsx";
+import { loadClasses, updateClasse,deleteClasse } from '../../slices/classSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { fetchElevesParClasse } from "../../slices/eleveSlice"; // Importez cette action
 
 const Classes = () => {
-    //State for translation
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const alert = useAlert();
 
-    const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
+    const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear()));
+    const [classeId, setClasseId] = useState(null); // État pour l'ID de la classe
+    const [effectifs, setEffectifs] = useState({}); // État pour stocker les effectifs par classe
 
-    const admin = 'Essi Junior'
-    // const navigate = useNavigate()
+    const { user } = useSelector((state) => state.auth);
+    const classes = useSelector((state) => state.classes.classes);
+    const students = useSelector((state) => state.eleves.eleves);
 
-    const classesList = [
-        {
-            id: 1,
-            name: classes[0],
-            students: 50,
-            bill: 90000,
-        },
-        {
-            id: 2,
-            name: classes[1],
-            students: 50,
-            bill: 100000,
-        },
-        {
-            id: 3,
-            name: classes[2],
-            students: 50,
-            bill: 110000,
-        },
-        {
-            id: 4,
-            name: classes[3],
-            students: 50,
-            bill: 120000,
-        },
-        {
-            id: 5,
-            name: classes[4],
-            students: 50,
-            bill: 130000,
-        },
-        {
-            id: 6,
-            name: classes[5],
-            students: 50,
-            bill: 140000,
-        },
-        {
-            id: 7,
-            name: classes[6],
-            students: 50,
-            bill: 150000,
-        },
-    ]
-    const alert = useAlert()
+    // Charger les classes lors du montage du composant
+    useEffect(() => {
+        dispatch(loadClasses());
+    }, [dispatch]);
 
-    async function deleteAdmin(id) {
-        setIsRefreshing(true)
-    }
+    useEffect(() => {
+        if (year) {
+            classes.forEach(classe => {
+                dispatch(fetchElevesParClasse({ idClasseEtude: classe.id, annee: year.year() }))
+                    .then((result) => {
+                        // Vérifiez si result.payload est un tableau
+                        if (Array.isArray(result.payload)) {
+                            const effectif = result.payload.filter(student => student.Inscriptions.some(inscription => inscription.idClasseEtude === classe.id)).length;
+                            setEffectifs(prev => ({ ...prev, [classe.id]: effectif }));
+                        } else {
+                            // Si ce n'est pas un tableau, définissez l'effectif à zéro
+                            setEffectifs(prev => ({ ...prev, [classe.id]: 0 }));
+                        }
+                    });
+            });
+        }
+    }, [year, dispatch, classes]);
 
-    const handleLogout = (e) => {
-        e.preventDefault()
-        setIsLogingOut(true)
+    const handleDelete = async (id) => {
+        setIsRefreshing(true);
+        try {
+            await dispatch(deleteClasse(id));
+            alert.success("Classe supprimée avec succès !");
+        } catch (error) {
+            alert.error("Erreur lors de la suppression de la classe.");
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
-    }
+    const handleLogout = () => {
+        setIsLogingOut(true);
+        setTimeout(() => {
+            localStorage.removeItem('token');
+            navigate('/');
+        }, 1000);
+    };
 
-    function TeacherRow({ id, name, students, bill }) {
+    function TeacherRow({ id, nom, scolarite }) {
+        const effectif = effectifs[id] || 0; // Utiliser l'effectif stocké ou 0 si non défini
         return (
             <tr>
                 <td>
-                    <Link to={'/students'} className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() => localStorage.setItem('class', name)}>
-                        <ArrowRightAlt className="text-emerald-800  !w-[35px] !h-[35px] " />
-                        <span className="text-2xl">Acceder</span>
+                    <Link to={'/students'} className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400"   onClick={() => {
+                                        setClasseId(id);
+                                        localStorage.setItem('class', id);
+                                        localStorage.setItem('year',year);
+                                    }} >
+                        <ArrowRightAlt className="text-emerald-800 !w-[35px] !h-[35px]" />
+                        <span className="text-2xl">Accéder</span>
                     </Link>
                 </td>
                 <td>{id}</td>
-                <td className="text-xl">{name}</td>
-                <td>{students}</td>
-                <td>{bill}</td>
-                <td className="option-buttons option flex items-center justify-center py-2 gap-2 ">
-                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
-
-                    <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() =>
-                        alert.open({
-                            message: `Really delete, ${name} ?`,
-                            buttons: [
-                                {
-                                    label: "Yes",
-                                    onClick: () => {
-                                        deleteAdmin(id)
-                                        alert.close()
-                                    },
-                                    style: {
-                                        backgroundColor: "#990000",
-                                        marginRight: "1rem",
-                                        color: "white",
-                                    },
+                <td className="text-xl">{nom}</td>
+                <td>{effectif}</td>
+                <td>{scolarite} XAF</td>
+                <td className="option-buttons flex items-center justify-center py-2 gap-2">
+                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px]" />
+                    <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px]" onClick={() => alert.open({
+                        message: `Voulez-vous vraiment supprimer ${nom} ?`,
+                        buttons: [
+                            {
+                                label: "Oui",
+                                onClick: () => {
+                                    handleDelete(id);
+                                    alert.close();
                                 },
-                                {
-                                    label: "No",
-                                    onClick: () => {
-                                        alert.close()
-                                    },
-                                },
-                            ],
-                        })} />
+                                style: { backgroundColor: "#990000", color: "white" },
+                            },
+                            {
+                                label: "Non",
+                                onClick: () => alert.close(),
+                            },
+                        ],
+                    })} />
                 </td>
             </tr>
         );
     }
 
-    // useEffect(() => {
-    //   if (admin === null || admin.role !== 'ADMIN')
-    //     navigate('/signin')
-    //   else {
-    //     refresh(dispatch)
-    //   }
-    // }, [admin])
-
     return (
-        <div className="classes" >
+        <div className="classes">
             <div className="container">
-                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={teacher} title={'Classes'} count={classes.length} />
+                <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} title={'Classes'} count={classes.length} />
 
                 <div className="actions">
                     <ModalContainer triggerText={'Nouveau'} formToDisplay={<ClassForm />} />
-                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                    <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' isLoading={isRefreshing} />
+                </div>
+
+                <div>
+                    <p className="text-secondary font-bold">Année</p>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Sélectionnez une année"
+                            views={['year']}
+                            value={year}
+                            onChange={(newValue) => {
+                                if (newValue) {
+                                    setYear(newValue);
+                                    localStorage.setItem('year', newValue.year());
+                                }
+                            }}
+                            renderInput={(params) => <input {...params} className="year-selector" />}
+                        />
+                    </LocalizationProvider>
                 </div>
 
                 <div className="data">
-                    {
-                        isRefreshing ?
-                            <div>
-                                <Skeleton variant="rectangular" width='100%' height={55} />
-                                <div style={{ marginTop: '0.2rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }}>
-                                    {
-                                        Array.apply(null, { length: 25 }).map((value, index) =>
-                                            <Skeleton key={index} variant="rounded" width={'98%'} height={40} style={{ margin: '0.125rem auto' }} />
-                                        )
-                                    }
-                                </div>
-                            </div> :
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>ID</th>
-                                        <th>Nom</th>
-                                        <th>Effectif</th>
-                                        <th>Scolarité(XAF)</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <Pagination data={classesList} RenderComponent={TeacherRow} pageLimit={1} dataLimit={10} tablePagination={true} />
-                                </tbody>
-                            </table>
-                    }
+                    {isRefreshing ? (
+                        <Skeleton variant="rectangular" width='100%' height={55} />
+                    ) : (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Effectif</th>
+                                    <th>Scolarité</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <Pagination data={classes} RenderComponent={TeacherRow} pageLimit={1} dataLimit={10} tablePagination={true} />
+                            </tbody>
+                        </table>
+                    )}
                 </div>
-
             </div>
         </div>
     );
 };
 
 export default Classes;
+
+

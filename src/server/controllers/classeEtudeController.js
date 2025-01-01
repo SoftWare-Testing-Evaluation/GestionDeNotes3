@@ -27,9 +27,9 @@ const getClassById = async (req, res) => {
 
 // Créer une nouvelle classe d'étude
 const createClass = async (req, res) => {
-  const { idPrefet, nom } = req.body;
+  const { idPrefet, nom ,scolarite} = req.body;
   try {
-    const newClass = await ClasseEtude.create({ idPrefet, nom });
+    const newClass = await ClasseEtude.create({ idPrefet, nom,scolarite });
     res.status(201).json(newClass);
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la création de la classe d\'étude', error });
@@ -39,7 +39,7 @@ const createClass = async (req, res) => {
 // Mettre à jour une classe d'étude par ID
 const updateClass = async (req, res) => {
   const { id } = req.params;
-  const { idPrefet, nom } = req.body;
+  const { idPrefet, nom ,scolarite} = req.body;
   try {
     const classe = await ClasseEtude.findByPk(id);
     if (!classe) {
@@ -47,6 +47,7 @@ const updateClass = async (req, res) => {
     }
     classe.idPrefet = idPrefet;
     classe.nom = nom;
+    classe.scolarite=scolarite;
     await classe.save();
     res.status(200).json(classe);
   } catch (error) {

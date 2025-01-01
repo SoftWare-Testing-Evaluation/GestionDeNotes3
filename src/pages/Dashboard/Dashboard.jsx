@@ -13,6 +13,9 @@ import { useNavigate } from 'react-router-dom';
 import { loadEnseignants } from '../../slices/enseignantSlice';
 import { loadClasses } from '../../slices/classSlice';
 import { fetchElevesParClasse } from '../../slices/eleveSlice';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 const Dashboard = () => {
     const dispatch = useDispatch();
@@ -23,7 +26,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const tRefs = useRef(10);
     const [isLogingOut, setIsLogingOut] = useState(false);
-    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedYear, setSelectedYear] = useState(dayjs(new Date().getFullYear(), 'YYYY')); // Utiliser dayjs ici
 
     // Charger les enseignants et les classes lors du montage du composant
     useEffect(() => {
@@ -33,9 +36,14 @@ const Dashboard = () => {
 
     // Charger les élèves par classe lors de la sélection d'une année
     useEffect(() => {
+        const newElevesParClasse = {};
         classesData.forEach(classe => {
-            dispatch(fetchElevesParClasse({ idClasseEtude: classe.id, annee: selectedYear }));
+            dispatch(fetchElevesParClasse({ idClasseEtude: classe.id, annee: selectedYear.year() })) // Utiliser selectedYear.year()
+                .then((eleves) => {
+                    newElevesParClasse[classe.id] = eleves.length;
+                });
         });
+        dispatch({ type: 'UPDATE_ELEVES_PAR_CLASSE', payload: newElevesParClasse });
     }, [selectedYear, classesData, dispatch]);
 
     const handleLogout = () => {
@@ -83,16 +91,20 @@ const Dashboard = () => {
 
                     <Typography text={'Classes'} className='title text-3xl font-bold text-primary ' />
 
-                    {/* Champ pour sélectionner l'année */}
-                    <select
-                        value={selectedYear}
-                        onChange={(e) => setSelectedYear(e.target.value)}
-                        className="year-selector"
-                    >
-                        {[2023, 2024, 2025].map(year => (
-                            <option key={year} value={year}>{year}</option>
-                        ))}
-                    </select>
+                    {/* Champ pour sélectionner l'année avec un calendrier */}
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Sélectionnez une année"
+                            views={['year']}
+                            value={selectedYear} // Utiliser dayjs pour l'affichage
+                            onChange={(newValue) => {
+                                if (newValue) {
+                                    setSelectedYear(newValue); // Mettre à jour avec l'objet dayjs
+                                }
+                            }}
+                            renderInput={(params) => <input {...params} className="year-selector" />}
+                        />
+                    </LocalizationProvider>
 
                     <section className="numbers">
                         {
@@ -101,7 +113,8 @@ const Dashboard = () => {
 
                                 return (
                                     <aside className="card min-w-[300px]" key={classe.id} onClick={() => {
-                                        localStorage.setItem('class', classe.nom);
+                                        localStorage.setItem('class', classe.id);
+                                        localStorage.setItem('year', selectedYear.year());
                                         navigate('/students');
                                     }}>
                                         <div className="icon cursor-pointer">
@@ -132,7 +145,7 @@ const Dashboard = () => {
                                         {
                                             data: classesData.map(classe => ({
                                                 nom: classe.nom,
-                                                valeur: eleves.filter(eleve => eleve.idClasseEtude === classe.id && eleve.anneeInscription === selectedYear).length,
+                                                valeur: eleves.filter(eleve => eleve.idClasseEtude === classe.id && eleve.anneeInscription === selectedYear.year()).length,
                                             })),
                                             arcLabel: (item) => `(${item.valeur})`,
                                         }
@@ -145,12 +158,7 @@ const Dashboard = () => {
                                     series={[
                                         { data: [35, 44, 24, 23, 23] },
                                         { data: [51, 6, 49, 23, 23] },
-                                        { data: [15, 25, 10, 23, 23] },
-                                        { data: [30, 50, 10, 23, 23] },
-                                        { data: [15, 25, 10, 23, 23] },
                                     ]}
-                                    xAxis={[{ data: ['s1', 's2', 's3'], scaleType: 'band' }]}
-                                    margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
                                 />
                             </aside>
                         </div>
