@@ -39,13 +39,12 @@ const createClass = async (req, res) => {
 // Mettre à jour une classe d'étude par ID
 const updateClass = async (req, res) => {
   const { id } = req.params;
-  const { idPrefet, nom ,scolarite} = req.body;
+  const {nom ,scolarite} = req.body;
   try {
     const classe = await ClasseEtude.findByPk(id);
     if (!classe) {
       return res.status(404).json({ message: 'Classe d\'étude non trouvée' });
     }
-    classe.idPrefet = idPrefet;
     classe.nom = nom;
     classe.scolarite=scolarite;
     await classe.save();

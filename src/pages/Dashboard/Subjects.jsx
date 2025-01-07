@@ -3,8 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../styles/Dashboard/subjects.css";
 
 import { useAlert } from 'react-alert-with-buttons'
-import { DeleteOutline, EditOutlined, Logout, Person2Outlined, RefreshOutlined } from "@mui/icons-material";
-
+//import { DeleteOutline, EditOutlined, Logout, Person2Outlined, RefreshOutlined } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined, KeyboardArrowDown, RefreshOutlined } from "@mui/icons-material";
 import { Skeleton, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import Typography from "../../components/Typography/Typography.jsx";
@@ -15,101 +15,98 @@ import Loader from "../../components/Loader/Loader.jsx";
 import { Player } from "@lordicon/react";
 import { folderOrange, reportCard, teacher } from "../../assets/lordicons/index.js";
 import { onPlayPress } from "../../utils/utilities.jsx";
+import { Option, Select } from '@mui/joy';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
-
+import { useDispatch, useSelector } from "react-redux";
 import ModalContainer from "../../components/ModalContainer.jsx";
 import SubjectForm from "../../components/Forms/SubjectForm.jsx";
+import {loadMatieresByClasse,deleteMatiere}from '../../slices/matiereSlice.js'
+import { loadEnseignants } from '../../slices/enseignantSlice';
+import { loadClasses } from '../../slices/classSlice';
 const Subjects = () => {
     //State for translation
     const navigate = useNavigate()
-
+    const dispatch = useDispatch();
+    const alert = useAlert();
     const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
+    const[isModalOpen,setIsModalOpen]=useState(false);
 
-    const admin = 'Essi Junior'
-    // const navigate = useNavigate()
+   
+    const [selectedClassId, setSelectedClassId] = useState(localStorage.getItem('class'));
+    const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear(), 'YYYY')); // Utiliser dayjs ici
+    const { user } = useSelector((state) => state.auth);
+    const subjects = useSelector((state) => state.matieres.matieres);
+    const classes = useSelector((state) => state.classes.classes);
+    const enseignants = useSelector((state) => state.enseignants.enseignants);
 
-    const subjects = [
-        {
-            id: 1,
-            coef: 6,
-            name: 'Maths',
-            teachers: ['Essi Junior', 'EKO Samuela'],
-        },
-        {
-            id: 2,
-            coef: 2,
-            name: 'Maths',
-            teachers: ['Essi Junior'],
-        },
-        {
-            id: 3,
-            coef: 6,
-            name: 'French',
-            teachers: ['Kobe', 'Essi Junior'],
-        },
-        {
-            id: 4,
-            coef: 6,
-            name: 'English',
-            teachers: ['Kouabitchou Raphael', 'EKO Samuela'],
-        },
-        {
-            id: 5,
-            coef: 6,
-            name: 'Maths',
-            teachers: ['Essi Junior', 'EKO Samuela'],
-        },
-        {
-            id: 6,
-            coef: 6,
-            name: 'Maths',
-            teachers: ['Essi Junior', 'EKO Samuela'],
-        },
-        {
-            id: 7,
-            coef: 6,
-            name: 'Maths',
-            teachers: ['Essi Junior', 'EKO Samuela'],
-        },
-    ]
-    const alert = useAlert()
+     // Charger les enseignants et les classes lors du montage du composant
+        useEffect(() => {
+            dispatch(loadEnseignants());
+            dispatch(loadClasses());
+        }, [dispatch]);
 
-    async function deleteAdmin(id) {
-        setIsRefreshing(true)
-    }
+    useEffect(() => {
+        if (selectedClassId && year) {
+            dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+        }
+    }, [dispatch, selectedClassId, year]);
 
-    const handleLogout = (e) => {
-        e.preventDefault()
-        setIsLogingOut(true)
+   
 
-    }
+    
 
-    function TeacherRow({ id, coef, name, teachers }) {
+    const handleDelete = async (id) => {
+        setIsRefreshing(true);
+        try {
+            await dispatch(deleteMatiere(id));
+            alert.success("Matière supprimée avec succès !");
+        } catch (error) {
+            alert.error("Erreur lors de la suppression de la matière.");
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
+    const handleLogout = () => {
+        setIsLogingOut(true);
+        setTimeout(() => {
+            localStorage.removeItem('token');
+            navigate('/');
+        }, 1000);
+    };
+    const handleChange = (event, newValue) => {
+        setSelectedClassId(newValue);
+    };
+
+    function TeacherRow({ id, designation,groupe, Dispensers }) {
+         // Récupérer les noms des enseignants associés à cette matière
+         const teachers = Dispensers.map(d => {
+            const enseignant = enseignants.find(e => e.id === d.idEnseignant);
+            return enseignant ? enseignant.nom : 'Inconnu';
+        });
         return (
             <tr>
                 <td>{id}</td>
-                <td>{coef}</td>
-                <td>{name}</td>
-                <td>
-                    {
-                        teachers.map((subject, index) => (
-                            <p key={index}>{subject}</p>
-                        ))
-                    }
-                </td>
+                <td>{groupe}</td>
+                <td>{Dispensers.length > 0 ? Dispensers[0].coefficient : 'N/A'}</td>
+                <td>{designation}</td>
+                <td>{teachers.join(', ')}</td> 
                 <td className="option-buttons option flex items-center justify-center py-2 gap-2 ">
                     <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
 
                     <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() =>
                         alert.open({
-                            message: `Really delete, ${name} ?`,
+                            message: `Really delete, ${designation} ?`,
                             buttons: [
                                 {
                                     label: "Yes",
                                     onClick: () => {
-                                        deleteAdmin(id)
+                                        handleDelete(id),
                                         alert.close()
                                     },
                                     style: {
@@ -142,12 +139,46 @@ const Subjects = () => {
     return (
         <div className="subjects" >
             <div className="container">
-                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Matières'} count={subjects.length} />
+                <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'}  handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Matières'} count={subjects.length} />
+                <div className="flex !justify-between items-center w-[95%]">
+                <div className="actions h-full">
+                    <ModalContainer triggerText={'Nouveau'} formToDisplay={<SubjectForm onClose={()=> setIsModalOpen(false)} />} />
 
-                <div className="actions">
-                    <ModalContainer triggerText={'Nouveau'} formToDisplay={<SubjectForm />} />
                     <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                   
+                    
                 </div>
+                <div style={{ marginRight:'5px'}} >
+                        <p className="text-secondary font-bold">Classe</p>
+                        <Select
+                            placeholder={'Choisir la classe'}
+                            indicator={<KeyboardArrowDown />}
+                            onChange={handleChange}
+                        >
+                            {classes.map((elt, i) => (
+                                <Option value={elt.id} key={i}>{elt.nom}</Option>
+                            ))}
+                        </Select>
+                    </div>
+                    <div>
+                        <p className="text-secondary font-bold">Année</p>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                label="Sélectionnez une année"
+                                views={['year']}
+                                value={year} // Utiliser dayjs pour l'affichage
+                                onChange={(newValue) => {
+                                    if (newValue) {
+                                        setYear(newValue); // Mettre à jour avec l'objet dayjs
+                                        localStorage.setItem('year', newValue.year()); // Enregistrer l'année dans localStorage
+                                    }
+                                }}
+                                renderInput={(params) => <input {...params} className="year-selector"/>}
+                            />
+                        </LocalizationProvider>
+                    </div>
+                </div>
+               
                 <div className="data">
                     {
                         isRefreshing ?
@@ -161,20 +192,33 @@ const Subjects = () => {
                                     }
                                 </div>
                             </div> :
+                            <div className="overflow-x-auto">
                             <table>
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>Groupe</th>
                                         <th>Coefficient</th>
-                                        <th>Nom de la matière</th>
+                                        <th>Matière</th>
                                         <th>Enseignants</th>
-                                        <th></th>
+                                        <th>Options</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <Pagination data={subjects} RenderComponent={TeacherRow} pageLimit={1} dataLimit={5} tablePagination={true} />
+                                    <Pagination data={subjects} 
+                                    RenderComponent={({ id, designation, groupe, Dispensers }) => (
+                                        <TeacherRow 
+                                                id={id} 
+                                                groupe={groupe}
+                                                designation={designation} 
+                                                Dispensers={Dispensers} // Assurez-vous que cela est correct
+                                        />
+        
+                                        )}  
+                                        pageLimit={1} dataLimit={5} tablePagination={true} />
                                 </tbody>
                             </table>
+                            </div>
                     }
                 </div>
 

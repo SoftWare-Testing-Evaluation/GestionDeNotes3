@@ -6,8 +6,8 @@ const Enseignant = require('../models/Enseignant');
 
 exports.createMatiere = async (req, res) => {
   try {
-    const { designation, coefficient} = req.body;
-    const matiere = await Matiere.create({designation, coefficient});
+    const { designation, groupe} = req.body;
+    const matiere = await Matiere.create({designation, groupe});
     res.status(201).json(matiere);
   } catch (error) {
     res.status(400).json({ message: error.message });

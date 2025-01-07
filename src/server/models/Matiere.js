@@ -12,8 +12,8 @@ const Matiere = sequelize.define('Matiere', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  coefficient: {
-    type: DataTypes.DOUBLE,
+  groupe: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 });

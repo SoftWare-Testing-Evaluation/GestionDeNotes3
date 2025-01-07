@@ -32,6 +32,7 @@ const Students = () => {
     const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear(), 'YYYY')); // Utiliser dayjs ici
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const classes = useSelector((state) => state.classes.classes);
     const students = useSelector((state) => state.eleves.eleves);
 
@@ -219,7 +220,7 @@ const Students = () => {
 
                 <div className="flex !justify-between items-center w-[95%]">
                     <div className="actions h-full">
-                        <ModalContainer triggerText={'Nouveau'} formToDisplay={<StudentForm onClose={() => setIsRefreshing(true)} />} />
+                        <ModalContainer triggerText={'Nouveau'} formToDisplay={<StudentForm onClose={() =>  setIsModalOpen(false)} />} />
                         <Button text={"Rafraichir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => setIsRefreshing(true)} isLoading={isRefreshing} size={'25px'} />
                     </div>
                    

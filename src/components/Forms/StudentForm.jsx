@@ -43,7 +43,7 @@ const StudentForm = ({ onClose }) => {
         console.log(formData);
         try {
             await dispatch(addEleve(formData)); // Appeler le thunk pour ajouter l'élève
-            navigate('/students');
+            onClose();
         } catch (error) {
             console.error("Erreur lors de l'ajout de l'élève:", error);
         }

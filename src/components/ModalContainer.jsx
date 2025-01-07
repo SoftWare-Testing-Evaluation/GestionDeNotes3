@@ -44,13 +44,13 @@ export default class ModalContainer extends Component {
         />
         {this.state.isShown ? (
           <Modal
-            modalRef={(n) => (this.modal = n)}
-            buttonRef={(n) => (this.closeButton = n)}
-            closeModal={this.closeModal}
-            onKeyDown={this.onKeyDown}
-            onClickOutside={this.onClickOutside}
-            form={this.props.formToDisplay}
-          />
+          modalRef={(n) => (this.modal = n)}
+          buttonRef={(n) => (this.closeButton = n)}
+          closeModal={this.closeModal}
+          onKeyDown={this.onKeyDown}
+          onClickOutside={this.onClickOutside}
+          form={React.cloneElement(this.props.formToDisplay, { onClose: this.closeModal })} // Passer onClose ici
+      />
         ) : null}
       </React.Fragment>
     );

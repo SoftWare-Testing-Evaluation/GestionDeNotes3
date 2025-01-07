@@ -31,6 +31,7 @@ export const addClasse = createAsyncThunk(
 export const updateClasse = createAsyncThunk(
     'classes/updateClasse',
     async ({ id, classeData }, { rejectWithValue }) => {
+        console.log(classeData);
         try {
             const response = await apiClient.put(`/classeEtude/${id}`, classeData);
             return response.data; // Retourne la classe mise à jour

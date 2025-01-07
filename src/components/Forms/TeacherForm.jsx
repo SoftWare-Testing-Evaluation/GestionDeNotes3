@@ -3,7 +3,7 @@ import InputText from '../InputText/InputText.jsx';
 import Button from '../Button/Button.jsx';
 import './forms.css';
 
-const TeacherForm = ({ teacher, onSubmit }) => {
+const TeacherForm = ({ teacher, onSubmit,onClose }) => {
     const [formData, setFormData] = useState({
         nom: '',
         prenom: '',
@@ -45,6 +45,7 @@ const TeacherForm = ({ teacher, onSubmit }) => {
         const dataToSubmit = teacher ? { ...teacher, ...formData } : formData;
         console.log('Données à soumettre :', dataToSubmit);
         onSubmit(dataToSubmit); // Assurez-vous que onSubmit est bien une fonction
+        onClose();
     };
 
     return (

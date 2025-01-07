@@ -1,0 +1,4 @@
+-- database: /home/paul/Documents/gestionNotesGuinee/NoteApp-Desktop/src/server/db.sqlite
+
+ALTER TABLE ClasseEtudes
+ADD scolarite DOUBLE NULL;

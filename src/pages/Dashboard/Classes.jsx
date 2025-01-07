@@ -24,6 +24,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { fetchElevesParClasse } from "../../slices/eleveSlice"; // Importez cette action
+import { reportCard } from "../../assets/lordicons/index.js";
 
 const Classes = () => {
     const navigate = useNavigate();
@@ -36,9 +37,11 @@ const Classes = () => {
     const [classeId, setClasseId] = useState(null); // État pour l'ID de la classe
     const [effectifs, setEffectifs] = useState({}); // État pour stocker les effectifs par classe
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { user } = useSelector((state) => state.auth);
     const classes = useSelector((state) => state.classes.classes);
     const students = useSelector((state) => state.eleves.eleves);
+
 
     // Charger les classes lors du montage du composant
     useEffect(() => {
@@ -85,41 +88,70 @@ const Classes = () => {
 
     function TeacherRow({ id, nom, scolarite }) {
         const effectif = effectifs[id] || 0; // Utiliser l'effectif stocké ou 0 si non défini
+        
+        const [isEditing, setIsEditing] = useState(false);
+        const [editedClass, setEditedClass] = useState({ nom, scolarite });
+
+        const handleUpdate = async (id,editedClass) => {
+            setIsRefreshing(true);
+            try {
+                await dispatch(updateClasse({ id, classeData: editedClass }));
+                alert.success("Classe mise à jour avec succès !");
+                setEditedClass({ nom: '', scolarite: '' }); // Réinitialiser le formulaire
+            } catch (error) {
+                alert.error("Erreur lors de la mise à jour de la classe.");
+            } finally {
+                setIsRefreshing(false);
+            }
+        };
+        const handleSave = async () => {
+            await handleUpdate(id, editedClass);
+            setIsEditing(false);
+        };
         return (
             <tr>
                 <td>
-                    <Link to={'/students'} className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400"   onClick={() => {
-                                        setClasseId(id);
-                                        localStorage.setItem('class', id);
-                                        localStorage.setItem('year',year);
-                                    }} >
+                    <Link to={'/students'} className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400">
                         <ArrowRightAlt className="text-emerald-800 !w-[35px] !h-[35px]" />
                         <span className="text-2xl">Accéder</span>
                     </Link>
                 </td>
                 <td>{id}</td>
-                <td className="text-xl">{nom}</td>
+                <td>
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            value={editedClass.nom}
+                            onChange={(e) => setEditedClass({ ...editedClass, nom: e.target.value })}
+                        />
+                    ) : (
+                        nom
+                    )}
+                </td>
                 <td>{effectif}</td>
-                <td>{scolarite} XAF</td>
+                <td>
+                    {isEditing ? (
+                        <input
+                            type="number"
+                            value={editedClass.scolarite}
+                            onChange={(e) => setEditedClass({ ...editedClass, scolarite: e.target.value })}
+                        />
+                    ) : (
+                        `${scolarite} XAF`
+                    )}
+                </td>
                 <td className="option-buttons flex items-center justify-center py-2 gap-2">
-                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px]" />
-                    <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px]" onClick={() => alert.open({
-                        message: `Voulez-vous vraiment supprimer ${nom} ?`,
-                        buttons: [
-                            {
-                                label: "Oui",
-                                onClick: () => {
-                                    handleDelete(id);
-                                    alert.close();
-                                },
-                                style: { backgroundColor: "#990000", color: "white" },
-                            },
-                            {
-                                label: "Non",
-                                onClick: () => alert.close(),
-                            },
-                        ],
-                    })} />
+                    {isEditing ? (
+                        <>
+                            <Button text="Sauvegarder" handler={handleSave} />
+                            <Button text="Annuler" handler={() => setIsEditing(false)} />
+                        </>
+                    ) : (
+                        <>
+                            <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px]" onClick={() => setIsEditing(true)} />
+                            <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px]" onClick={() => handleDelete(id)} />
+                        </>
+                    )}
                 </td>
             </tr>
         );
@@ -128,14 +160,25 @@ const Classes = () => {
     return (
         <div className="classes">
             <div className="container">
-                <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} title={'Classes'} count={classes.length} />
-
-                <div className="actions">
-                    <ModalContainer triggerText={'Nouveau'} formToDisplay={<ClassForm />} />
+                <DashboardHeader 
+                admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} 
+                handleLogout={handleLogout} 
+                isLogingOut={isLogingOut} 
+                isRefreshing={isRefreshing} 
+                icon={reportCard} 
+                title={'Classes'} 
+                count={classes.length} 
+                />
+               <div className="flex !justify-between items-center w-[95%]">
+               <div className="actions h-full">
+                    <ModalContainer 
+                        triggerText={'Nouveau'} 
+                        formToDisplay={<ClassForm onClose={() => setIsModalOpen(false)} />} 
+                    />
                     <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' isLoading={isRefreshing} />
+                    
                 </div>
-
-                <div>
+               <div style={{height:'3.5rem',width:'auto',marginRight:'5px'}}>
                     <p className="text-secondary font-bold">Année</p>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -153,10 +196,14 @@ const Classes = () => {
                     </LocalizationProvider>
                 </div>
 
+               </div>
+                 
+
                 <div className="data">
                     {isRefreshing ? (
                         <Skeleton variant="rectangular" width='100%' height={55} />
                     ) : (
+                        <div className="overflow-x-auto">
                         <table>
                             <thead>
                                 <tr>
@@ -172,9 +219,11 @@ const Classes = () => {
                                 <Pagination data={classes} RenderComponent={TeacherRow} pageLimit={1} dataLimit={10} tablePagination={true} />
                             </tbody>
                         </table>
+                        </div>
                     )}
                 </div>
             </div>
+            
         </div>
     );
 };

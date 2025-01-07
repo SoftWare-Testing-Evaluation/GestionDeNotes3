@@ -36,6 +36,10 @@ const Dispenser = sequelize.define('Dispenser', {
       key: 'id'
     }
   },
+  coefficient: {
+    type: DataTypes.DOUBLE,
+    allowNull: false
+  },
   annee: {
     type: DataTypes.INTEGER,
     allowNull: false

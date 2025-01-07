@@ -27,6 +27,7 @@ const Teachers = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(() => {
         dispatch(loadEnseignants()); // Charger les enseignants au montage du composant
     }, [dispatch]);
@@ -61,6 +62,7 @@ const Teachers = () => {
         }
         setSelectedTeacher(null);
         dispatch(loadEnseignants());
+        setIsModalOpen(false); // Fermer le modal après soumission
     };
 
     function TeacherRow({ id, nom, prenom, email, specialite, grade}) {
@@ -136,6 +138,7 @@ const Teachers = () => {
                                     }
                                 </div>
                             </div> :
+                            <div className="overflow-x-auto">
                             <table>
                                 <thead>
                                     <tr>
@@ -151,6 +154,7 @@ const Teachers = () => {
                                     <Pagination data={enseignants} RenderComponent={TeacherRow} pageLimit={1} dataLimit={5} tablePagination={true} />
                                 </tbody>
                             </table>
+                            </div>
                     }
                 </div>
                 {selectedTeacher && (
