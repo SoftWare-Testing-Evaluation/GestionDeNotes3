@@ -1,3 +1,4 @@
+//pages/Dashboard/Subjects.jsx
 import React, { useState, useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 import "../../styles/Dashboard/subjects.css";
@@ -23,9 +24,10 @@ import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.js
 import { useDispatch, useSelector } from "react-redux";
 import ModalContainer from "../../components/ModalContainer.jsx";
 import SubjectForm from "../../components/Forms/SubjectForm.jsx";
-import {loadMatieresByClasse,deleteMatiere}from '../../slices/matiereSlice.js'
+import {loadMatieresByClasse,deleteMatiere,updateMatiere}from '../../slices/matiereSlice.js'
 import { loadEnseignants } from '../../slices/enseignantSlice';
 import { loadClasses } from '../../slices/classSlice';
+
 const Subjects = () => {
     //State for translation
     const navigate = useNavigate()
@@ -35,7 +37,8 @@ const Subjects = () => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
     const[isModalOpen,setIsModalOpen]=useState(false);
-
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState(''); // 'success' ou 'error'
    
     const [selectedClassId, setSelectedClassId] = useState(localStorage.getItem('class'));
     const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear(), 'YYYY')); // Utiliser dayjs ici
@@ -49,6 +52,21 @@ const Subjects = () => {
             dispatch(loadEnseignants());
             dispatch(loadClasses());
         }, [dispatch]);
+        
+         const refresh = async () => {
+                setIsRefreshing(true); // Commencer le rafraîchissement
+                try {
+                    await dispatch(loadEnseignants());
+                    await dispatch(loadClasses()); // Charger les classes
+                    if (selectedClassId && year) {
+                        dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+                    }
+                } catch (error) {
+                    console.error("Erreur lors du rafraîchissement :", error);
+                } finally {
+                    setIsRefreshing(false); // Arrêter le rafraîchissement
+                }
+            };
 
     useEffect(() => {
         if (selectedClassId && year) {
@@ -64,9 +82,14 @@ const Subjects = () => {
         setIsRefreshing(true);
         try {
             await dispatch(deleteMatiere(id));
-            alert.success("Matière supprimée avec succès !");
+            setAlertMessage("Matière supprimée avec succès !");
+            setAlertType('success');
+            setIsModalOpen(true);
+
         } catch (error) {
-            alert.error("Erreur lors de la suppression de la matière.");
+            setAlertMessage("Erreur lors de la suppression de la matière.");
+            setAlertType('error');
+            setIsModalOpen(true);
         } finally {
             setIsRefreshing(false);
         }
@@ -83,50 +106,86 @@ const Subjects = () => {
         setSelectedClassId(newValue);
     };
 
-    function TeacherRow({ id, designation,groupe, Dispensers }) {
-         // Récupérer les noms des enseignants associés à cette matière
-         const teachers = Dispensers.map(d => {
+    function TeacherRow({ id, designation, groupe, Dispensers = [] }) {
+        const [isEditing, setIsEditing] = useState(false);
+        const [editedDesignation, setEditedDesignation] = useState(designation);
+        const [editedGroupe, setEditedGroupe] = useState(groupe);
+    
+        const handleEdit = () => {
+            setIsEditing(true);
+        };
+    
+        const handleSave = async () => {
+            const matiereData = {
+                designation: editedDesignation,
+                groupe: editedGroupe
+            };
+            try {
+                await dispatch(updateMatiere({ id, matiereData }));
+                setAlertMessage("Matière mise à jour avec succès !");
+                setAlertType('success');
+            } catch (error) {
+                setAlertMessage("Erreur lors de la mise à jour de la matière.");
+                setAlertType('danger');
+            } finally {
+                setIsEditing(false);
+            }
+        };
+    
+        // Vérifiez si Dispensers est défini et est un tableau
+        const teachers = Array.isArray(Dispensers) ? Dispensers.map(d => {
             const enseignant = enseignants.find(e => e.id === d.idEnseignant);
             return enseignant ? enseignant.nom : 'Inconnu';
-        });
+        }) : [];
+    
         return (
             <tr>
                 <td>{id}</td>
-                <td>{groupe}</td>
-                <td>{Dispensers.length > 0 ? Dispensers[0].coefficient : 'N/A'}</td>
-                <td>{designation}</td>
-                <td>{teachers.join(', ')}</td> 
+                <td>{isEditing ? <input value={editedGroupe} onChange={(e) => setEditedGroupe(e.target.value)} /> : groupe}</td>
+                <td>{Dispensers && Dispensers.length > 0 ? Dispensers[0].coefficient : 'N/A'}</td>
+                <td>{isEditing ? <input value={editedDesignation} onChange={(e) => setEditedDesignation(e.target.value)} /> : designation}</td>
+                <td>{teachers.join(', ')}</td>
                 <td className="option-buttons option flex items-center justify-center py-2 gap-2 ">
-                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
-
-                    <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() =>
-                        alert.open({
-                            message: `Really delete, ${designation} ?`,
-                            buttons: [
-                                {
-                                    label: "Yes",
-                                    onClick: () => {
-                                        handleDelete(id),
-                                        alert.close()
-                                    },
-                                    style: {
-                                        backgroundColor: "#990000",
-                                        marginRight: "1rem",
-                                        color: "white",
-                                    },
-                                },
-                                {
-                                    label: "No",
-                                    onClick: () => {
-                                        alert.close()
-                                    },
-                                },
-                            ],
-                        })}/>
+                    {isEditing ? (
+                        <>
+                            <Button text="Sauvegarder" handler={handleSave} />
+                            <Button text="Annuler" handler={() => setIsEditing(false)} />
+                        </>
+                    ) : (
+                        <>
+                            <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={handleEdit} />
+                            <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() =>
+                                alert.open({
+                                    message: `Really delete, ${designation} ?`,
+                                    buttons: [
+                                        {
+                                            label: "Yes",
+                                            onClick: () => {
+                                                handleDelete(id);
+                                                alert.close();
+                                            },
+                                            style: {
+                                                backgroundColor: "#990000",
+                                                marginRight: "1rem",
+                                                color: "white",
+                                            },
+                                        },
+                                        {
+                                            label: "No",
+                                            onClick: () => {
+                                                alert.close();
+                                            },
+                                        },
+                                    ],
+                                })} />
+                        </>
+                    )}
                 </td>
             </tr>
         );
     }
+    
+    
 
     // useEffect(() => {
     //   if (admin === null || admin.role !== 'ADMIN')
@@ -138,13 +197,28 @@ const Subjects = () => {
 
     return (
         <div className="subjects" >
+            {/* Modal pour afficher les alertes */}
+            {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-gray-800 bg-opacity-50 absolute inset-0"></div>
+                    <div className="bg-white rounded-lg p-6 z-10">
+                        <h2 className={`text-lg font-bold ${alertType === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                            {alertType === 'success' ? 'Succès' : 'Erreur'}
+                        </h2>
+                        <p className="mt-2">{alertMessage}</p>
+                        <button onClick={handleCloseModal} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="container">
                 <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'}  handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Matières'} count={subjects.length} />
                 <div className="flex !justify-between items-center w-[95%]">
                 <div className="actions h-full">
                     <ModalContainer triggerText={'Nouveau'} formToDisplay={<SubjectForm onClose={()=> setIsModalOpen(false)} />} />
 
-                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} size={'25px'} />
                    
                     
                 </div>

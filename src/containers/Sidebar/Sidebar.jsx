@@ -14,7 +14,7 @@ const Sidebar = () => {
     const ref5 = useRef(5)
     const params = useParams()
     const [path, setPath] = useState(window.location.pathname)
-    const [paths, setPaths] = useState(mainLinks([generateRef(1, useRef), generateRef(2, useRef), generateRef(3, useRef), generateRef(4, useRef)]))
+    const [paths, setPaths] = useState(mainLinks([generateRef(1, useRef), generateRef(2, useRef), generateRef(3, useRef), generateRef(4, useRef),generateRef(5, useRef)]))
     const location = useLocation();
     const { hash, pathname, search } = location;
 

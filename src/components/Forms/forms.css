@@ -21,3 +21,10 @@
     padding: 3rem 0 ;
      /* background-color: red; */
 }
+.form-title {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #bb4108; /* Couleur du texte */
+}

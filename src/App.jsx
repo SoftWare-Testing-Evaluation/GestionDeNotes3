@@ -20,6 +20,7 @@ import ReportCards from './pages/Dashboard/ReportCards.jsx'
 // UTILS
 import ScrollToTop from './utils/ScrollToTop.jsx'
 import Layout from './containers/Layout.jsx'
+import Dispensations from './pages/Dashboard/Dispensations.jsx'
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
                         <Route path="profile" element={<Profile />} />
                         <Route path="subjects" element={<Subjects />} />
                         <Route path="students" element={<Students />} />
+                        <Route path="dispensations" element={<Dispensations />} />
                         <Route path="hours" element={<Hours />} />
                         <Route path="notes" element={<Notes />} />
                         <Route path="report-cards" element={<ReportCards />} />

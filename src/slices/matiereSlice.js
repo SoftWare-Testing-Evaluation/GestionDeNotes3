@@ -61,6 +61,7 @@ export const addMatiere = createAsyncThunk(
 export const updateMatiere = createAsyncThunk(
     'matieres/updateMatiere',
     async ({ id, matiereData }, { rejectWithValue }) => {
+        console.log(matiereData);
         try {
             const response = await apiClient.put(`/matieres/${id}`, matiereData);
             return response.data; // Retourne la matière mise à jour
@@ -120,7 +121,13 @@ const matiereSlice = createSlice({
             .addCase(updateMatiere.fulfilled, (state, action) => {
                 const index = state.matieres.findIndex(matiere => matiere.id === action.payload.id);
                 if (index !== -1) {
-                    state.matieres[index] = action.payload; // Met à jour la matière
+                    // Conservez les dispensers existants
+                    const existingDispensers = state.matieres[index].Dispensers || [];
+                    state.matieres[index] = {
+                        ...state.matieres[index],
+                        ...action.payload,
+                        Dispensers: existingDispensers // Conservez les dispensers
+                    };
                 }
             })
             .addCase(deleteMatiere.fulfilled, (state, action) => {

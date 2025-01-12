@@ -14,89 +14,124 @@ import Button from "../../components/Button/Button.jsx";
 import Loader from "../../components/Loader/Loader.jsx";
 import { Player } from "@lordicon/react";
 import { folderOrange, reportCard, teacher } from "../../assets/lordicons/index.js";
-import { classes, onPlayPress } from "../../utils/utilities.jsx";
+import {  onPlayPress } from "../../utils/utilities.jsx";
 import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 import { Option, Select, selectClasses } from '@mui/joy';
+import { useDispatch, useSelector } from "react-redux";
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import ModalContainer from "../../components/ModalContainer.jsx";
+import { loadEnseignants } from '../../slices/enseignantSlice';
+import { loadClasses } from '../../slices/classSlice';
+import { loadMatieresByClasse } from '../../slices/matiereSlice.js';
+import {loadNotesByMatiereAndClasse, deleteNote,addNote,updateNote} from '../../slices/noteSlice.js'
+import { loadDispensations } from '../../slices/dispenserSlice';
+import { fetchElevesParClasse } from "../../slices/eleveSlice"; // Importez cette a
+import NoteForm from "../../components/Forms/NoteForm.jsx";
 
-const Students = () => {
+const Notes = () => {
     //State for translation
     const navigate = useNavigate()
+    const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [classe, setClasse] = useState(classes[0]);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState(''); // 'success' ou 'error'
+    
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const admin = 'Essi Junior'
+    const [selectedClassId, setSelectedClassId] = useState(localStorage.getItem('class'));
+    const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear(), 'YYYY'));
+    const [selectedMatiereId, setSelectedMatiereId] = useState(null);
+    const { user } = useSelector((state) => state.auth);
+    const classes = useSelector((state) => state.classes.classes);
+    const matieres = useSelector((state) => state.matieres.matieres);
+    const notes = useSelector((state) => state.notes.notes);
+    const students = useSelector((state) => state.eleves.eleves);
+
+    useEffect(() => {
+        if (selectedClassId && year) {
+            dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+            dispatch(fetchElevesParClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+        }
+    }, [selectedClassId, year, dispatch]);
+
+    useEffect(() => {
+        if (selectedMatiereId && selectedClassId && year) {
+            dispatch(loadNotesByMatiereAndClasse({ idMatiere: selectedMatiereId, idClasseEtude: selectedClassId, annee: year.year() }));
+        }
+    }, [selectedMatiereId, selectedClassId, year, dispatch]);
+
+    const refresh = async () => {
+                    setIsRefreshing(true); // Commencer le rafraîchissement
+                    try {
+                        if (selectedClassId && year) {
+                            dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+                            dispatch(fetchElevesParClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+                        }
+                        if (selectedMatiereId && selectedClassId && year) {
+                            dispatch(loadNotesByMatiereAndClasse({ idMatiere: selectedMatiereId, idClasseEtude: selectedClassId, annee: year.year() }));
+                        }
+                    } catch (error) {
+                        console.error("Erreur lors du rafraîchissement :", error);
+                    } finally {
+                        setIsRefreshing(false); // Arrêter le rafraîchissement
+                    }
+                };
+    const handleClassChange = (event, newValue) => {
+        setSelectedClassId(newValue);
+        console.log(selectedClassId);
+        localStorage.setItem('class', newValue);
+    };
+
+    const handleMatiereChange = (event, newValue) => {
+        setSelectedMatiereId( newValue);
+    };
+
+
     // const navigate = useNavigate()
 
-    const students = [
-        {
-            id: 1,
-            firstName: 'NDANG ESSI',
-            lastName: 'Pierre Junior',
-            seq1: '15',
-            seq2: '12,3',
-            seq3: '11,98',
-            seq4: '13',
-            seq5: '14,23',
-            seq6: '11,98',
-            classe: 'Sixième (6e)',
-        },
-        {
-            id: 2,
-            firstName: 'Maths',
-            lastName: 'Pierre Junior',
-            seq1: '15',
-            seq2: '12,3',
-            seq3: '11,98',
-            seq4: '13',
-            seq5: '14,23',
-            seq6: '11,98',
-            classe: 'Sixième (6e)',
-        },
-        {
-            id: 3,
-            firstName: 'French',
-            lastName: 'Pierre Junior',
-            seq1: '15',
-            seq2: '12,3',
-            seq3: '11,98',
-            seq4: '13',
-            seq5: '14,23',
-            seq6: '11,98',
-            classe: 'Sixième (6e)',
-        },
-        {
-            id: 4,
-            firstName: 'English',
-            lastName: 'Pierre Junior',
-            seq1: '15',
-            seq2: '12,3',
-            seq3: '11,98',
-            seq4: '13',
-            seq5: '14,23',
-            seq6: '11,98',
-            classe: 'Sixième (6e)',
-        },
-    ]
     const alert = useAlert()
 
-    async function deleteAdmin(id) {
-        setIsRefreshing(true)
-    }
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
-    const handleLogout = (e) => {
-        e.preventDefault()
-        setIsLogingOut(true)
-
-    }
-
+    const handleLogout = () => {
+        setIsLogingOut(true);
+        setTimeout(() => {
+            localStorage.removeItem('token');
+            navigate('/');
+        }, 1000);
+    };
+ const handleDelete = async (id) => {
+        setIsRefreshing(true);
+        try {
+            await dispatch(deleteNote(id));
+            setAlertMessage("note supprimée avec succès !");
+            setAlertType('success');
+        } catch (error) {
+            setAlertMessage("Erreur lors de la suppression de la note.");
+            setAlertType('error');
+        } finally {
+            setIsRefreshing(false);
+            setIsModalOpen(true);
+        }
+    };
     function TeacherRow({ id, firstName, lastName, seq1, seq2, seq3, seq4, seq5, seq6 }) {
+        const [isEditing, setIsEditing] = useState(false);
+
+        const handleEdit = () => {
+            setIsEditing(true);
+        };
 
         return (
             <tr>
                 <td>{id}</td>
+                <td>{matricule}</td>
                 <td>{firstName} {lastName}</td>
                 <td>{seq1}</td>
                 <td>{seq2}</td>
@@ -104,6 +139,19 @@ const Students = () => {
                 <td>{seq4}</td>
                 <td>{seq5}</td>
                 <td>{seq6}</td>
+                <td className="option-buttons flex items-center justify-center py-2 gap-2">
+                    {isEditing ? (
+                        <>
+                            <Button text="Sauvegarder" handler={handleSave} />
+                            <Button text="Annuler" handler={() => setIsEditing(false)} />
+                        </>
+                    ) : (
+                        <>
+                            <EditOutlined onClick={handleEdit} className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px]" />
+                            <DeleteOutline onClick={() => handleDelete(id)} className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px]" />
+                        </>
+                    )}
+                </td>
             </tr>
         );
     }
@@ -125,11 +173,29 @@ const Students = () => {
 
     return (
         <div className="students" >
+             {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-gray-800 bg-opacity-50 absolute inset-0"></div>
+                    <div className="bg-white rounded-lg p-6 z-10">
+                        <h2 className={`text-lg font-bold ${alertType === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                            {alertType === 'success' ? 'Succès' : 'Erreur'}
+                        </h2>
+                        <p className="mt-2">{alertMessage}</p>
+                        <button onClick={handleCloseModal} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="container">
-                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Elèves'} count={students.length} classe={classe} />
+                <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Elèves'} count={students.length} />
 
                 <div className="flex !justify-between items-center w-[95%]">
-                    
+                    <div className="actions h-full">
+                    <ModalContainer triggerText={'Nouvelle note'} formToDisplay={<NoteForm onClose={handleCloseModal} selectedClassId={selectedClassId} year={year} />} />
+
+                    <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} />
+                    </div>
                     <div className="ml-auto">
                         <p className="text-secondary font-bold">Classe</p>
                         <Select
@@ -149,19 +215,42 @@ const Students = () => {
                                 color: 'var(--secondary)',
                                 fontWeight: 700
                             }}
-                            onChange={handleChange}
+                            onChange={handleClassChange}
                         >
-
-                            {
-                                classes.map((elt, i) => {
-                                    return (
-                                        <Option value={elt} key={i} >{elt}</Option>
-                                    )
-                                })
-                            }
+                            {classes.map((elt) => (
+                                <Option value={elt.id} key={elt.id}>{elt.nom}</Option>
+                            ))}
                         </Select>
                     </div>
 
+                    <div>
+                        <p className="text-secondary font-bold">Matière</p>
+                        <Select
+                            placeholder={'Choisir la matière'}
+                            onChange={handleMatiereChange}
+                        >
+                            {matieres.map((matiere) => (
+                                <Option value={matiere.id} key={matiere.id}>{matiere.designation}</Option>
+                            ))}
+                        </Select>
+                    </div>
+
+                    <div>
+                        <p className="text-secondary font-bold">Année</p>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                views={['year']}
+                                value={year}
+                                onChange={(newValue) => {
+                                    if (newValue) {
+                                        setYear(newValue);
+                                        localStorage.setItem('year', newValue.year());
+                                    }
+                                }}
+                                renderInput={(params) => <input {...params} className="year-selector"/>}
+                            />
+                        </LocalizationProvider>
+                    </div>
                 </div>
 
                 <div className="data">
@@ -182,6 +271,7 @@ const Students = () => {
                                     <thead>
                                         <tr>
                                             <th rowSpan={2}>ID</th>
+                                            <th rowSpan={2}>Matricule</th>
                                             <th rowSpan={2}>Nom(s) et Prénom(s)</th>
                                             <th colSpan={2} className="border-b border-secondary">Trimestre 1</th>
                                             <th colSpan={2} className="border-b border-secondary">Trimestre 2</th>
@@ -197,8 +287,27 @@ const Students = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <Pagination data={students.filter(elt => elt.classe === classe)} RenderComponent={TeacherRow} pageLimit={1} dataLimit={5} tablePagination={true} />
                                     </tbody>
+                                    <Pagination
+                                        data={notes} // Remplacez ceci par vos données filtrées si nécessaire
+                                        RenderComponent={({ id, eleve, seq1, seq2, seq3, seq4, seq5, seq6 }) => (
+                                            <TeacherRow
+                                                id={id}
+                                                matricule={eleve.matricule}
+                                                firstName={eleve.prenom}
+                                                lastName={eleve.nom}
+                                                seq1={seq1}
+                                                seq2={seq2}
+                                                seq3={seq3}
+                                                seq4={seq4}
+                                                seq5={seq5}
+                                                seq6={seq6}
+                                            />
+                                        )}
+                                        pageLimit={1}
+                                        dataLimit={5}
+                                        tablePagination={true}
+                                    />
                                 </table>
 
                             </div>
@@ -210,4 +319,4 @@ const Students = () => {
     );
 };
 
-export default Students;
+export default Notes;

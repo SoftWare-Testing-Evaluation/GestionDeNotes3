@@ -32,7 +32,16 @@ const Teachers = () => {
         dispatch(loadEnseignants()); // Charger les enseignants au montage du composant
     }, [dispatch]);
 
-   
+   const refresh = async () => {
+           setIsRefreshing(true); // Commencer le rafraîchissement
+           try {
+               await dispatch(loadEnseignants());  // Charger les Enseignants
+           } catch (error) {
+               console.error("Erreur lors du rafraîchissement :", error);
+           } finally {
+               setIsRefreshing(false); // Arrêter le rafraîchissement
+           }
+       };
    
     const alert = useAlert()
 
@@ -65,47 +74,121 @@ const Teachers = () => {
         setIsModalOpen(false); // Fermer le modal après soumission
     };
 
-    function TeacherRow({ id, nom, prenom, email, specialite, grade}) {
+    function TeacherRow({ id, nom, prenom, email, specialite, grade }) {
+        const [isEditing, setIsEditing] = useState(false);
+        const [editedData, setEditedData] = useState({ nom, prenom, email, specialite, grade });
+    
+        const handleEditChange = (e, field) => {
+            setEditedData({ ...editedData, [field]: e.target.value });
+        };
+    
+        const handleSave = async () => {
+            await dispatch(updateEnseignant({ id, enseignantData: editedData }));
+            setIsEditing(false);
+        };
+    
         return (
             <tr>
-                <td>{nom}</td>
-                <td>{prenom}</td>
-                <td>{email}</td>
-                <td>{specialite}</td>
-                <td>{grade}</td>
-                <td className="option-buttons option  py-2 ">
-                <EditOutlined 
-                        className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white cursor-pointer" 
-                        onClick={() => handleEdit({ id, nom, prenom, email, specialite, grade })} 
-                    /> 
-                    <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer ml-2" onClick={() =>
-                        alert.open({
-                            message: `Really delete, ${nom} ${prenom} ?`,
-                            buttons: [
-                                {
-                                    label: "Yes",
-                                    onClick: () => {
-                                        deleteAdmin(id);
-                                        alert.close()
-                                    },
-                                    style: {
-                                        backgroundColor: "#990000",
-                                        marginRight: "1rem",
-                                        color: "white",
-                                    },
-                                },
-                                {
-                                    label: "No",
-                                    onClick: () => {
-                                        alert.close()
-                                    },
-                                },
-                            ],
-                        })} />
+                <td>
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            value={editedData.nom}
+                            onChange={(e) => handleEditChange(e, 'nom')}
+                        />
+                    ) : (
+                        nom
+                    )}
+                </td>
+                <td>
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            value={editedData.prenom}
+                            onChange={(e) => handleEditChange(e, 'prenom')}
+                        />
+                    ) : (
+                        prenom
+                    )}
+                </td>
+                <td>
+                    {isEditing ? (
+                        <input
+                            type="email"
+                            value={editedData.email}
+                            onChange={(e) => handleEditChange(e, 'email')}
+                        />
+                    ) : (
+                        email
+                    )}
+                </td>
+                <td>
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            value={editedData.specialite}
+                            onChange={(e) => handleEditChange(e, 'specialite')}
+                        />
+                    ) : (
+                        specialite
+                    )}
+                </td>
+                <td>
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            value={editedData.grade}
+                            onChange={(e) => handleEditChange(e, 'grade')}
+                        />
+                    ) : (
+                        grade
+                    )}
+                </td>
+                <td className="option-buttons flex items-center justify-center py-2 gap-2">
+                    {isEditing ? (
+                        <>
+                            <Button text="Sauvegarder" handler={handleSave} />
+                            <Button text="Annuler" handler={() => setIsEditing(false)} />
+                        </>
+                    ) : (
+                        <>
+                            <EditOutlined
+                                className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px]"
+                                onClick={() => setIsEditing(true)}
+                            />
+                            <DeleteOutline
+                                className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px]"
+                                onClick={() =>
+                                    alert.open({
+                                        message: `Voulez-vous vraiment supprimer ${nom} ${prenom} ?`,
+                                        buttons: [
+                                            {
+                                                label: "Oui",
+                                                onClick: () => {
+                                                    deleteAdmin(id);
+                                                    alert.close();
+                                                },
+                                                style: {
+                                                    backgroundColor: "#990000",
+                                                    marginRight: "1rem",
+                                                    color: "white",
+                                                },
+                                            },
+                                            {
+                                                label: "Non",
+                                                onClick: () => alert.close(),
+                                            },
+                                        ],
+                                    })
+                                }
+                            />
+                        </>
+                    )}
                 </td>
             </tr>
         );
     }
+    
 
     // useEffect(() => {
     //   if (admin === null || admin.role !== 'ADMIN')
@@ -122,7 +205,7 @@ const Teachers = () => {
 
                 <div className="actions">
                     <ModalContainer triggerText={'Nouveau'} formToDisplay={<TeacherForm teacher={selectedTeacher} onSubmit={handleTeacherSubmit}/>} />
-                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => dispatch(loadEnseignants())}  isLoading={isRefreshing} size={'25px'} />
+                    <Button text={"Rafraishir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh}  isLoading={isRefreshing} size={'25px'} />
                 </div>
 
                 <div className="data">
@@ -147,7 +230,7 @@ const Teachers = () => {
                                         <th>Email</th>
                                         <th>Spécialité</th>
                                         <th>Grade</th>
-                                        <th></th>
+                                        <th>Option</th>
                                     </tr>
                                 </thead>
                                 <tbody>

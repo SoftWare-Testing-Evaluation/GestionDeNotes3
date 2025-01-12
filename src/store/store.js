@@ -6,6 +6,8 @@ import enseignantReducer from '../slices/enseignantSlice'; // Importez le slice 
 import classReducer from '../slices/classSlice';
 import eleveReducer from '../slices/eleveSlice'//Importez le slice des eleves
 import matiereReducer from '../slices/matiereSlice'
+import dispenserReducer from '../slices/dispenserSlice'
+import noteReducer from '../slices/noteSlice'
 const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -14,6 +16,8 @@ const store = configureStore({
         enseignants: enseignantReducer, // Ajoutez le reducer des enseignants
         eleves:eleveReducer,
         matieres:matiereReducer,
+        dispensations:dispenserReducer,
+        notes:noteReducer,
         // Ajoutez d'autres reducers ici
     },
 });

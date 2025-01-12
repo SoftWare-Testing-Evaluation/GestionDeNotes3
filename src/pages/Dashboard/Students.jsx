@@ -46,6 +46,20 @@ const Students = () => {
             dispatch(fetchElevesParClasse({ idClasseEtude: classeId, annee: year.year() })); // Utiliser year.year() pour obtenir l'année
         }
     }, [classeId, year, dispatch]);
+    const refresh = async () => {
+        setIsRefreshing(true); // Commencer le rafraîchissement
+        try {
+            await dispatch(loadClasses()); // Charger les classes
+            if (classeId && year) {
+                await dispatch(fetchElevesParClasse({ idClasseEtude: classeId, annee: year.year() })); // Charger les élèves
+            }
+        } catch (error) {
+            console.error("Erreur lors du rafraîchissement :", error);
+        } finally {
+            setIsRefreshing(false); // Arrêter le rafraîchissement
+        }
+    };
+    
 
     const handleLogout = () => {
         setIsLogingOut(true);
@@ -221,7 +235,7 @@ const Students = () => {
                 <div className="flex !justify-between items-center w-[95%]">
                     <div className="actions h-full">
                         <ModalContainer triggerText={'Nouveau'} formToDisplay={<StudentForm onClose={() =>  setIsModalOpen(false)} />} />
-                        <Button text={"Rafraichir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => setIsRefreshing(true)} isLoading={isRefreshing} size={'25px'} />
+                        <Button text={"Rafraichir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} size={'25px'} />
                     </div>
                    
                     <div style={{ marginRight:'5px'}} >

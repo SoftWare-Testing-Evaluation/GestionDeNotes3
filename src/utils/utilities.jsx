@@ -50,6 +50,7 @@ export const classLinks = (refs) => [
         icon: reportCard,
         ref: refs[4]
     },
+    
 ]
 export const mainLinks = (refs) => [
     {
@@ -71,10 +72,16 @@ export const mainLinks = (refs) => [
         ref: refs[2]
     },
     {
+        name: 'dispensations',
+        link: '/dispensations', 
+        icon: reportCard,
+        ref: refs[3]
+    },
+    {
         name: 'Profile',
         link: '/profile',
         icon: user,
-        ref: refs[3]
+        ref: refs[4]
     },
 ]
 

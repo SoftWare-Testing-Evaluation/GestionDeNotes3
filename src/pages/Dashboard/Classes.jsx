@@ -66,6 +66,33 @@ const Classes = () => {
         }
     }, [year, dispatch, classes]);
 
+     const refresh = async () => {
+                    setIsRefreshing(true); // Commencer le rafraîchissement
+                    try {
+                        await dispatch(loadClasses()); // Charger les classes
+                        if (year) {
+                            classes.forEach(classe => {
+                                dispatch(fetchElevesParClasse({ idClasseEtude: classe.id, annee: year.year() }))
+                                    .then((result) => {
+                                        // Vérifiez si result.payload est un tableau
+                                        if (Array.isArray(result.payload)) {
+                                            const effectif = result.payload.filter(student => student.Inscriptions.some(inscription => inscription.idClasseEtude === classe.id)).length;
+                                            setEffectifs(prev => ({ ...prev, [classe.id]: effectif }));
+                                        } else {
+                                            // Si ce n'est pas un tableau, définissez l'effectif à zéro
+                                            setEffectifs(prev => ({ ...prev, [classe.id]: 0 }));
+                                        }
+                                    });
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Erreur lors du rafraîchissement :", error);
+                    } finally {
+                        setIsRefreshing(false); // Arrêter le rafraîchissement
+                    }
+                };
+
+
     const handleDelete = async (id) => {
         setIsRefreshing(true);
         try {
@@ -175,7 +202,7 @@ const Classes = () => {
                         triggerText={'Nouveau'} 
                         formToDisplay={<ClassForm onClose={() => setIsModalOpen(false)} />} 
                     />
-                    <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' isLoading={isRefreshing} />
+                    <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh}  isLoading={isRefreshing} />
                     
                 </div>
                <div style={{height:'3.5rem',width:'auto',marginRight:'5px'}}>
