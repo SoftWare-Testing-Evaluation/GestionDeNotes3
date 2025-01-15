@@ -68,7 +68,14 @@ exports.createNote = async (req, res) => {
   try {
     const { idEleve, idMatiere, seq1, seq2, seq3, seq4, seq5, seq6 } = req.body;
     const note = await Note.create({ idEleve, idMatiere, seq1, seq2, seq3, seq4, seq5, seq6 });
-    res.status(201).json(note);
+    // Récupérer l'élève associé à la note
+    const eleve = await Eleve.findByPk(idEleve);
+    if (!eleve) {
+      return res.status(404).json({ message: "Élève non trouvé" });
+    }
+
+    // Inclure les informations de l'élève dans la réponse
+    res.status(201).json({ ...note.toJSON(), Eleve: eleve }); // Retourne la note avec l'élève
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

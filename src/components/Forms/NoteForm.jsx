@@ -39,7 +39,7 @@ const NoteForm = ({ onClose, selectedClassId, year }) => {
         const value = e.target.value;
         setFormData({
             ...formData,
-            [fieldName]: value
+        [fieldName]: fieldName.startsWith('seq') ? Number(value) : value // Convertir seq en nombre
         });
     };
 
@@ -52,11 +52,8 @@ const NoteForm = ({ onClose, selectedClassId, year }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await dispatch(addNote({
-                ...formData,
-                annee: annee.year() // Envoyer l'année sous forme d'entier
-            }));
-            onClose(); // Fermer le modal après l'ajout
+            await dispatch(addNote(formData));
+           onClose(); // Fermer le modal après l'ajout
         } catch (error) {
             console.error("Erreur lors de l'ajout de la note:", error);
             setErrorMessage("Erreur lors de l'ajout de la note. Veuillez réessayer.");

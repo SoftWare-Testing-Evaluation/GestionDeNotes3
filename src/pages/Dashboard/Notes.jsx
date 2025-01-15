@@ -53,6 +53,7 @@ const Notes = () => {
     const students = useSelector((state) => state.eleves.eleves);
 
     useEffect(() => {
+        dispatch(loadClasses())
         if (selectedClassId && year) {
             dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
             dispatch(fetchElevesParClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
@@ -67,6 +68,7 @@ const Notes = () => {
 
     const refresh = async () => {
                     setIsRefreshing(true); // Commencer le rafraîchissement
+                    dispatch(loadClasses())
                     try {
                         if (selectedClassId && year) {
                             dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
@@ -121,24 +123,55 @@ const Notes = () => {
             setIsModalOpen(true);
         }
     };
-    function TeacherRow({ id, firstName, lastName, seq1, seq2, seq3, seq4, seq5, seq6 }) {
+    function TeacherRow({ id, matricule, firstName, lastName, seq1, seq2, seq3, seq4, seq5, seq6 }) {
         const [isEditing, setIsEditing] = useState(false);
-
+        const [editedNotes, setEditedNotes] = useState({ seq1, seq2, seq3, seq4, seq5, seq6 });
+    
         const handleEdit = () => {
             setIsEditing(true);
         };
-
+    
+        const handleChange = (e) => {
+            const { name, value } = e.target;
+            setEditedNotes({
+                ...editedNotes,
+                [name]: value
+            });
+        };
+    
+        const handleSave = async () => {
+            try {
+                await dispatch(updateNote({ id, noteData: editedNotes })); // Utilisez votre thunk pour mettre à jour la note
+                setIsEditing(false);
+            } catch (error) {
+                console.error("Erreur lors de la mise à jour de la note:", error);
+            }
+        };
+    
         return (
             <tr>
                 <td>{id}</td>
                 <td>{matricule}</td>
                 <td>{firstName} {lastName}</td>
-                <td>{seq1}</td>
-                <td>{seq2}</td>
-                <td>{seq3}</td>
-                <td>{seq4}</td>
-                <td>{seq5}</td>
-                <td>{seq6}</td>
+                {isEditing ? (
+                    <>
+                        <td><input type="number" name="seq1" value={editedNotes.seq1} onChange={handleChange} /></td>
+                        <td><input type="number" name="seq2" value={editedNotes.seq2} onChange={handleChange} /></td>
+                        <td><input type="number" name="seq3" value={editedNotes.seq3} onChange={handleChange} /></td>
+                        <td><input type="number" name="seq4" value={editedNotes.seq4} onChange={handleChange} /></td>
+                        <td><input type="number" name="seq5" value={editedNotes.seq5} onChange={handleChange} /></td>
+                        <td><input type="number" name="seq6" value={editedNotes.seq6} onChange={handleChange} /></td>
+                    </>
+                ) : (
+                    <>
+                        <td>{seq1}</td>
+                        <td>{seq2}</td>
+                        <td>{seq3}</td>
+                        <td>{seq4}</td>
+                        <td>{seq5}</td>
+                        <td>{seq6}</td>
+                    </>
+                )}
                 <td className="option-buttons flex items-center justify-center py-2 gap-2">
                     {isEditing ? (
                         <>
@@ -155,6 +188,7 @@ const Notes = () => {
             </tr>
         );
     }
+    
     const handleChange = (
         event,
         newValue,
@@ -188,11 +222,11 @@ const Notes = () => {
                 </div>
             )}
             <div className="container">
-                <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Elèves'} count={students.length} />
+                <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Notes'} count={notes.length} />
 
                 <div className="flex !justify-between items-center w-[95%]">
                     <div className="actions h-full">
-                    <ModalContainer triggerText={'Nouvelle note'} formToDisplay={<NoteForm onClose={handleCloseModal} selectedClassId={selectedClassId} year={year} />} />
+                    <ModalContainer triggerText={'Nouvelle note'} formToDisplay={<NoteForm onClose={()=> setIsModalOpen(false)} selectedClassId={selectedClassId} year={year} />} />
 
                     <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} />
                     </div>
@@ -268,6 +302,7 @@ const Notes = () => {
                             </div> :
                             <div className="overflow-x-auto">
                                 <table className="">
+
                                     <thead>
                                         <tr>
                                             <th rowSpan={2}>ID</th>
@@ -276,6 +311,7 @@ const Notes = () => {
                                             <th colSpan={2} className="border-b border-secondary">Trimestre 1</th>
                                             <th colSpan={2} className="border-b border-secondary">Trimestre 2</th>
                                             <th colSpan={2} className="border-b border-secondary">Trimestre 3</th>
+                                            <th rowSpan={2}>Option</th>
                                         </tr>
                                         <tr>
                                             <th>Séquence 1</th>
@@ -290,12 +326,12 @@ const Notes = () => {
                                     </tbody>
                                     <Pagination
                                         data={notes} // Remplacez ceci par vos données filtrées si nécessaire
-                                        RenderComponent={({ id, eleve, seq1, seq2, seq3, seq4, seq5, seq6 }) => (
+                                        RenderComponent={({ id, Eleve, seq1, seq2, seq3, seq4, seq5, seq6 }) => (
                                             <TeacherRow
                                                 id={id}
-                                                matricule={eleve.matricule}
-                                                firstName={eleve.prenom}
-                                                lastName={eleve.nom}
+                                                matricule={Eleve.matricule}
+                                                firstName={Eleve.prenom}
+                                                lastName={Eleve.nom}
                                                 seq1={seq1}
                                                 seq2={seq2}
                                                 seq3={seq3}

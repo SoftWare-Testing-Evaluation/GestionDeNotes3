@@ -20,11 +20,13 @@ export const loadNotesByMatiereAndClasse = createAsyncThunk(
 // Thunk pour ajouter une nouvelle note
 export const addNote = createAsyncThunk(
     'notes/addNote',
-    async (noteData, { rejectWithValue }) => {
-        console.log(noteData);
+    async (formData, { rejectWithValue }) => {
+        console.log(formData);
         try {
-            const response = await apiClient.post('/notes', noteData);
+            const response = await apiClient.post('/notes', formData);
+            console.log(response.data);
             return response.data; // Retourne la note ajoutée
+            
         } catch (error) {
             return rejectWithValue(error.message); // Gère l'erreur
         }
@@ -86,7 +88,12 @@ const noteSlice = createSlice({
             .addCase(updateNote.fulfilled, (state, action) => {
                 const index = state.notes.findIndex(note => note.id === action.payload.id);
                 if (index !== -1) {
-                    state.notes[index] = action.payload; // Met à jour la note
+                    // Conserve les informations de l'élève et met à jour uniquement les séquences
+                    const existingNote = state.notes[index];
+                    state.notes[index] = {
+                        ...existingNote,
+                        ...action.payload, // Met à jour uniquement les champs nécessaires
+                    };
                 }
             })
             .addCase(deleteNote.fulfilled, (state, action) => {
