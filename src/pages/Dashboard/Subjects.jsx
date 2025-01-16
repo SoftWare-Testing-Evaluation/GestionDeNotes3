@@ -16,7 +16,7 @@ import Loader from "../../components/Loader/Loader.jsx";
 import { Player } from "@lordicon/react";
 import { folderOrange, reportCard, teacher } from "../../assets/lordicons/index.js";
 import { onPlayPress } from "../../utils/utilities.jsx";
-import { Option, Select } from '@mui/joy';
+import { Option, Select ,selectClasses} from '@mui/joy';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -222,11 +222,28 @@ const Subjects = () => {
                    
                     
                 </div>
-                <div style={{ marginRight:'5px'}} >
+               
+                </div>
+                <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[95%]">
+                <div className="ml-auto" >
                         <p className="text-secondary font-bold">Classe</p>
                         <Select
                             placeholder={'Choisir la classe'}
                             indicator={<KeyboardArrowDown />}
+                            sx={{
+                                [`& .${selectClasses.indicator}`]: {
+                                    transition: '0.2s',
+                                    [`&.${selectClasses.expanded}`]: {
+                                        transform: 'rotate(-180deg)',
+                                    },
+                                },
+                                height: '100%',
+                                width: 'auto',
+                                padding: '10px 20px',
+                                border: '2px solid var(--secondary)',
+                                color: 'var(--secondary)',
+                                fontWeight: 700
+                            }}
                             onChange={handleChange}
                         >
                             {classes.map((elt, i) => (
@@ -234,7 +251,7 @@ const Subjects = () => {
                             ))}
                         </Select>
                     </div>
-                    <div>
+                    <div className="ml-auto ">
                         <p className="text-secondary font-bold">Année</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
@@ -251,6 +268,7 @@ const Subjects = () => {
                             />
                         </LocalizationProvider>
                     </div>
+
                 </div>
                
                 <div className="data">

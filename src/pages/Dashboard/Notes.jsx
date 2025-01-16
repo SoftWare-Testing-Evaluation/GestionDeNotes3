@@ -63,8 +63,11 @@ const Notes = () => {
     useEffect(() => {
         if (selectedMatiereId && selectedClassId && year) {
             dispatch(loadNotesByMatiereAndClasse({ idMatiere: selectedMatiereId, idClasseEtude: selectedClassId, annee: year.year() }));
+        }else if (matieres.length === 0) {
+            // Vider les notes si aucune matière n'est sélectionnée
+            dispatch(loadNotesByMatiereAndClasse({ idMatiere: null, idClasseEtude: selectedClassId, annee: year.year() })); // ou une action pour réinitialiser les notes
         }
-    }, [selectedMatiereId, selectedClassId, year, dispatch]);
+    }, [selectedMatiereId, selectedClassId, year, dispatch,matieres.length]);
 
     const refresh = async () => {
                     setIsRefreshing(true); // Commencer le rafraîchissement
@@ -76,6 +79,9 @@ const Notes = () => {
                         }
                         if (selectedMatiereId && selectedClassId && year) {
                             dispatch(loadNotesByMatiereAndClasse({ idMatiere: selectedMatiereId, idClasseEtude: selectedClassId, annee: year.year() }));
+                        } else if (matieres.length === 0) {
+                            // Vider les notes si aucune matière n'est sélectionnée
+                            dispatch(loadNotesByMatiereAndClasse({ idMatiere: null, idClasseEtude: selectedClassId, annee: year.year() }));
                         }
                     } catch (error) {
                         console.error("Erreur lors du rafraîchissement :", error);
@@ -91,6 +97,10 @@ const Notes = () => {
 
     const handleMatiereChange = (event, newValue) => {
         setSelectedMatiereId( newValue);
+        if (!newValue) {
+            // Si aucune matière n'est sélectionnée, vider les notes
+            dispatch(loadNotesByMatiereAndClasse({ idMatiere: null, idClasseEtude: selectedClassId, annee: year.year() }));
+        }
     };
 
 
@@ -230,7 +240,10 @@ const Notes = () => {
 
                     <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} />
                     </div>
-                    <div className="ml-auto">
+                    
+                </div>
+                <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[95%]">
+                <div className="ml-auto w-[40%]">
                         <p className="text-secondary font-bold">Classe</p>
                         <Select
                             placeholder={'Choisir la classe'}
@@ -257,10 +270,25 @@ const Notes = () => {
                         </Select>
                     </div>
 
-                    <div>
+                    <div className="ml-auto w-[30%]">
                         <p className="text-secondary font-bold">Matière</p>
                         <Select
                             placeholder={'Choisir la matière'}
+                            indicator={<KeyboardArrowDown />}
+                            sx={{
+                                [`& .${selectClasses.indicator}`]: {
+                                    transition: '0.2s',
+                                    [`&.${selectClasses.expanded}`]: {
+                                        transform: 'rotate(-180deg)',
+                                    },
+                                },
+                                height: '100%',
+                                width: 'auto',
+                                padding: '10px 20px',
+                                border: '2px solid var(--secondary)',
+                                color: 'var(--secondary)',
+                                fontWeight: 700
+                            }}
                             onChange={handleMatiereChange}
                         >
                             {matieres.map((matiere) => (
@@ -269,7 +297,7 @@ const Notes = () => {
                         </Select>
                     </div>
 
-                    <div>
+                    <div className="ml-auto w-[30%]">
                         <p className="text-secondary font-bold">Année</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
@@ -285,6 +313,7 @@ const Notes = () => {
                             />
                         </LocalizationProvider>
                     </div>
+
                 </div>
 
                 <div className="data">
@@ -299,7 +328,7 @@ const Notes = () => {
                                         )
                                     }
                                 </div>
-                            </div> :
+                            </div> :(
                             <div className="overflow-x-auto">
                                 <table className="">
 
@@ -347,7 +376,9 @@ const Notes = () => {
                                 </table>
 
                             </div>
-                    }
+                            
+                        )}
+                    
                 </div>
 
             </div>
