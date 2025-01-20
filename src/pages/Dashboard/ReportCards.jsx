@@ -1,505 +1,230 @@
-import React, { useState, useEffect, rUseref, useRef } from "react";
-// import { useNavigate } from "react-router-dom";
 
+
+
+import React, { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useAlert } from 'react-alert-with-buttons';
 import "../../styles/Dashboard/students.css";
-
-import { useAlert } from 'react-alert-with-buttons'
-import { ArrowRightAlt, DeleteOutline, Download, EditOutlined, RefreshOutlined } from "@mui/icons-material";
-
-import { Skeleton, Tooltip } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import Pagination from "../../components/Pagination/Pagination.jsx";
-import Button from "../../components/Button/Button.jsx";
-// import { TeacherRow } from "../../components/Utils/TableRows/TableRows";
-import { classes, onPlayPress, sequences } from "../../utils/utilities.jsx";
-import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
 import { students } from "../../assets/lordicons/index.js";
-import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
+import { folderOrange, reportCard, teacher } from "../../assets/lordicons/index.js";
+import { Skeleton, Tooltip } from "@mui/material";
+import Button from "../../components/Button/Button.jsx";
+import { Download, RefreshOutlined } from "@mui/icons-material";
+import DashboardHeader from "../../containers/DashboardHeader/DashboardHeader.jsx";
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { fetchElevesParClasse } from "../../slices/eleveSlice"; 
+import { loadClasses } from '../../slices/classSlice';
+import { loadMatieresByClasse } from '../../slices/matiereSlice.js';
+import { loadNotesByMatiereAndClasse } from '../../slices/noteSlice';
+import { loadDispensations } from '../../slices/dispenserSlice';
+
+
+import { loadEnseignants } from '../../slices/enseignantSlice';
 import { useReactToPrint } from "react-to-print";
+import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
+import Pagination from "../../components/Pagination/Pagination.jsx";
 
 const ReportCards = () => {
-    //State for translation
-    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const alert = useAlert();
     const contentRef = useRef(null);
+    
     const handlePrint = useReactToPrint({ contentRef });
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [classe, setClasse] = useState(localStorage.getItem('class'));
+    const [selectedClassId, setSelectedClassId] = useState(localStorage.getItem('class'));
+    const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear(), 'YYYY'));
+    const [selectedStudent, setSelectedStudent] = useState(null);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [student, setStudent] = useState('ELEVE');
-    const [studentsArr, setStudentsArr] = useState([]);
-    const [sequence, setSequence] = useState(sequences[0]);
-    const [isLogingOut, setIsLogingOut] = useState(false);
 
-    const admin = 'Essi Junior'
-    // const navigate = useNavigate()
-
-    const results = [
-        {
-            id: 1,
-            literatureSubjects: [
-                {
-                    subject: 'Geography',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [10, 11, 12, 13, 14, 15],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-                {
-                    subject: 'History',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-            ],
-            scientificSubjects: [
-                {
-                    subject: 'Maths',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-                {
-                    subject: 'Chemistry',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-            ],
-            generalSubjects: [
-                {
-                    subject: 'Cathe',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-                {
-                    subject: 'TP',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-            ],
-            student: 'NDANG ESSI Pierre Junior',
-            classe: classes[0],
-        },
-        {
-            id: 2,
-            literatureSubjects: [
-                {
-                    subject: 'Geography',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-                {
-                    subject: 'History',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-            ],
-            scientificSubjects: [
-                {
-                    subject: 'Maths',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-                {
-                    subject: 'Chemistry',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-            ],
-            generalSubjects: [
-                {
-                    subject: 'Cathe',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-                {
-                    subject: 'TP',
-                    coef: 0,
-                    teacher: 'ESSI MVONDO ',
-                    sequences: [0, 0, 0, 0, 0, 0],
-                    competence: 'Avoir ...',
-                    visa: ',.....'
-                },
-            ],
-            student: 'MABOU WABO Elfied',
-            classe: classes[0],
-        },
-    ]
-    const alert = useAlert()
-
-    async function deleteAdmin(id) {
-        setIsRefreshing(true)
-    }
-
-    const handleLogout = (e) => {
-        e.preventDefault()
-        setIsLogingOut(true)
-
-    }
+    const { user } = useSelector((state) => state.auth);
+    const classes = useSelector((state) => state.classes.classes);
+    const students = useSelector((state) => state.eleves.eleves);
+    const matieres = useSelector((state) => state.matieres.matieres);
+    const notes = useSelector((state) => state.notes.notes);
+    const dispensations = useSelector((state) => state.dispensations.dispensations);
 
     useEffect(() => {
-        let res = results.filter(elt => elt.classe === classe).map(elt => elt.student)
-        setStudentsArr(res)
+        dispatch(loadClasses());
+        dispatch(loadDispensations());
+    }, [dispatch]);
 
-        console.log(results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0])
-    }, [classe, student])
+    useEffect(() => {
+        if (selectedClassId && year) {
+            dispatch(fetchElevesParClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+            dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+        }
+    }, [selectedClassId, year, dispatch]);
 
-    function TeacherRow({ id, generalSubjects, student, }) {
+    useEffect(() => {
+        if (selectedStudent && year) {
+            matieres.forEach(matiere => {
+                dispatch(loadNotesByMatiereAndClasse({ idMatiere: matiere.id, idClasseEtude: selectedClassId, annee: year.year() }));
+            });
+        }
+    }, [selectedStudent, matieres, selectedClassId, year, dispatch]);
 
-        return (
-            <tr>
-                <td>{id}</td>
-                <td>{id}</td>
-                <td>{id}</td>
-                <td>{id}</td>
-                <td>{id}</td>
-                <td>{id}</td>
-                <td>{id}</td>
-
-                <td className="option-buttons option flex items-center justify-center py-2 px-4 gap-2 ">
-                    <Tooltip title='Modifier' placement='top'>
-                        <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
-                    </Tooltip>
-                </td>
-            </tr>
-        );
-    }
-    const handleClasse = (
-        event,
-        newValue,
-        type
-    ) => {
-        console.log(newValue);
-        setClasse(newValue);
+    const refresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await dispatch(loadDispensations());
+            await dispatch(loadClasses());
+            if (selectedClassId && year) {
+                await dispatch(fetchElevesParClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+                await dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+            }
+        } catch (error) {
+            console.error("Erreur lors du rafraîchissement :", error);
+        } finally {
+            setIsRefreshing(false);
+        }
     };
-    const handleEleve = (
-        event,
-        newValue,
-        type
-    ) => {
-        console.log(newValue);
-        setStudent(newValue);
+
+    const handleStudentChange = (event, newValue) => {
+        console.log("Étudiant sélectionné :", newValue); // Vérifiez ce qui est sélectionné
+        setSelectedStudent(newValue);
     };
-    const handleSequence = (
-        event,
-        newValue,
-        type
-    ) => {
-        console.log(newValue);
-        setSequence(newValue);
+    
+
+    const getCoefficient = (matiereId) => {
+        const dispensation = dispensations.find(d => d.idMatiere === matiereId && d.idClasseEtude === selectedClassId);
+        return dispensation ? dispensation.coefficient : 0;
     };
 
     return (
-        <div className="students" >
+        <div className="students">
             <div className="container">
-                <DashboardHeader admin={admin} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={students} title={sequence + ' de l\'élève ' + student} count={results.length} classe={classe} />
+                <DashboardHeader 
+                    admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} 
+                    handleLogout={() => localStorage.removeItem('token')} 
+                    isRefreshing={isRefreshing} 
+                    icon={reportCard} 
+                    title={`Bulletin de l'élève ${selectedStudent ? selectedStudent.nom : ''}`} 
+                />
 
                 <div className="flex !justify-between items-center w-[95%]">
                     <div className="actions !w-auto">
-                        <Button text={"Rafraishir"} bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={() => refresh} isLoading={isRefreshing} size={'25px'} />
+                        <Button text={"Rafraîchir"} bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} />
                     </div>
                 </div>
 
                 <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[95%]">
-                    <div className="flex">
-                        <SNMSelect label={'Classe'} placeholder={'Choisir la classe'} options={classes} handleChange={handleClasse} />
-                        <SNMSelect label={'Elève'} placeholder={'Choisir l\'élève'} options={studentsArr} handleChange={handleEleve} className={'ml-10'} />
-                        <SNMSelect label={'Séquence'} placeholder={'Choisir la séquence'} options={sequences} handleChange={handleSequence} className={'ml-10'} />
-                    </div>
-
+                    <SNMSelect label={'Classe'} placeholder={'Choisir la classe'} options={classes} handleChange={setSelectedClassId} />
+                    <SNMSelect label={'Élève'} placeholder={'Choisir l\'élève'} options={students} handleChange={setSelectedStudent}  isStudentSelect={true} />
+                    <div className="ml-auto w-[30%]">
+                                            <p className="text-secondary font-bold">Année</p>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    views={['year']}
+                                                    value={year}
+                                                    onChange={(newValue) => {
+                                                        if (newValue) {
+                                                            setYear(newValue);
+                                                            localStorage.setItem('year', newValue.year());
+                                                        }
+                                                    }}
+                                                    renderInput={(params) => <input {...params} className="year-selector"/>}
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                    {/* <Button text={"Imprimer"} onClick={handlePrint} /> */}
                     <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10" onClick={handlePrint}>
-                        <Download className="text-emerald-800  !w-[35px] !h-[35px] " />
-                        <span className="text-3xl font-bold">Imprimer</span>
-                    </div>
-
+                                            <Download className="text-emerald-800  !w-[35px] !h-[35px] " />
+                                            <span className="text-3xl font-bold">Imprimer</span>
+                                        </div>
                 </div>
+
                 <div className="data">
-                    {
-                        isRefreshing ?
-                            <div>
-                                <Skeleton variant="rectangular" width='100%' height={55} />
-                                <div style={{ marginTop: '0.2rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }}>
-                                    {
-                                        Array.apply(null, { length: 25 }).map((value, index) =>
-                                            <Skeleton key={index} variant="rounded" width={'98%'} height={40} style={{ margin: '0.125rem auto' }} />
-                                        )
-                                    }
-                                </div>
-                            </div> :
-                            <div className="overflow-x-auto">
-                                <table className="">
-                                    <thead>
-                                        <tr className="[&>*]:uppercase">
-                                            <th>Matière/enseignant</th>
-                                            {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                <th>{sequences[sequences.indexOf(sequence) - 1]}</th>
-                                            }
-                                            <th>{sequence}</th>
-                                            {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                <th>trim</th>
-                                            }
-                                            <th>cf</th>
-                                            <th>total</th>
-                                            <th>compétence(s) visée(s)</th>
-                                            <th>App/Visa Prof</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.literatureSubjects.map((result, index) => (
+                    {isRefreshing ?
+                                                <div>
+                                                    <Skeleton variant="rectangular" width='100%' height={55} />
+                                                    <div style={{ marginTop: '0.2rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }}>
+                                                        {
+                                                            Array.apply(null, { length: 25 }).map((value, index) =>
+                                                                <Skeleton key={index} variant="rounded" width={'98%'} height={40} style={{ margin: '0.125rem auto' }} />
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div> :
+                                                <div className="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr className="[&>*]:uppercase">
+                                        <th>Matière/enseignant</th>
+                                        <th>Séquence</th>
+                                        <th>Coef</th>
+                                        <th>Total</th>
+                                        <th>Compétences</th>
+                                        <th>Visa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* Matières Littéraires */}
+                                    <tr>
+                                        <td colSpan="6" className="!bg-secondary text-white">Matières Littéraires</td>
+                                    </tr>
+                                    {notes.filter(note => note.idEleve === selectedStudent?.id).map((note, index) => {
+                                        const matiere = matieres.find(m => m.id === note.idMatiere);
+                                        if (matiere && matiere.groupe === 1) {
+                                            return (
                                                 <tr key={index}>
-                                                    <td className="flex flex-col items-center">
-                                                        <span className="text-2xl font-semibold">{result.subject}</span>
-                                                        <span>{result.teacher}</span>
-                                                    </td>
-                                                    {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                        <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
-                                                    }
-                                                    <td>{result.sequences[sequences.indexOf(sequence)]}</td>
-
-                                                    {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                        <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
-                                                    }
-                                                    <td>{result.coef}</td>
-                                                    <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
-                                                    <td>{result.competence}</td>
-                                                    <td>{result.visa}</td>
-                                                    <td className="option-buttons option flex items-center justify-center py-2 px-4 gap-2 ">
-                                                        <Tooltip title='Modifier' placement='top'>
-                                                            <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full px-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
-                                                        </Tooltip>
-                                                    </td>
+                                                    <td className="flex flex-col items-center">{matiere.nom}</td>
+                                                    <td>{note.seq1}</td>
+                                                    <td>{getCoefficient(note.idMatiere)}</td>
+                                                    <td>{note.total}</td>
+                                                    <td>{note.competence}</td>
+                                                    <td>{note.visa}</td>
                                                 </tr>
-                                            ))
+                                            );
                                         }
-                                        <tr>
-                                            <td aria-colspan={'100%'} className="!bg-secondary text-white">
-                                                Matieres literraires
-                                            </td>
-                                        </tr>
-                                        {
-                                            results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.scientificSubjects.map((result, index) => (
+                                        return null;
+                                    })}
+
+                                    {/* Matières Scientifiques */}
+                                    <tr>
+                                        <td colSpan="6" className="!bg-secondary text-white">Matières Scientifiques</td>
+                                    </tr>
+                                    {notes.filter(note => note.idEleve === selectedStudent?.id).map((note, index) => {
+                                        const matiere = matieres.find(m => m.id === note.idMatiere);
+                                        if (matiere && matiere.groupe === 2) {
+                                            return (
                                                 <tr key={index}>
-                                                    <td className="flex flex-col items-center">
-                                                        <span className="text-2xl font-semibold">{result.subject}</span>
-                                                        <span>{result.teacher}</span>
-                                                    </td>
-                                                    {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                        <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
-                                                    }
-                                                    <td>{result.sequences[sequences.indexOf(sequence)]}</td>
-
-                                                    {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                        <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
-                                                    }
-                                                    <td>{result.coef}</td>
-                                                    <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
-                                                    <td>{result.competence}</td>
-                                                    <td>{result.visa}</td>
-                                                    <td className="option-buttons option flex items-center justify-center py-2 px-4 gap-2 ">
-                                                        <Tooltip title='Modifier' placement='top'>
-                                                            <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full px-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
-                                                        </Tooltip>
-                                                    </td>
+                                                    <td className="flex flex-col items-center">{matiere.nom}</td>
+                                                    <td>{note.seq1}</td>
+                                                    <td>{getCoefficient(note.idMatiere)}</td>
+                                                    <td>{note.total}</td>
+                                                    <td>{note.competence}</td>
+                                                    <td>{note.visa}</td>
                                                 </tr>
-                                            ))
+                                            );
                                         }
-                                        <tr>
-                                            <td aria-colspan={'100%'} className="!bg-secondary text-white">
-                                                Matieres scientifiques
-                                            </td>
-                                        </tr>
-                                        {
-                                            results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.generalSubjects.map((result, index) => (
+                                        return null;
+                                    })}
+
+                                    {/* Matières Complémentaires */}
+                                    <tr>
+                                        <td colSpan="6" className="!bg-secondary text-white">Matières Complémentaires</td>
+                                    </tr>
+                                    {notes.filter(note => note.idEleve === selectedStudent?.id).map((note, index) => {
+                                        const matiere = matieres.find(m => m.id === note.idMatiere);
+                                        if (matiere && matiere.groupe === 3) {
+                                            return (
                                                 <tr key={index}>
-                                                    <td className="flex flex-col items-center">
-                                                        <span className="text-2xl font-semibold">{result.subject}</span>
-                                                        <span>{result.teacher}</span>
-                                                    </td>
-                                                    {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                        <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
-                                                    }
-                                                    <td>{result.sequences[sequences.indexOf(sequence)]}</td>
-
-                                                    {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                        <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
-                                                    }
-                                                    <td>{result.coef}</td>
-                                                    <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
-                                                    <td>{result.competence}</td>
-                                                    <td>{result.visa}</td>
-                                                    <td className="option-buttons option flex items-center justify-center py-2 px-4 gap-2 ">
-                                                        <Tooltip title='Modifier' placement='top'>
-                                                            <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full px-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
-                                                        </Tooltip>
-                                                    </td>
+                                                    <td className="flex flex-col items-center">{matiere.nom}</td>
+                                                    <td>{note.seq1}</td>
+                                                    <td>{getCoefficient(note.idMatiere)}</td>
+                                                    <td>{note.total}</td>
+                                                    <td>{note.competence}</td>
+                                                    <td>{note.visa}</td>
                                                 </tr>
-                                            ))
+                                            );
                                         }
-                                        <tr>
-                                            <td aria-colspan={'100%'} className="!bg-secondary text-white">
-                                                Matieres complementaires
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
+                                        return null;
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
                     }
-                </div>
-
-            </div>
-
-            <div style={{ display: "none" }}>
-                <div className="py-5" ref={contentRef} style={{ fontSize: "1.5rem", padding: "1.5rem" }}>
-                    <div className="data">
-                        {
-                            isRefreshing ?
-                                <div>
-                                    <Skeleton variant="rectangular" width='100%' height={55} />
-                                    <div style={{ marginTop: '0.2rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }}>
-                                        {
-                                            Array.apply(null, { length: 25 }).map((value, index) =>
-                                                <Skeleton key={index} variant="rounded" width={'98%'} height={40} style={{ margin: '0.125rem auto' }} />
-                                            )
-                                        }
-                                    </div>
-                                </div> :
-                                <div className="overflow-x-auto">
-                                    <table className="">
-                                        <thead>
-                                            <tr className="[&>*]:uppercase">
-                                                <th>Matière/enseignant</th>
-                                                {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                    <th>{sequences[sequences.indexOf(sequence) - 1]}</th>
-                                                }
-                                                <th>{sequence}</th>
-                                                {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                    <th>trim</th>
-                                                }
-                                                <th>cf</th>
-                                                <th>total</th>
-                                                <th>compétence(s) visée(s)</th>
-                                                <th>App/Visa Prof</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.literatureSubjects.map((result, index) => (
-                                                    <tr key={index}>
-                                                        <td className="flex flex-col items-center">
-                                                            <span className="text-2xl font-semibold">{result.subject}</span>
-                                                            <span>{result.teacher}</span>
-                                                        </td>
-                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                            <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
-                                                        }
-                                                        <td>{result.sequences[sequences.indexOf(sequence)]}</td>
-
-                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                            <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
-                                                        }
-                                                        <td>{result.coef}</td>
-                                                        <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
-                                                        <td>{result.competence}</td>
-                                                        <td>{result.visa}</td>
-                                                    </tr>
-                                                ))
-                                            }
-                                            <tr>
-                                                <td aria-colspan={'100%'} className="!bg-secondary text-white">
-                                                    Matieres literraires
-                                                </td>
-                                            </tr>
-                                            {
-                                                results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.scientificSubjects.map((result, index) => (
-                                                    <tr key={index}>
-                                                        <td className="flex flex-col items-center">
-                                                            <span className="text-2xl font-semibold">{result.subject}</span>
-                                                            <span>{result.teacher}</span>
-                                                        </td>
-                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                            <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
-                                                        }
-                                                        <td>{result.sequences[sequences.indexOf(sequence)]}</td>
-
-                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                            <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
-                                                        }
-                                                        <td>{result.coef}</td>
-                                                        <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
-                                                        <td>{result.competence}</td>
-                                                        <td>{result.visa}</td>
-                                                    </tr>
-                                                ))
-                                            }
-                                            <tr>
-                                                <td aria-colspan={'100%'} className="!bg-secondary text-white">
-                                                    Matieres scientifiques
-                                                </td>
-                                            </tr>
-                                            {
-                                                results.filter(elt => elt.classe === classe).filter(elt => elt.student === student)[0]?.generalSubjects.map((result, index) => (
-                                                    <tr key={index}>
-                                                        <td className="flex flex-col items-center">
-                                                            <span className="text-2xl font-semibold">{result.subject}</span>
-                                                            <span>{result.teacher}</span>
-                                                        </td>
-                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                            <td>{result.sequences[sequences.indexOf(sequence) - 1]}</td>
-                                                        }
-                                                        <td>{result.sequences[sequences.indexOf(sequence)]}</td>
-
-                                                        {(sequence === 'ES2' || sequence === 'ES4' || sequence === 'ES6') &&
-                                                            <td>{(result.sequences[sequences.indexOf(sequence)] + result.sequences[sequences.indexOf(sequence) - 1]) / 2}</td>
-                                                        }
-                                                        <td>{result.coef}</td>
-                                                        <td>{result.sequences[sequences.indexOf(sequence)] * result.coef}</td>
-                                                        <td>{result.competence}</td>
-                                                        <td>{result.visa}</td>
-                                                    </tr>
-                                                ))
-                                            }
-                                            <tr>
-                                                <td aria-colspan={'100%'} className="!bg-secondary text-white">
-                                                    Matieres complementaires
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                        }
-                    </div>
                 </div>
             </div>
         </div>

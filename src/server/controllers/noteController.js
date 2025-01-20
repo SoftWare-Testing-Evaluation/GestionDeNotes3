@@ -67,19 +67,34 @@ exports.getNotesByMatiereAndClasse = async (req, res) => {
 exports.createNote = async (req, res) => {
   try {
     const { idEleve, idMatiere, seq1, seq2, seq3, seq4, seq5, seq6 } = req.body;
+
+    // Étape 1 : Vérifier si la note existe déjà
+    const existingNote = await Note.findOne({
+      where: {
+        idEleve,
+        idMatiere
+      }
+    });
+
+    if (existingNote) {
+      const eleve = await Eleve.findByPk(idEleve);
+    if (!eleve) {
+      return res.status(404).json({ message: "Élève non trouvé" });
+    }
+    res.status(200).json({ ...existingNote.toJSON(), Eleve: eleve }); // Si la note existe, on la renvoie avec l'élève
+    }
     const note = await Note.create({ idEleve, idMatiere, seq1, seq2, seq3, seq4, seq5, seq6 });
-    // Récupérer l'élève associé à la note
     const eleve = await Eleve.findByPk(idEleve);
     if (!eleve) {
       return res.status(404).json({ message: "Élève non trouvé" });
     }
 
-    // Inclure les informations de l'élève dans la réponse
-    res.status(201).json({ ...note.toJSON(), Eleve: eleve }); // Retourne la note avec l'élève
+    res.status(201).json({ ...note.toJSON(), Eleve: eleve }); // Retourne la nouvelle note avec l'élève
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 exports.updateNote = async (req, res) => {
   try {

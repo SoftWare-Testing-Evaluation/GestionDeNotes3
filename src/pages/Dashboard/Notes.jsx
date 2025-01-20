@@ -238,7 +238,7 @@ const Notes = () => {
                     <div className="actions h-full">
                     <ModalContainer triggerText={'Nouvelle note'} formToDisplay={<NoteForm onClose={()=> setIsModalOpen(false)} selectedClassId={selectedClassId} year={year} />} />
 
-                    <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} />
+                    <Button text={"Rafraîchir"} margin='0 1rem' bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} size={'25px'} />
                     </div>
                     
                 </div>

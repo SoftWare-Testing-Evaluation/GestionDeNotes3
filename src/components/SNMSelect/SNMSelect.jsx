@@ -1,10 +1,9 @@
-import React from 'react'
+import React from 'react';
 import { Option, Select, selectClasses } from '@mui/joy';
 import { KeyboardArrowDown } from '@mui/icons-material';
 
-const SNMSelect = ({label, placeholder,  options, handleChange, className}) => {
+const SNMSelect = ({ label, placeholder, options, handleChange, className, isStudentSelect }) => {
     return (
-
         <div className={className}>
             <p className="text-secondary font-bold">{label}</p>
             <Select
@@ -24,19 +23,16 @@ const SNMSelect = ({label, placeholder,  options, handleChange, className}) => {
                     color: 'var(--secondary)',
                     fontWeight: 700
                 }}
-                onChange={handleChange}
+                onChange={(event, newValue) => handleChange(newValue)}
             >
-
-                {
-                    options.map((elt, i) => {
-                        return (
-                            <Option value={elt} key={i} >{elt}</Option>
-                        )
-                    })
-                }
+                {options.map((elt, i) => (
+                    <Option value={isStudentSelect ? elt : elt.id} key={i}>
+                        {elt.nom || elt}
+                    </Option>
+                ))}
             </Select>
         </div>
-    )
-}
+    );
+};
 
-export default SNMSelect
+export default SNMSelect;
