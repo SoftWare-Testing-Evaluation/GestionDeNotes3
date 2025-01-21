@@ -112,7 +112,7 @@ const ReportCards = () => {
     };
     const getCompetence = (note) => {
         if (note < 10 ||note === undefined || note === null || note === '') {
-            return 'N/A';
+            return 'NA';
         } else if (note < 14) {
             return 'ECA';
         } else if (note < 18) {
@@ -150,7 +150,7 @@ const ReportCards = () => {
                     <td>{coefficient}</td>
                     <td>{total}</td> {/* Afficher le total ou '-' */}
                     <td>{competence}</td>
-                    <td>{note.visa || 'N/A'}</td>
+                    <td>{note.visa || '....'}</td>
                 </tr>
             );
         });
@@ -210,7 +210,7 @@ const ReportCards = () => {
                                             </LocalizationProvider>
                                         </div>
                     {/* <Button text={"Imprimer"} onClick={handlePrint} /> */}
-                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10" onClick={handlePrint}>
+                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10 ml-auto w-[30%]" onClick={handlePrint}>
                                             <Download className="text-emerald-800  !w-[35px] !h-[35px] " />
                                             <span className="text-3xl font-bold">Imprimer</span>
                                         </div>
@@ -265,7 +265,43 @@ const ReportCards = () => {
                     }
                 </div>
             </div>
+        
+        {/* Section d'impression */}
+        <div style={{ display: "none" }}>
+        <div className="py-5" ref={contentRef} style={{ fontSize: "1.5rem", padding: "1.5rem" }}>
+            <h1>Bulletin de l'élève {selectedStudent ? selectedStudent.nom : ''}</h1>
+            <p>Année : {year.year()}</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matière/enseignant</th>
+                        <th>Séquence</th>
+                        <th>Coef</th>
+                        <th>Total</th>
+                        <th>Compétences</th>
+                        <th>Visa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colSpan="6" className="!bg-secondary text-white">Matières Littéraires</td>
+                    </tr>
+                    {renderNotes(1)}
+
+                    <tr>
+                        <td colSpan="6" className="!bg-secondary text-white">Matières Scientifiques</td>
+                    </tr>
+                    {renderNotes(2)}
+
+                    <tr>
+                        <td colSpan="6" className="!bg-secondary text-white">Matières Complémentaires</td>
+                    </tr>
+                    {renderNotes(3)}
+                </tbody>
+            </table>
         </div>
+    </div>
+</div>
     );
 };
 
