@@ -1,7 +1,6 @@
 
-
-
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef,useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from 'react-alert-with-buttons';
 import "../../styles/Dashboard/students.css";
@@ -27,6 +26,7 @@ import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 
 const ReportCards = () => {
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const alert = useAlert();
     const contentRef = useRef(null);
@@ -35,17 +35,29 @@ const ReportCards = () => {
     const [selectedClassId, setSelectedClassId] = useState(localStorage.getItem('class'));
     const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear(), 'YYYY'));
     const [selectedStudent, setSelectedStudent] = useState(null);
+    const [selectedSequence, setSelectedSequence] = useState('seq1'); // Valeur par défaut
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [isLogingOut, setIsLogingOut] = useState(false);
 
     const { user } = useSelector((state) => state.auth);
     const classes = useSelector((state) => state.classes.classes);
     const students = useSelector((state) => state.eleves.eleves);
     const matieres = useSelector((state) => state.matieres.matieres);
-    const notes = useSelector((state) => state.notes.notes);
+    const [allNotes, setAllNotes] = useState([]); // État pour stocker toutes les notes
     const dispensations = useSelector((state) => state.dispensations.dispensations);
+    const enseignants = useSelector((state) => state.enseignants.enseignants);
+    const sequenceOptions = [
+        { id: 'seq1', nom: 'Séquence 1' },
+        { id: 'seq2', nom: 'Séquence 2' },
+        { id: 'seq3', nom: 'Séquence 3' },
+        { id: 'seq4', nom: 'Séquence 4' },
+        { id: 'seq5', nom: 'Séquence 5' },
+        { id: 'seq6', nom: 'Séquence 6' },
+    ];
 
     useEffect(() => {
         dispatch(loadClasses());
+        dispatch(loadEnseignants());
         dispatch(loadDispensations());
     }, [dispatch]);
 
@@ -58,8 +70,17 @@ const ReportCards = () => {
 
     useEffect(() => {
         if (selectedStudent && year) {
-            matieres.forEach(matiere => {
-                dispatch(loadNotesByMatiereAndClasse({ idMatiere: matiere.id, idClasseEtude: selectedClassId, annee: year.year() }));
+            console.log("nom de l'élève  :",selectedStudent.nom);
+            const notesPromises = matieres.map(matiere => 
+                dispatch(loadNotesByMatiereAndClasse({ idMatiere: matiere.id, idClasseEtude: selectedClassId, annee: year.year() }))
+            );
+    
+            Promise.all(notesPromises).then((results) => {
+                const newNotes = results.flatMap(result => result.payload); // Extraire le payload
+                console.log("Nouvelles notes :", newNotes); // Log des nouvelles notes
+                setAllNotes(newNotes); // Remplacez les anciennes notes
+            }).catch(error => {
+                console.error("Erreur lors du chargement des notes :", error);
             });
         }
     }, [selectedStudent, matieres, selectedClassId, year, dispatch]);
@@ -67,11 +88,14 @@ const ReportCards = () => {
     const refresh = async () => {
         setIsRefreshing(true);
         try {
-            await dispatch(loadDispensations());
             await dispatch(loadClasses());
+            await dispatch(loadEnseignants());
+            await dispatch(loadDispensations());
+            
             if (selectedClassId && year) {
                 await dispatch(fetchElevesParClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
                 await dispatch(loadMatieresByClasse({ idClasseEtude: selectedClassId, annee: year.year() }));
+                setAllNotes([]); // Réinitialiser les notes pour éviter les doublons
             }
         } catch (error) {
             console.error("Erreur lors du rafraîchissement :", error);
@@ -79,11 +103,59 @@ const ReportCards = () => {
             setIsRefreshing(false);
         }
     };
-
-    const handleStudentChange = (event, newValue) => {
-        console.log("Étudiant sélectionné :", newValue); // Vérifiez ce qui est sélectionné
-        setSelectedStudent(newValue);
+    const handleLogout = () => {
+        setIsLogingOut(true);
+        setTimeout(() => {
+            localStorage.removeItem('token');
+            navigate('/');
+        }, 1000);
     };
+    const getCompetence = (note) => {
+        if (note < 10 ||note === undefined || note === null || note === '') {
+            return 'N/A';
+        } else if (note < 14) {
+            return 'ECA';
+        } else if (note < 18) {
+            return 'A';
+        } else {
+            return 'A+';
+        }
+    };
+
+    const filteredNotes = useMemo(() => {
+        return allNotes.filter(note => note.idEleve === selectedStudent?.id);
+    }, [allNotes, selectedStudent]);
+
+    const renderNotes = (groupe) => {
+        return filteredNotes.filter(note => matieres.find(m => m.id === note.idMatiere && m.groupe === groupe)).map((note, index) => {
+            const matiere = matieres.find(m => m.id === note.idMatiere);
+            const dispenser = matiere?.Dispensers[0]; // Récupérer le premier dispenser
+            const enseignant = enseignants.find(e => e.id === dispenser?.idEnseignant); // Trouver l'enseignant par ID
+            const competence = getCompetence(note[selectedSequence]); // Utiliser la séquence sélectionnée 
+            const noteValue = note[selectedSequence]; // Récupérer la valeur de la note
+            const coefficient = getCoefficient(note.idMatiere);
+    
+            // Vérifier si la note est valide pour le calcul du total
+            const total = (noteValue !== undefined && noteValue !== null && noteValue !== '') 
+                ? noteValue * coefficient 
+                : '---'; // Remplacer par '-' si la note est absente
+    
+            return (
+                <tr key={index}>
+                    <td className="flex flex-col items-center">
+                        {matiere?.designation || 'Matière inconnue'} <br />
+                        {enseignant ? `${enseignant.nom} ${enseignant.prenom}` : 'Enseignant inconnu'}
+                    </td>
+                    <td>{noteValue !== undefined && noteValue !== null ? noteValue : 'N/A'}</td> {/* Afficher la note ou 'N/A' */}
+                    <td>{coefficient}</td>
+                    <td>{total}</td> {/* Afficher le total ou '-' */}
+                    <td>{competence}</td>
+                    <td>{note.visa || 'N/A'}</td>
+                </tr>
+            );
+        });
+    };
+    
     
 
     const getCoefficient = (matiereId) => {
@@ -96,10 +168,12 @@ const ReportCards = () => {
             <div className="container">
                 <DashboardHeader 
                     admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} 
-                    handleLogout={() => localStorage.removeItem('token')} 
+                    handleLogout={handleLogout}
+                    isLogingOut={isLogingOut}
                     isRefreshing={isRefreshing} 
                     icon={reportCard} 
                     title={`Bulletin de l'élève ${selectedStudent ? selectedStudent.nom : ''}`} 
+                    count={filteredNotes.length}
                 />
 
                 <div className="flex !justify-between items-center w-[95%]">
@@ -111,6 +185,14 @@ const ReportCards = () => {
                 <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[95%]">
                     <SNMSelect label={'Classe'} placeholder={'Choisir la classe'} options={classes} handleChange={setSelectedClassId} />
                     <SNMSelect label={'Élève'} placeholder={'Choisir l\'élève'} options={students} handleChange={setSelectedStudent}  isStudentSelect={true} />
+                    <div className="ml-auto w-[30%]">
+                        <SNMSelect 
+                            label={'Séquence'} 
+                            placeholder={'Choisir la séquence'} 
+                            options={sequenceOptions} 
+                            handleChange={setSelectedSequence} 
+                        />
+                    </div>
                     <div className="ml-auto w-[30%]">
                                             <p className="text-secondary font-bold">Année</p>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -153,75 +235,31 @@ const ReportCards = () => {
                                         <th>Matière/enseignant</th>
                                         <th>Séquence</th>
                                         <th>Coef</th>
-                                        <th>Total</th>
+                                        <th>Total</th>                                      
                                         <th>Compétences</th>
                                         <th>Visa</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {/* Matières Littéraires */}
-                                    <tr>
-                                        <td colSpan="6" className="!bg-secondary text-white">Matières Littéraires</td>
-                                    </tr>
-                                    {notes.filter(note => note.idEleve === selectedStudent?.id).map((note, index) => {
-                                        const matiere = matieres.find(m => m.id === note.idMatiere);
-                                        if (matiere && matiere.groupe === 1) {
-                                            return (
-                                                <tr key={index}>
-                                                    <td className="flex flex-col items-center">{matiere.nom}</td>
-                                                    <td>{note.seq1}</td>
-                                                    <td>{getCoefficient(note.idMatiere)}</td>
-                                                    <td>{note.total}</td>
-                                                    <td>{note.competence}</td>
-                                                    <td>{note.visa}</td>
-                                                </tr>
-                                            );
-                                        }
-                                        return null;
-                                    })}
+                                {/* Matières Littéraires */}
+                                <tr>
+                                    <td colSpan="6" className="!bg-secondary text-white">Matières Littéraires</td>
+                                </tr>
+                                {renderNotes(1)}
 
-                                    {/* Matières Scientifiques */}
-                                    <tr>
-                                        <td colSpan="6" className="!bg-secondary text-white">Matières Scientifiques</td>
-                                    </tr>
-                                    {notes.filter(note => note.idEleve === selectedStudent?.id).map((note, index) => {
-                                        const matiere = matieres.find(m => m.id === note.idMatiere);
-                                        if (matiere && matiere.groupe === 2) {
-                                            return (
-                                                <tr key={index}>
-                                                    <td className="flex flex-col items-center">{matiere.nom}</td>
-                                                    <td>{note.seq1}</td>
-                                                    <td>{getCoefficient(note.idMatiere)}</td>
-                                                    <td>{note.total}</td>
-                                                    <td>{note.competence}</td>
-                                                    <td>{note.visa}</td>
-                                                </tr>
-                                            );
-                                        }
-                                        return null;
-                                    })}
+                                {/* Matières Scientifiques */}
+                                <tr>
+                                    <td colSpan="6" className="!bg-secondary text-white">Matières Scientifiques</td>
+                                </tr>
+                                {renderNotes(2)}
 
-                                    {/* Matières Complémentaires */}
-                                    <tr>
-                                        <td colSpan="6" className="!bg-secondary text-white">Matières Complémentaires</td>
-                                    </tr>
-                                    {notes.filter(note => note.idEleve === selectedStudent?.id).map((note, index) => {
-                                        const matiere = matieres.find(m => m.id === note.idMatiere);
-                                        if (matiere && matiere.groupe === 3) {
-                                            return (
-                                                <tr key={index}>
-                                                    <td className="flex flex-col items-center">{matiere.nom}</td>
-                                                    <td>{note.seq1}</td>
-                                                    <td>{getCoefficient(note.idMatiere)}</td>
-                                                    <td>{note.total}</td>
-                                                    <td>{note.competence}</td>
-                                                    <td>{note.visa}</td>
-                                                </tr>
-                                            );
-                                        }
-                                        return null;
-                                    })}
-                                </tbody>
+                                {/* Matières Complémentaires */}
+                                <tr>
+                                    <td colSpan="6" className="!bg-secondary text-white">Matières Complémentaires</td>
+                                </tr>
+                                {renderNotes(3)}
+                            </tbody>
+    
                             </table>
                         </div>
                     }
