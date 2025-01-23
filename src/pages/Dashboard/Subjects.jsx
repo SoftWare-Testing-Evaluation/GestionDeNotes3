@@ -102,6 +102,9 @@ const Subjects = () => {
             navigate('/');
         }, 1000);
     };
+    const handleCloseModal=()=>{
+        setIsModalOpen(false);
+    }
     const handleChange = (event, newValue) => {
         setSelectedClassId(newValue);
     };
@@ -225,7 +228,7 @@ const Subjects = () => {
                
                 </div>
                 <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[95%]">
-                <div className="ml-auto" >
+                <div className="ml-auto [30%]" >
                         <p className="text-secondary font-bold">Classe</p>
                         <Select
                             placeholder={'Choisir la classe'}
@@ -251,7 +254,7 @@ const Subjects = () => {
                             ))}
                         </Select>
                     </div>
-                    <div className="ml-auto ">
+                    <div className="ml-auto [15%]">
                         <p className="text-secondary font-bold">Année</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker

@@ -268,7 +268,7 @@ const Students = () => {
                             ))}
                         </Select>
                     </div>
-                    <div  className="ml-auto ">
+                    <div  className="ml-auto [15%]">
                         <p className="text-secondary font-bold">Année</p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker

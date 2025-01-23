@@ -241,7 +241,7 @@ console.log("Filtered Dispensations:", filteredDispensations);
                 </div>
             )}
             <div className="container">
-                <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Dispensations'} count={totalDispensations} />
+                <DashboardHeader admin={user ? `${user.nom} ${user.prenom}` : 'Utilisateur inconnu'} handleLogout={handleLogout} isLogingOut={isLogingOut} isRefreshing={isRefreshing} icon={reportCard} title={'Dispensations'} count={filteredDispensations.length} />
 
                 <div className="flex !justify-between items-center w-[95%]">
                     <div className="actions h-full">
