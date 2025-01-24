@@ -9,7 +9,7 @@ const SubjectForm = ({onClose}) => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         designation: '',
-        groupe: '',
+        groupe: '1',
     });
 
     const handleChange = (e, fieldName) => {
@@ -51,7 +51,7 @@ const SubjectForm = ({onClose}) => {
     <option value={1}>Groupe 1</option>
     <option value={2}>Groupe 2</option>
     <option value={3}>Groupe 3</option>
-    <option value={4}>Groupe 4</option>
+    
 </select>
                 </div>
 

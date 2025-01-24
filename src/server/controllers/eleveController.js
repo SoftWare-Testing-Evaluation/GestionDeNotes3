@@ -7,7 +7,7 @@ const { Op } = require('sequelize');
 
 exports.createEleve = async (req, res) => {
   try {
-    const { idClasseEtude, nom, prenom, dateNaissance, lieuNaissance, nomPere, nomMere, sexe} = req.body;
+    const { idClasseEtude, nom, prenom, dateNaissance, lieuNaissance, nomPere, nomMere, sexe,redoublant} = req.body;
 
     // Générer le matricule
     const anneeInscription = new Date().getFullYear() ;
@@ -26,7 +26,7 @@ exports.createEleve = async (req, res) => {
     const numeroDordre = dernierNumeroOrdre ? dernierNumeroOrdre + 1 : 1;
 
     // Créer l'inscription
-    await Inscription.create({ idEleve: eleve.id, idClasseEtude, anneeInscription, numeroDordre });
+    await Inscription.create({ idEleve: eleve.id, idClasseEtude, anneeInscription, numeroDordre,redoublant });
 
     res.status(201).json(eleve);
   } catch (error) {

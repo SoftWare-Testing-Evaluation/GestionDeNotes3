@@ -19,6 +19,7 @@ const StudentForm = ({ onClose }) => {
         sexe: '',
         nomPere: '',
         nomMere: '',
+        redoublant:'',
         idClasseEtude: null, // Cette propriété sera remplie par le Select
     });
 
@@ -79,6 +80,29 @@ const StudentForm = ({ onClose }) => {
                     
                         <option value="M">Masculin</option>
                         <option value="F">Feminin</option>
+                   
+                </select>
+                    </div>
+                    <div  style={{display:'flex', flexDirection:'column', width:'40%'}}>
+                    <label htmlFor="classe">Redoublant ?</label>
+                <select
+                    placeholder={'Redoublant ?'}
+                    indicator={<KeyboardArrowDown />}
+                    onChange={(e) => handleChange({ target: { value: e.target.value } }, 'redoublant')}
+                    style={{
+                        borderRadius: '5px',
+                        padding: '5px',
+                        border: '2px solid transparent', // Bordure par défaut
+                        transition: 'border-color 0.3s ease' // Transition douce pour la couleur de la bordure
+                    }}
+                    onMouseEnter={(e) => e.target.style.borderColor = 'orange'} // Changer la couleur au survol
+                    onMouseLeave={(e) => e.target.style.borderColor = 'transparent'} // Revenir à la couleur par défaut
+                    onFocus={(e) => e.target.style.borderColor = 'orange'} // Changer la couleur au focus
+                   onBlur={(e) => e.target.style.borderColor = 'transparent'} // Revenir à la couleur par défaut
+                >
+                    
+                        <option value="OUI">Oui</option>
+                        <option value="NON">Non</option>
                    
                 </select>
                     </div>

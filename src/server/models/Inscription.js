@@ -34,6 +34,11 @@ const Inscription = sequelize.define('Inscription', {
   numeroDordre: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  redoublant:{
+    type:DataTypes.STRING,
+    allowNull:true,
+    defaultValue: null // Valeur par défaut à NULL
   }
 });
 

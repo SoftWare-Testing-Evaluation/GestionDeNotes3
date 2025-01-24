@@ -27,6 +27,10 @@ const Enseignant = sequelize.define('Enseignant', {
   email: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  sexe: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
 });
 

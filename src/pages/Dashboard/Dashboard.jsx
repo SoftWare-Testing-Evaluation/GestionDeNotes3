@@ -90,8 +90,11 @@ const Dashboard = () => {
                     </aside>
 
                     <Typography text={'Classes'} className='title text-3xl font-bold text-primary ' />
+                    <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[45%]">
+                <div className="ml-auto w-[100%]">
 
                     {/* Champ pour sélectionner l'année avec un calendrier */}
+                    <p className="text-secondary font-bold">Année</p>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Sélectionnez une année"
@@ -105,6 +108,8 @@ const Dashboard = () => {
                             renderInput={(params) => <input {...params} className="year-selector" />}
                         />
                     </LocalizationProvider>
+                    </div>
+                    </div>
 
                     <section className="numbers">
                         {

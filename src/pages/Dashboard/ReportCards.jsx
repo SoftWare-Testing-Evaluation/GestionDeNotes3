@@ -25,15 +25,38 @@ const ReportCards = () => {
     const dispatch = useDispatch();
     const alert = useAlert();
     const contentRef = useRef(null);
+    const handlePrint = useReactToPrint({contentRef})
+    const handlePrintClick = () => {
+        if (contentRef.current) {
+            handlePrint();
+        } else {
+            console.error("Aucun contenu à imprimer");
+        }
+    };
     
-    const handlePrint = useReactToPrint({ contentRef });
+    /* const handlePrint = useReactToPrint({
+        content: () => contentRef,
+        onBeforeGetContent: () => {
+            if (!contentRef.current) {
+                console.error("Contenu non disponible pour l'impression");
+                return Promise.reject("Contenu non disponible");
+            }
+            return Promise.resolve();
+        },
+        onAfterPrint: () => {
+            console.log("Impression terminée");
+        },
+        onError: (error) => {
+            console.error("Erreur lors de l'impression :", error);
+        }
+    }); */
+    
     const [selectedClassId, setSelectedClassId] = useState(localStorage.getItem('class'));
     const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear(), 'YYYY'));
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [selectedSequence, setSelectedSequence] = useState('seq1'); // Valeur par défaut
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLogingOut, setIsLogingOut] = useState(false);
-
     const { user } = useSelector((state) => state.auth);
     const classes = useSelector((state) => state.classes.classes);
     const studentsData = useSelector((state) => state.eleves.eleves);
@@ -41,6 +64,8 @@ const ReportCards = () => {
     const [allNotes, setAllNotes] = useState([]); // État pour stocker toutes les notes
     const dispensations = useSelector((state) => state.dispensations.dispensations);
     const enseignants = useSelector((state) => state.enseignants.enseignants);
+    const selectedClass = classes.find(classe => classe.id === selectedClassId);
+    
     
     const sequenceOptions = [
         { id: 'seq1', nom: 'Séquence 1' },
@@ -126,7 +151,8 @@ const ReportCards = () => {
         return matieres.filter(m => m.groupe === groupe).map((matiere, index) => {
             const dispenser = matiere?.Dispensers && matiere.Dispensers.length > 0 ? matiere.Dispensers[0] : null;
             const enseignant = enseignants ? enseignants.find(e => e.id === dispenser?.idEnseignant) : null;
-            
+               // Déterminer le titre de l'enseignant
+            const enseignantTitre = enseignant ? (enseignant.sexe === 'M' ? 'M.' : 'Mme') : 'Enseignant inconnu';
             // Trouver la note correspondante
             const note = filteredNotes.find(note => note.idMatiere === matiere.id);
             const noteValue = note ? note[selectedSequence] : null;
@@ -159,8 +185,9 @@ const ReportCards = () => {
             return (
                 <tr key={index}>
                     <td className="flex flex-col items-center">
-                        {matiere?.designation || 'Matière inconnue'} <br />
-                        {enseignant ? `${enseignant.nom} ${enseignant.prenom}` : 'Enseignant inconnu'}
+                        <span className="text-2xl font-semibold">{matiere?.designation || 'Matière inconnue'}</span>
+                        <span>{enseignant ? `${enseignantTitre} ${enseignant.nom} ${enseignant.prenom}` : 'Enseignant inconnu'}</span>
+
                     </td>
                     {selectedSequence === 'seq2' && <td>{previousNoteValue !== undefined && previousNoteValue !== null ? previousNoteValue : '-'}</td>}
                     {selectedSequence === 'seq4' && <td>{previousNoteValue !== undefined && previousNoteValue !== null ? previousNoteValue : '-'}</td>}
@@ -195,14 +222,14 @@ const ReportCards = () => {
                     isRefreshing={isRefreshing} 
                     icon={students} 
                     title={`Bulletin de l'élève ${selectedStudent ? selectedStudent.nom : ''}`} 
-                    count={filteredNotes.length}
+                    count={matieres.length}
                 />
 
                 <div className="flex !justify-between items-center w-[95%]">
                     <div className="actions !w-auto">
                         <Button text={"Rafraîchir"} bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} />
                     </div>
-                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10 ml-auto w-[30%]" onClick={handlePrint}>
+                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10 ml-auto w-[30%]" onClick={handlePrintClick}>
                         <Download className="text-emerald-800  !w-[35px] !h-[35px] " />
                         <span className="text-3xl font-bold">Imprimer</span>
                     </div>
@@ -242,7 +269,7 @@ const ReportCards = () => {
                     
                 </div>
 
-                <div className="data">
+                <div className="data" >
                     {isRefreshing ?
                         <div>
                             <Skeleton variant="rectangular" width='100%' height={55} />
@@ -255,7 +282,7 @@ const ReportCards = () => {
                             </div>
                         </div> :
                         <div className="overflow-x-auto">
-                            <table>
+                            <table className="">
                                 <thead>
                                     <tr className="[&>*]:uppercase">
                                         <th>Matière/enseignant</th>
@@ -269,10 +296,10 @@ const ReportCards = () => {
                                         {selectedSequence === 'seq3' && <th>ES3</th>}
                                         {selectedSequence === 'seq5' && <th>ES5</th>}
                                         {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <th>TRIM</th>}
-                                        <th>Coef</th>
+                                        <th>Cf</th>
                                         <th>Total</th>                                      
-                                        <th>Compétences</th>
-                                        <th>Visa</th>
+                                        <th>Compétence(s) Visée(s)</th>
+                                        <th>App./Visa Prof</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -303,12 +330,54 @@ const ReportCards = () => {
             {/* Section d'impression */}
             <div style={{ display: "none" }}>
                 <div className="py-5" ref={contentRef} style={{ fontSize: "1.5rem", padding: "1.5rem" }}>
-                    <h1>Bulletin de l'élève {selectedStudent ? selectedStudent.nom : ''}</h1>
-                    <p>Année : {year.year()}</p>
-                    <table>
+                    
+                    <div  className="data">
+                        {isRefreshing ?
+                                <div>
+                                    <Skeleton variant="rectangular" width='100%' height={55} />
+                                    <div style={{ marginTop: '0.2rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }}>
+                                        {
+                                            Array.apply(null, { length: 25 }).map((value, index) =>
+                                                <Skeleton key={index} variant="rounded" width={'98%'} height={40} style={{ margin: '0.125rem auto' }} />
+                                            )
+                                        }
+                                    </div>
+                                </div> :<div className="overflow-x-auto">
+                                    <div></div>
+                                <div className="flex my-5 p-3 !justify-between bg-[#fdba74] w-[100%]">
+                               
+                                    <div style={{ display:'flex',flexDirection:'column' }} className="w-[40%] ">
+                                        <p style={{fontWeight:'bold' ,fontSize:'15px', width:'100%', margin:'0'}}  >Année: {year.year()}</p>
+                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}>Nom et Prénom:  {selectedStudent ? selectedStudent.nom  : ''} {selectedStudent ? selectedStudent.prenom : ''}</p> 
+                                           
+                                        <div  style={{ display:'flex',flexDirection:'row'}}>
+                                             <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}> Né(e) le: {selectedStudent?selectedStudent.dateNaissance :''} </p>
+                                             <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}>à: {selectedStudent?selectedStudent.lieuNaissance :''} </p> 
+                                        </div>
+                                    
+                                    </div>
+                                    <div style={{ display:'flex',flexDirection:'column' }} className="w-[20%] ">
+                                       <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}> Matricule: {selectedStudent ? selectedStudent.matricule :''}</p> 
+                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}>Genre:  {selectedStudent ? selectedStudent.sexe :''}</p> 
+                                    </div>
+                                    <div style={{ display:'flex',flexDirection:'column' }} className="w-[20%] ">
+                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}} > Classe:{ selectedClass ? selectedClass.nom : 'Classe inconnue'}</p>
+                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}> Statut:      {}</p>   
+                                        
+                                    </div>
+                                    <div style={{ display:'flex',flexDirection:'column' }} className="w-[20%] ">
+                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}>Effectif:  {studentsData.length}</p>
+                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}> Redt: {selectedStudent ? selectedStudent.Inscriptions[0]?.redoublant:''} </p> 
+                                    </div>
+                            
+                                </div>
+                                
+                            
+                                <br></br>
+                    <table className="">
                         <thead>
-                            <tr>
-                                <th>Matière/enseignant</th>
+                            <tr className="[&>*]:uppercase">
+                                <th>Matière/enseignants</th>
                                         {selectedSequence === 'seq2' && <th>ES1</th>}
                                         {selectedSequence === 'seq4' && <th>ES3</th>}
                                         {selectedSequence === 'seq6' && <th>ES5</th>}
@@ -319,10 +388,10 @@ const ReportCards = () => {
                                         {selectedSequence === 'seq3' && <th>ES3</th>}
                                         {selectedSequence === 'seq5' && <th>ES5</th>}
                                         {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <th>TRIM</th>}
-                                <th>Coef</th>
+                                <th>Cf</th>
                                 <th>Total</th>
-                                <th>Compétences</th>
-                                <th>Visa</th>
+                                <th>Compétence(s) Visée(s)</th>
+                                <th>App./Visa Prof</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -342,6 +411,10 @@ const ReportCards = () => {
                             {renderNotesWithPrevious(3)}
                         </tbody>
                     </table>
+                    </div>
+                    }
+                    </div>
+                    
                 </div>
             </div>
         </div>

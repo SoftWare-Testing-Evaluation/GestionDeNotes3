@@ -74,9 +74,9 @@ const Teachers = () => {
         setIsModalOpen(false); // Fermer le modal après soumission
     };
 
-    function TeacherRow({ id, nom, prenom, email, specialite, grade }) {
+    function TeacherRow({ id, nom, prenom, email, specialite, grade,sexe }) {
         const [isEditing, setIsEditing] = useState(false);
-        const [editedData, setEditedData] = useState({ nom, prenom, email, specialite, grade });
+        const [editedData, setEditedData] = useState({ nom, prenom, email, specialite, grade ,sexe});
     
         const handleEditChange = (e, field) => {
             setEditedData({ ...editedData, [field]: e.target.value });
@@ -142,6 +142,18 @@ const Teachers = () => {
                         />
                     ) : (
                         grade
+                    )}
+                </td>
+                <td>
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            value={editedData.sexe}
+                            onChange={(e) => handleEditChange(e, 'sexe')}
+                        />
+                    ) : (
+                        sexe
+                        
                     )}
                 </td>
                 <td className="option-buttons flex items-center justify-center py-2 gap-2">
@@ -230,6 +242,7 @@ const Teachers = () => {
                                         <th>Email</th>
                                         <th>Spécialité</th>
                                         <th>Grade</th>
+                                        <th>GENRE</th>
                                         <th>Option</th>
                                     </tr>
                                 </thead>

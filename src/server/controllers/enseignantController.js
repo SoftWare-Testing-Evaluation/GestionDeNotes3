@@ -5,8 +5,8 @@ const Dispenser = require('../models/Dispenser');
 
 exports.createEnseignant = async (req, res) => {
   try {
-    const { nom, prenom, email, specialite, grade } = req.body;
-    const enseignant = await Enseignant.create({ nom, prenom, email, specialite, grade });
+    const { nom, prenom, email, specialite, grade,sexe } = req.body;
+    const enseignant = await Enseignant.create({ nom, prenom, email, specialite, grade,sexe });
     res.status(201).json(enseignant);
   } catch (error) {
     res.status(400).json({ message: error.message });

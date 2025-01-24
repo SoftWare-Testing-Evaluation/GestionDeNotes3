@@ -13,7 +13,6 @@ import { Close } from '@mui/icons-material';
 import MailIcon from '@mui/icons-material/Mail';
 
 
-
 const SignIn = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch(); // Utilisez dispatch pour appeler l'action
