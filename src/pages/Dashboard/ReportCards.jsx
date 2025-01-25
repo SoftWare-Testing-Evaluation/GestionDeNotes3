@@ -27,10 +27,10 @@ const ReportCards = () => {
     const dispatch = useDispatch();
     const alert = useAlert();
     const contentRef = useRef();
-    //const handlePrint = useReactToPrint({contentRef})
+    const handlePrint = useReactToPrint({contentRef})
     
     
-     const handlePrint = useReactToPrint({
+   /*   const handlePrint = useReactToPrint({
         content: () => contentRef,
         onError: (error) => {
             console.error("Erreur lors de l'impression :", error);
@@ -38,7 +38,7 @@ const ReportCards = () => {
         onAfterPrint: () => {
             console.log("Impression terminée");
         }
-    }); 
+    });  */
     
     
     const [selectedClassId, setSelectedClassId] = useState(localStorage.getItem('class'));
