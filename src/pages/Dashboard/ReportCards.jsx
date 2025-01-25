@@ -19,37 +19,27 @@ import { loadDispensations } from '../../slices/dispenserSlice';
 import { loadEnseignants } from '../../slices/enseignantSlice';
 import { useReactToPrint } from "react-to-print";
 import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
+import ReportHeader from "../../components/ReportHeader/ReportHeader.jsx";
+import logo from '../../assets/logo.svg'
 
 const ReportCards = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const alert = useAlert();
-    const contentRef = useRef(null);
-    const handlePrint = useReactToPrint({contentRef})
-    const handlePrintClick = () => {
-        if (contentRef.current) {
-            handlePrint();
-        } else {
-            console.error("Aucun contenu à imprimer");
-        }
-    };
+    const contentRef = useRef();
+    //const handlePrint = useReactToPrint({contentRef})
     
-    /* const handlePrint = useReactToPrint({
+    
+     const handlePrint = useReactToPrint({
         content: () => contentRef,
-        onBeforeGetContent: () => {
-            if (!contentRef.current) {
-                console.error("Contenu non disponible pour l'impression");
-                return Promise.reject("Contenu non disponible");
-            }
-            return Promise.resolve();
+        onError: (error) => {
+            console.error("Erreur lors de l'impression :", error);
         },
         onAfterPrint: () => {
             console.log("Impression terminée");
-        },
-        onError: (error) => {
-            console.error("Erreur lors de l'impression :", error);
         }
-    }); */
+    }); 
+    
     
     const [selectedClassId, setSelectedClassId] = useState(localStorage.getItem('class'));
     const [year, setYear] = useState(dayjs(localStorage.getItem('year')) || dayjs(new Date().getFullYear(), 'YYYY'));
@@ -229,13 +219,15 @@ const ReportCards = () => {
                     <div className="actions !w-auto">
                         <Button text={"Rafraîchir"} bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} />
                     </div>
-                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10 ml-auto w-[30%]" onClick={handlePrintClick}>
+                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10 ml-auto w-[30%]" onClick={handlePrint}>
                         <Download className="text-emerald-800  !w-[35px] !h-[35px] " />
                         <span className="text-3xl font-bold">Imprimer</span>
                     </div>
                 </div>
+               
 
                 <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[95%]">
+                
                 <div className="ml-auto w-[30%]">
                     <SNMSelect label={'Classe'} placeholder={'Choisir la classe'} options={classes} handleChange={setSelectedClassId} />
                    </div>
@@ -268,6 +260,12 @@ const ReportCards = () => {
                     </div>
                     
                 </div>
+                <div  ><ReportHeader 
+                                    telephone={user ? user.telephone : ''} 
+                                    anneeprecedent={year.year() - 1} 
+                                    annee={year.year()} 
+                                    logo={logo} // Remplacez par le chemin d'accès à votre logo
+                                /></div>
 
                 <div className="data" >
                     {isRefreshing ?
@@ -343,7 +341,13 @@ const ReportCards = () => {
                                         }
                                     </div>
                                 </div> :<div className="overflow-x-auto">
-                                    <div></div>
+                                <ReportHeader 
+                                    telephone={user ? user.telephone : ''} 
+                                    anneeprecedent={year.year() - 1} 
+                                    annee={year.year()} 
+                                    logo={logo} // Remplacez par le chemin d'accès à votre logo
+                                />
+                                    
                                 <div className="flex my-5 p-3 !justify-between bg-[#fdba74] w-[100%]">
                                
                                     <div style={{ display:'flex',flexDirection:'column' }} className="w-[40%] ">
