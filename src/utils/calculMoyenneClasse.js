@@ -59,10 +59,15 @@ export const calculMoyenneClasse = (studentsData, allNotes, dispensations, selec
     const classMin = validAverages.length > 0 ? Math.min(...validAverages) : null;
     const classMax = Math.max(...validAverages);
 
+    // Calculer le pourcentage de réussite
+    const successfulStudentsCount = sortedStudents.filter(student => student.average >= 10).length;
+    const successRate = sortedStudents.length > 0 ? (successfulStudentsCount / sortedStudents.length) * 100 : 0;
+
     return {
         classAverage,
         classMin,
         classMax,
+        successRate, // Ajout du pourcentage de réussite
         sortedStudents,
     };
 };
@@ -71,3 +76,4 @@ const getCoefficient = (matiereId, dispensations) => {
     const dispensation = dispensations.find(d => d.idMatiere === matiereId);
     return dispensation ? dispensation.coefficient : 0;
 };
+

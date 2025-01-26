@@ -100,6 +100,8 @@ const eleveSlice = createSlice({
             .addCase(removeEleveFromClass.fulfilled, (state, action) => {
                 // Filtrer l'élève retiré de l'état
                 state.eleves = state.eleves.filter(eleve => eleve.id !== action.payload);
+            }).addCase('UPDATE_ALL_ELEVES', (state, action) => {
+                state.eleves = action.payload; // Mettre à jour l'état avec tous les élèves
             })
             
             .addMatcher(

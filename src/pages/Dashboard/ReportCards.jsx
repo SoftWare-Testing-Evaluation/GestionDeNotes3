@@ -167,24 +167,26 @@ const ReportCards = () => {
     const [classMax, setClassMax] = useState(0);
     const [sortedStudents, setSortedStudents] = useState([]);
     const [studentRank, setStudentRank] = useState(0); // État pour le rang de l'étudiant
+    const[successRate,setSuccessRate]=useState(0);
 
     useEffect(() => {
-        if (studentsData.length > 0 && allNotes.length > 0) {
-            const { classAverage, classMin, classMax, sortedStudents } = calculMoyenneClasse(studentsData, allNotes, dispensations, selectedSequence);
-            setClassAverage(classAverage);
-            setClassMin(classMin);
-            setClassMax(classMax);
-            setSortedStudents(sortedStudents);
-    
-            // Calculer le rang de l'étudiant
-            if (selectedStudent) {
-                const index = sortedStudents.findIndex(student => student.id === selectedStudent.id);
-                setStudentRank(index + 1); // +1 pour convertir l'index en rang
-            }
-            console.log(sortedStudents);
+    if (studentsData.length > 0 && allNotes.length > 0) {
+        const { classAverage, classMin, classMax,successRate, sortedStudents } = calculMoyenneClasse(studentsData, allNotes, dispensations, selectedSequence);
+        setClassAverage(classAverage);
+        setClassMin(classMin);
+        setClassMax(classMax);
+        setSortedStudents(sortedStudents);
+        setSuccessRate(successRate);
+
+        // Calculer le rang de l'étudiant
+        if (selectedStudent) {
+            const index = sortedStudents.findIndex(student => student.id === selectedStudent.id);
+            setStudentRank(index + 1); // +1 pour convertir l'index en rang
         }
-    }, [studentsData, allNotes, dispensations, selectedStudent, selectedSequence]);
-    
+        console.log(sortedStudents);
+    }
+}, [studentsData, allNotes, dispensations, selectedStudent, selectedSequence]);
+
     
 
     const filteredNotes = useMemo(() => {
@@ -384,7 +386,7 @@ const ReportCards = () => {
                         <div className="overflow-x-auto">
                             <table className="">
                                 <thead>
-                                    <tr className="[&>*]:uppercase">
+                                    <tr className="[&>*]:uppercase !bg-secondary">
                                         <th>Matière/enseignant</th>
                                         {selectedSequence === 'seq2' && <th>ES1</th>}
                                         {selectedSequence === 'seq4' && <th>ES3</th>}
@@ -436,6 +438,7 @@ const ReportCards = () => {
                 classMin={classMin}
                 classMax={classMax}
                 getMention={getMention}
+                successRate={successRate}
             />
 
                         </div>

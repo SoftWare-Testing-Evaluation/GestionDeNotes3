@@ -10,7 +10,8 @@ const Bilan = ({
     classAverage,
     classMin,
     classMax,
-    getMention
+    getMention,
+    successRate
 }) => {
     const formattedDate = dayjs().format('DD/MM/YY'); // Format de la date
     const safeToFixed = (value, decimals = 2) => {
@@ -73,18 +74,20 @@ const Bilan = ({
           <td className="py-2">
             <table className="w-full">
                 <tr >
-                    <th colSpan={3} className="!bg-black text-white uppercase font-bold ">classe</th>
+                    <th colSpan={4} className="!bg-black text-white uppercase font-bold ">classe</th>
                 </tr>
             <tbody>
               <tr>
                 <td >Moy</td>
                 <td  >Min</td>
                 <td >Max</td>
+                <td >Taux</td>
               </tr>
               <tr>
                 <td>{safeToFixed(classAverage)}</td>
                 <td>{safeToFixed(classMin)}</td>
                 <td>{safeToFixed(classMax)}</td>
+                <td>{safeToFixed(successRate)}%</td>
               </tr>
               </tbody>
             </table>
