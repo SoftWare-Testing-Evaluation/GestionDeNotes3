@@ -58,8 +58,8 @@ const ReportCards = () => {
     const enseignants = useSelector((state) => state.enseignants.enseignants);
     const selectedClass = classes.find(classe => classe.id === selectedClassId);
     
-    const [totalPoints, setTotalPoints] = useState(0);
-    const [totalCoef, setTotalCoef] = useState(0);
+    let totalPoints=0;
+   let totalCoef=0;
     
    
 
@@ -138,6 +138,30 @@ const ReportCards = () => {
             return 'A+';
         }
     };
+    const getMention = (moyenne) => {
+        if (moyenne < 9) {
+            return 'insuffisant';
+          }else if (moyenne < 10) {
+          return 'médiocre';
+        } else if (moyenne < 12) {
+          return 'passable';
+        } else if (moyenne < 14) {
+          return 'assez-bien';
+        } else if (moyenne < 16) {
+          return 'bien';
+        } else if (moyenne < 18) {
+          return 'très bien';
+        } else if(moyenne >= 18){
+          return 'excellent';
+        }else{
+            return '';
+        }
+      };
+      const [classRanking, setClassRanking] = useState([]);
+      const [classAverage, setClassAverage] = useState(0);
+      const [classMin, setClassMin] = useState(0);
+      const [classMax, setClassMax] = useState(0);
+      const [studentRank, setStudentRank] = useState(0);
 
     const filteredNotes = useMemo(() => {
         return allNotes.filter(note => note.idEleve === selectedStudent?.id);
@@ -146,6 +170,35 @@ const ReportCards = () => {
     const renderNotesWithPrevious = (groupe) => {
         let totalPointsGroup = 0;
         let totalCoefGroup = 0;
+        useEffect(() => {
+    if (selectedStudent && studentsData.length > 0) {
+        // Trier les étudiants par ordre décroissant de moyenne
+        const sortedStudents = [...studentsData].sort((a, b) => {
+            const averageA = a.totalCoef ? (a.totalPointsGroup / a.totalCoefGroup).toFixed(2) : 0;
+            const averageB = b.totalCoef ? (b.totalPointsGroup / b.totalCoefGroup).toFixed(2) : 0;
+            return averageB - averageA;
+        });
+
+        setClassRanking(sortedStudents);
+
+        // Trouver le rang de l'élève sélectionné
+        const studentIndex = sortedStudents.findIndex(s => s.id === selectedStudent.id);
+        setStudentRank(studentIndex + 1);
+
+        // Calculer la moyenne générale de la classe
+        const totalAverage = sortedStudents.reduce((sum, student) => {
+            const average = student.totalCoef ? (student.totalPointsGroup / student.totalCoefGroup).toFixed(2) : 0;
+            return sum + average;
+        }, 0);
+        const classAverage = totalAverage / sortedStudents.length;
+        setClassAverage(classAverage);
+
+        // Définir la moyenne minimale et maximale de la classe
+        setClassMin(parseFloat(sortedStudents[sortedStudents.length - 1].totalCoef ? (sortedStudents[sortedStudents.length - 1].totalPointsGroup / sortedStudents[sortedStudents.length - 1].totalCoefGroup).toFixed(2) : 0));
+        setClassMax(parseFloat(sortedStudents[0].totalCoef ? (sortedStudents[0].totalPointsGroup / sortedStudents[0].totalCoefGroup).toFixed(2) : 0));
+    }
+}, [selectedStudent, studentsData, totalPointsGroup, totalCoefGroup]);
+
    
         return matieres.filter(m => m.groupe === groupe).map((matiere, index) => {
             const dispenser = matiere?.Dispensers && matiere.Dispensers.length > 0 ? matiere.Dispensers[0] : null;
@@ -185,8 +238,11 @@ const ReportCards = () => {
                 if (typeof total === 'number') {
                     totalPointsGroup += total;
                     totalCoefGroup += coefficient;
+                    totalPoints +=total;
+                    totalCoef +=coefficient;
                 }
-    
+                
+                
             return (
                 <tr key={index}>
                     <td className="flex flex-col items-center">
@@ -390,6 +446,12 @@ const ReportCards = () => {
         <tr>
           <td className="py-12"></td>
         </tr>
+        <tr className="pd-2"> 
+            <td colspan={1} className="uppercase font-bold py-2"></td>
+            <Typography style={{fontSise:'12px'}} text={"NA => {Compétence(s) Non Acquis(es)}; ECA => {Compétence(s) en cours d'acquisition}"} isGradient={false}/> 
+            <Typography style={{fontSise:'12px'}} text={"AC => {Compétence(s) Acquis(es)}; EX => {Expert}"} isGradient={false}/> 
+            </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -417,13 +479,15 @@ const ReportCards = () => {
                 <td>Rg</td>
               </tr>
               <tr>
-                <td >354,5</td>
-                <td >28</td>
-                <td >12,66</td>
-                <td>2</td>
+                <td >{totalPoints.toFixed(2)}</td>
+                <td >{totalCoef.toFixed(2)}</td>
+                <td >{totalCoef ? (totalPoints / totalCoef).toFixed(2) : '-'}</td>
+                <td>{studentRank}</td>
               </tr>
+              
               </tbody>
             </table>
+
           </td>
           <td className="py-2">
             <table className="w-full">
@@ -432,14 +496,14 @@ const ReportCards = () => {
                 </tr>
             <tbody>
               <tr>
-                <td className="pr-2">Moy</td>
-                <td className="pr-2" >Min</td>
-                <td className="pr-2">Max</td>
+                <td >Moy</td>
+                <td  >Min</td>
+                <td >Max</td>
               </tr>
               <tr>
-                <td className="pr-2">10,24</td>
-                <td className="pr-2">8,01</td>
-                <td className="pr-2" >12,7</td>
+                <td >{classAverage.toFixed(2)}</td>
+                <td >{classMin.toFixed(2)}</td>
+                <td >{classMax.toFixed(2)}</td>
               </tr>
               </tbody>
             </table>
@@ -451,12 +515,21 @@ const ReportCards = () => {
             </tr>
             <tbody>
             <tr>
-                <td className="pr-4 uppercase">assez-bien</td>
+                <td className="py-4  uppercase">{getMention(totalCoef ? (totalPoints / totalCoef).toFixed(2) : '-')}</td>
                 
             </tr>
           </tbody>
-          </table>
+          </table> 
           </td>
+
+        </tr>
+        <tr className="pd-2">  
+                <td colSpan={1} className="uppercase font-bold py-2">
+                    APPRECIATION GENERALE
+                </td>
+                <td colSpan={2} className="!bg-secondary  font-bold py-2">
+                {getMention(totalCoef ? (totalPoints / totalCoef).toFixed(2) : '-')}
+                </td>
         </tr>
       </tbody>
     </table>
