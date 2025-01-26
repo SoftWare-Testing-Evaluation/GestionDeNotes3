@@ -21,6 +21,8 @@ import { useReactToPrint } from "react-to-print";
 import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
 import ReportHeader from "../../components/ReportHeader/ReportHeader.jsx";
 import logo from '../../assets/logo.svg'
+import Typography from "../../components/Typography/Typography.jsx";
+import StudentInfo from "../../components/StudentInfo/StudentInfo.jsx";
 
 const ReportCards = () => {
     const navigate = useNavigate();
@@ -56,7 +58,11 @@ const ReportCards = () => {
     const enseignants = useSelector((state) => state.enseignants.enseignants);
     const selectedClass = classes.find(classe => classe.id === selectedClassId);
     
+    const [totalPoints, setTotalPoints] = useState(0);
+    const [totalCoef, setTotalCoef] = useState(0);
     
+   
+
     const sequenceOptions = [
         { id: 'seq1', nom: 'Séquence 1' },
         { id: 'seq2', nom: 'Séquence 2' },
@@ -138,6 +144,9 @@ const ReportCards = () => {
     }, [allNotes, selectedStudent]);
 
     const renderNotesWithPrevious = (groupe) => {
+        let totalPointsGroup = 0;
+        let totalCoefGroup = 0;
+   
         return matieres.filter(m => m.groupe === groupe).map((matiere, index) => {
             const dispenser = matiere?.Dispensers && matiere.Dispensers.length > 0 ? matiere.Dispensers[0] : null;
             const enseignant = enseignants ? enseignants.find(e => e.id === dispenser?.idEnseignant) : null;
@@ -148,6 +157,7 @@ const ReportCards = () => {
             const noteValue = note ? note[selectedSequence] : null;
             const coefficient = getCoefficient(matiere.id);
     
+            
             // Récupérer les notes nécessaires
             let previousNoteValue = null;
             let trimNoteValue = null;
@@ -171,6 +181,11 @@ const ReportCards = () => {
             const total = (trimNoteValue !== undefined && trimNoteValue !== null && trimNoteValue !== '') 
                 ? (isNaN(trimNoteValue) ? '-' : trimNoteValue * coefficient) 
                 : total1;
+                
+                if (typeof total === 'number') {
+                    totalPointsGroup += total;
+                    totalCoefGroup += coefficient;
+                }
     
             return (
                 <tr key={index}>
@@ -192,8 +207,21 @@ const ReportCards = () => {
                     <td>{getCompetence(trimNoteValue !== null && !isNaN(trimNoteValue) ? trimNoteValue : noteValue)}</td>
                 </tr>
             );
-        });
+        }).concat(
+            <tr key={`total-${groupe}`}>
+                <td aria-colspan={'100%'}  className="!bg-secondary text-white uppercase font-bold">{groupe === 1 ? 'Matières Littéraires' : groupe === 2 ? 'Matières Scientifiques' : 'Matières Complémentaires'}</td>
+                {(selectedSequence !=='seq2'&&selectedSequence!=='seq4'&&selectedSequence !=='seq6') && <td colspan={3} className="!bg-secondary text-white font-bold" >Totals Points:{totalPointsGroup}</td>}
+                                        
+                {(selectedSequence !=='seq2'&&selectedSequence !== 'seq4'&&selectedSequence !=='seq6') && <td colspan={1} className="!bg-secondary text-white font-bold" >Total Coef: {totalCoefGroup}</td>}
+                {(selectedSequence !=='seq2'&&selectedSequence !== 'seq4'&&selectedSequence !=='seq6') && <td colspan={1} className="!bg-secondary text-white font-bold" >Moy : {totalCoefGroup ? (totalPointsGroup / totalCoefGroup).toFixed(2) : '-'}</td>}
+                {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <td colspan={5} className="!bg-secondary text-white font-bold" >Totals Points:{totalPointsGroup}</td>}
+                {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <td colspan={1} className="!bg-secondary text-white font-bold" >Total Coef: {totalCoefGroup}</td>}
+                {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <td colspan={1} className="!bg-secondary text-white font-bold" >Moy : {totalCoefGroup ? (totalPointsGroup / totalCoefGroup).toFixed(2) : '-'}</td>}
+               
+            </tr>
+        );
     };
+    
     
     
 
@@ -243,7 +271,7 @@ const ReportCards = () => {
                         />
                     </div>
                     <div className="ml-auto w-[15%]">
-                        <p className="text-secondary font-bold">Année</p>
+                        <p className="text-secondary font-bold"> Année </p>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 views={['year']}
@@ -260,12 +288,35 @@ const ReportCards = () => {
                     </div>
                     
                 </div>
-                <div  ><ReportHeader 
+                <div className=" w-[95%]" ><ReportHeader 
                                     telephone={user ? user.telephone : ''} 
                                     anneeprecedent={year.year() - 1} 
                                     annee={year.year()} 
                                     logo={logo} // Remplacez par le chemin d'accès à votre logo
-                                /></div>
+                                />
+                </div>
+                <div>
+                    <h1 className="uppercase font-bold">
+                    {selectedSequence === 'seq1' && 'Bulletin de notes - Séquence 1'}
+                    {selectedSequence === 'seq2' && 'Bulletin de notes - Trimestre 1'}
+                    {selectedSequence === 'seq3' && 'Bulletin de notes - Séquence 3'}
+                    {selectedSequence === 'seq4' && 'Bulletin de notes - Trimestre 2'}
+                    {selectedSequence === 'seq5' && 'Bulletin de notes - Séquence 5'}
+                    {selectedSequence === 'seq6' && 'Bulletin de notes - Trimestre 3'}
+                </h1>
+                </div>
+               <div className=" w-[95%]">
+               <StudentInfo 
+                student={selectedStudent} 
+                selectedClass={selectedClass} 
+                totalStudents={studentsData.length} 
+            />
+
+               </div>
+                               
+                
+                            
+                             
 
                 <div className="data" >
                     {isRefreshing ?
@@ -293,33 +344,127 @@ const ReportCards = () => {
                                         {selectedSequence === 'seq1' && <th>ES1</th>}
                                         {selectedSequence === 'seq3' && <th>ES3</th>}
                                         {selectedSequence === 'seq5' && <th>ES5</th>}
-                                        {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <th>TRIM</th>}
+                                        {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <th >TRIM</th>}
                                         <th>Cf</th>
-                                        <th>Total</th>                                      
+                                        <th >Total</th>                                      
                                         <th>Compétence(s) Visée(s)</th>
                                         <th>App./Visa Prof</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {/* Matières Littéraires */}
-                                    <tr>
-                                        <td aria-colspan={'100%'} className="!bg-secondary text-white">Matières Littéraires</td>
-                                    </tr>
-                                    {renderNotesWithPrevious(1)}
+                                    {
+                            renderNotesWithPrevious(1)
+                            
+                        }
+                                   
 
                                     {/* Matières Scientifiques */}
-                                    <tr>
-                                        <td aria-colspan={'100%'} className="!bg-secondary text-white">Matières Scientifiques</td>
-                                    </tr>
-                                    {renderNotesWithPrevious(2)}
+                                    {
+                            renderNotesWithPrevious(2)
+                            
+                        }
+                                 
 
                                     {/* Matières Complémentaires */}
-                                    <tr>
-                                        <td aria-colspan={'100%'} className="!bg-secondary text-white">Matières Complémentaires</td>
-                                    </tr>
-                                    {renderNotesWithPrevious(3)}
+                                    {
+                                        renderNotesWithPrevious(3)
+                            
+                                    }
+                                    
                                 </tbody>
                             </table>
+                            <br >
+                               </br>
+                               <div className=" flex !justify-between items-center w-full">
+  <div className="w-[30%]">
+    <table className="w-full h-full">
+      
+        <tr>
+          <th colSpan={3} className="!bg-secondary text-white uppercase font-bold py-2">
+            BILAN DISCIPLINAIRE
+          </th>
+        </tr>
+      
+      <tbody>
+        <tr>
+          <td className="py-12"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div className="w-[68%]">
+    <table className="w-full h-full">
+      
+        <tr>
+          <th colSpan={4} className="!bg-secondary text-white uppercase font-bold py-2">
+            RESULTATS TRIMESTRIELS
+          </th>
+        </tr>
+      <tbody>
+      
+        <tr>
+          <td className="py-2">
+            <table className="w-full">
+            <tr >
+                <th colSpan={4} className="!bg-black text-white uppercase font-bold ">élève</th>
+            </tr>
+            <tbody>
+              <tr>
+                <td >T.Points</td>
+                <td >T.coef</td>
+                <td >Moy</td>
+                <td>Rg</td>
+              </tr>
+              <tr>
+                <td >354,5</td>
+                <td >28</td>
+                <td >12,66</td>
+                <td>2</td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+          <td className="py-2">
+            <table className="w-full">
+                <tr >
+                    <th colSpan={3} className="!bg-black text-white uppercase font-bold ">classe</th>
+                </tr>
+            <tbody>
+              <tr>
+                <td className="pr-2">Moy</td>
+                <td className="pr-2" >Min</td>
+                <td className="pr-2">Max</td>
+              </tr>
+              <tr>
+                <td className="pr-2">10,24</td>
+                <td className="pr-2">8,01</td>
+                <td className="pr-2" >12,7</td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+          <td className="py-2">
+          <table className="w-full">
+            <tr >
+                <th colSpan={2} className="!bg-black text-white uppercase font-bold ">mention</th>
+            </tr>
+            <tbody>
+            <tr>
+                <td className="pr-4 uppercase">assez-bien</td>
+                
+            </tr>
+          </tbody>
+          </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
                         </div>
                     }
                 </div>
@@ -341,40 +486,34 @@ const ReportCards = () => {
                                         }
                                     </div>
                                 </div> :<div className="overflow-x-auto">
-                                <ReportHeader 
+                                <div className=" w-[95%]" ><ReportHeader 
                                     telephone={user ? user.telephone : ''} 
                                     anneeprecedent={year.year() - 1} 
                                     annee={year.year()} 
                                     logo={logo} // Remplacez par le chemin d'accès à votre logo
                                 />
-                                    
-                                <div className="flex my-5 p-3 !justify-between bg-[#fdba74] w-[100%]">
-                               
-                                    <div style={{ display:'flex',flexDirection:'column' }} className="w-[40%] ">
-                                        <p style={{fontWeight:'bold' ,fontSize:'15px', width:'100%', margin:'0'}}  >Année: {year.year()}</p>
-                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}>Nom et Prénom:  {selectedStudent ? selectedStudent.nom  : ''} {selectedStudent ? selectedStudent.prenom : ''}</p> 
-                                           
-                                        <div  style={{ display:'flex',flexDirection:'row'}}>
-                                             <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}> Né(e) le: {selectedStudent?selectedStudent.dateNaissance :''} </p>
-                                             <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}>à: {selectedStudent?selectedStudent.lieuNaissance :''} </p> 
-                                        </div>
-                                    
-                                    </div>
-                                    <div style={{ display:'flex',flexDirection:'column' }} className="w-[20%] ">
-                                       <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}> Matricule: {selectedStudent ? selectedStudent.matricule :''}</p> 
-                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}>Genre:  {selectedStudent ? selectedStudent.sexe :''}</p> 
-                                    </div>
-                                    <div style={{ display:'flex',flexDirection:'column' }} className="w-[20%] ">
-                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}} > Classe:{ selectedClass ? selectedClass.nom : 'Classe inconnue'}</p>
-                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}> Statut:      {}</p>   
-                                        
-                                    </div>
-                                    <div style={{ display:'flex',flexDirection:'column' }} className="w-[20%] ">
-                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}>Effectif:  {studentsData.length}</p>
-                                        <p style={{fontWeight:'bold', fontSize:'15px',width:'100%', margin:'0'}}> Redt: {selectedStudent ? selectedStudent.Inscriptions[0]?.redoublant:''} </p> 
-                                    </div>
-                            
                                 </div>
+                                <div>
+                    <h1 className="uppercase font-bold">
+                    {selectedSequence === 'seq1' && 'Bulletin de notes - Séquence 1'}
+                    {selectedSequence === 'seq2' && 'Bulletin de notes - Trimestre 1'}
+                    {selectedSequence === 'seq3' && 'Bulletin de notes - Séquence 3'}
+                    {selectedSequence === 'seq4' && 'Bulletin de notes - Trimestre 2'}
+                    {selectedSequence === 'seq5' && 'Bulletin de notes - Séquence 5'}
+                    {selectedSequence === 'seq6' && 'Bulletin de notes - Trimestre 3'}
+                </h1>
+                </div>
+                               
+                               
+                                <div className=" w-[95%]">
+               <StudentInfo 
+                student={selectedStudent} 
+                selectedClass={selectedClass} 
+                totalStudents={studentsData.length} 
+            />
+
+               </div>
+                                
                                 
                             
                                 <br></br>
@@ -391,7 +530,7 @@ const ReportCards = () => {
                                         {selectedSequence === 'seq1' && <th>ES1</th>}
                                         {selectedSequence === 'seq3' && <th>ES3</th>}
                                         {selectedSequence === 'seq5' && <th>ES5</th>}
-                                        {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <th>TRIM</th>}
+                                        {(selectedSequence === 'seq2'||selectedSequence === 'seq4'||selectedSequence === 'seq6') && <th >TRIM</th>}
                                 <th>Cf</th>
                                 <th>Total</th>
                                 <th>Compétence(s) Visée(s)</th>
@@ -399,20 +538,15 @@ const ReportCards = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td aria-colspan={'100%'} className="!bg-secondary text-white">Matières Littéraires</td>
-                            </tr>
-                            {renderNotesWithPrevious(1)}
-
-                            <tr>
-                                <td aria-colspan={'100%'} className="!bg-secondary text-white">Matières Scientifiques</td>
-                            </tr>
+                        {renderNotesWithPrevious(1)}
+                            
                             {renderNotesWithPrevious(2)}
 
-                            <tr>
-                                <td aria-colspan={'100%'} className="!bg-secondary text-white">Matières Complémentaires</td>
-                            </tr>
+                            
+                            
                             {renderNotesWithPrevious(3)}
+                            
+                           
                         </tbody>
                     </table>
                     </div>
