@@ -13,6 +13,9 @@ const Bilan = ({
     getMention
 }) => {
     const formattedDate = dayjs().format('DD/MM/YY'); // Format de la date
+    const safeToFixed = (value, decimals = 2) => {
+        return value != null && !isNaN(value) ? value.toFixed(decimals) : '-';
+    };
 
     return (
         <>
@@ -57,9 +60,9 @@ const Bilan = ({
                 <td>Rg</td>
               </tr>
               <tr>
-                <td >{totalPoints.toFixed(2)}</td>
-                <td >{totalCoef.toFixed(2)}</td>
-                <td >{totalCoef ? (totalPoints / totalCoef).toFixed(2) : '-'}</td>
+                <td>{safeToFixed(totalPoints)}</td>
+                <td>{safeToFixed(totalCoef)}</td>
+                <td>{totalCoef ? safeToFixed(totalPoints / totalCoef) : '-'}</td>
                 <td>{studentRank}</td>
               </tr>
               
@@ -79,9 +82,9 @@ const Bilan = ({
                 <td >Max</td>
               </tr>
               <tr>
-                <td >{classAverage.toFixed(2)}</td>
-                <td >{classMin.toFixed(2)}</td>
-                <td >{classMax.toFixed(2)}</td>
+                <td>{safeToFixed(classAverage)}</td>
+                <td>{safeToFixed(classMin)}</td>
+                <td>{safeToFixed(classMax)}</td>
               </tr>
               </tbody>
             </table>

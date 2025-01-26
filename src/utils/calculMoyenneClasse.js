@@ -7,7 +7,7 @@ export const calculMoyenneClasse = (studentsData, allNotes, dispensations, selec
 
         // Vérifiez si les notes de l'étudiant existent
         if (studentNotes.length === 0) {
-            return { id: student.id, average: null }; // Aucun point, moyenne null
+            return { id: student.id, average: null, name: student.nom, firstName: student.prenom }; // Ajout des noms
         }
 
         studentNotes.forEach(note => {
@@ -34,22 +34,35 @@ export const calculMoyenneClasse = (studentsData, allNotes, dispensations, selec
         });
 
         const average = totalCoef > 0 ? (totalPoints / totalCoef) : 0; // Éviter NaN
-        return { id: student.id, average };
+        return { id: student.id, average, name: student.nom, firstName: student.prenom }; // Ajout des noms
     });
 
-    // Calculer la moyenne générale, min et max
-    const totalAverage = studentAverages.reduce((sum, student) => sum + (student.average || 0), 0);
-    const classAverage = studentAverages.length > 0 ? totalAverage / studentAverages.length : 0;
-    const classMin = Math.min(...studentAverages.map(s => s.average || Infinity));
-    const classMax = Math.max(...studentAverages.map(s => s.average || -Infinity));
+    // Trier les élèves par moyenne décroissante, puis par nom et prénom
+    const sortedStudents = studentAverages.sort((a, b) => {
+        if (b.average !== a.average) {
+            return (b.average || 0) - (a.average || 0);
+        }
+        // Si les moyennes sont égales, trier par nom
+        if (a.name !== b.name) {
+            return a.name.localeCompare(b.name);
+        }
+        // Si les noms sont égaux, trier par prénom
+        return a.firstName.localeCompare(b.firstName);
+    });
 
-    // Trier les élèves par moyenne décroissante
-    const sortedStudents = studentAverages.sort((a, b) => (b.average || 0) - (a.average || 0));
+    // Calculer la moyenne générale, min et max après le tri
+    const totalAverage = sortedStudents.reduce((sum, student) => sum + (student.average || 0), 0);
+    const classAverage = sortedStudents.length > 0 ? totalAverage / sortedStudents.length : 0;
+
+    // Inclure les moyennes égales à zéro dans le calcul de la moyenne minimale
+    const validAverages = sortedStudents.map(s => s.average).filter(avg => avg !== null);
+    const classMin = validAverages.length > 0 ? Math.min(...validAverages) : null;
+    const classMax = Math.max(...validAverages);
 
     return {
         classAverage,
-        classMin: classMin === Infinity ? null : classMin,
-        classMax: classMax === -Infinity ? null : classMax,
+        classMin,
+        classMax,
         sortedStudents,
     };
 };
@@ -58,5 +71,3 @@ const getCoefficient = (matiereId, dispensations) => {
     const dispensation = dispensations.find(d => d.idMatiere === matiereId);
     return dispensation ? dispensation.coefficient : 0;
 };
-
-
