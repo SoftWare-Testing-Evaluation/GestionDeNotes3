@@ -19,13 +19,13 @@ const Bilan = ({
     };
 
     return (
-        <>
+        <div className="">
             <div className=" flex !justify-between items-center w-full">
   <div className="w-[30%]">
     <table className="w-full h-full">
       
         <tr>
-          <th colSpan={3} className="!bg-secondary text-white uppercase font-bold py-3">
+          <th colSpan={3} className="!bg-secondary text-white uppercase font-bold py-2">
             BILAN DISCIPLINAIRE
           </th>
         </tr>
@@ -37,7 +37,7 @@ const Bilan = ({
       </tbody>
     </table>
   </div>
-  <div className="w-[68%]">
+  <div className="w-[66%]">
     <table className="w-full h-full">
       
         <tr>
@@ -55,8 +55,8 @@ const Bilan = ({
             </tr>
             <tbody>
               <tr>
-                <td >T.Points</td>
-                <td >T.coef</td>
+                <td >T.Pts</td>
+                <td >T.cf</td>
                 <td >Moy</td>
                 <td>Rg</td>
               </tr>
@@ -95,11 +95,11 @@ const Bilan = ({
           <td className="py-2">
           <table className="w-full">
             <tr >
-                <th colSpan={2} className="!bg-black text-white uppercase font-bold ">mention</th>
+                <th className="!bg-black text-white uppercase font-bold ">mention</th>
             </tr>
             <tbody>
             <tr>
-                <td className="py-4  uppercase">{getMention(totalCoef ? (totalPoints / totalCoef).toFixed(2) : '-')}</td>
+                <td className=" uppercase">{getMention(totalCoef ? (totalPoints / totalCoef).toFixed(2) : '-')}</td>
                 
             </tr>
           </tbody>
@@ -140,7 +140,7 @@ const Bilan = ({
     </div>
 
 </div>
-        </>
+        </div>
     );
 };
 

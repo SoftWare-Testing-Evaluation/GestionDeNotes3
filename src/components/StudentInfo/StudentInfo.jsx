@@ -12,8 +12,8 @@ const StudentInfo = ({ student, selectedClass, totalStudents }) => {
         return sexe === 'F' ? 'Féminin' : sexe === 'M' ? 'Masculin' : 'Inconnu';
     };
     return (
-         <div className="flex my-5 p-5 !justify-between bg-[#fdba74] w-[100%]">
-            <div style={{ display: 'flex', flexDirection: 'column', width:'25%' }} className="w-[40%] ">
+         <div className="flex  p-2 !justify-between bg-[#fdba74] w-[100%]">
+            <div style={{ display: 'flex', flexDirection: 'column' }} className="w-[40%] ">
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography style={{ fontSize: '15px' }} text={"Nom et Prénom:"} isGradient={false} />
                     <Typography style={{ fontWeight: 'bold', fontSize: '15px' }} text={`${student ? student.nom : ''} ${student ? student.prenom : ''}`} isGradient={false} />
@@ -27,7 +27,7 @@ const StudentInfo = ({ student, selectedClass, totalStudents }) => {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', width:'25%' }} className="w-[20%] ">
+            <div style={{ display: 'flex', flexDirection: 'column',marginRight:'2px' }} className="w-[20%] ">
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography style={{ fontSize: '15px' }} text={"Matricule:"} isGradient={false} />
                     <Typography style={{ fontWeight: 'bold', fontSize: '15px' }} text={student ? student.matricule : ''} isGradient={false} />
@@ -38,7 +38,7 @@ const StudentInfo = ({ student, selectedClass, totalStudents }) => {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', width:'25%' }} className="w-[20%] ">
+            <div style={{ display: 'flex', flexDirection: 'column', marginRight:'2px'}} className="w-[28%] ">
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography style={{ fontSize: '15px' }} text={"Classe:"} isGradient={false} />
                     <Typography style={{ fontWeight: 'bold', fontSize: '15px' }} text={selectedClass ? selectedClass.nom : 'Classe inconnue'} isGradient={false} />
@@ -49,7 +49,7 @@ const StudentInfo = ({ student, selectedClass, totalStudents }) => {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', width:'25%' }} className="w-[20%] ">
+            <div style={{ display: 'flex', flexDirection: 'column',marginRight:'2px' }} className="w-[10%] ">
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography style={{ fontSize: '15px' }} text={"Effectif:"} isGradient={false} />
                     <Typography style={{ fontWeight: 'bold', fontSize: '15px' }} text={totalStudents} isGradient={false} />

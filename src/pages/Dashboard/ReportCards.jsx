@@ -128,7 +128,7 @@ const ReportCards = () => {
         setTimeout(() => {
             localStorage.removeItem('token');
             navigate('/');
-        }, 1000);
+        }, 2000);
     };
 
     const getCompetence = (note) => {
@@ -243,8 +243,8 @@ const ReportCards = () => {
             return (
                 <tr key={index}>
                     <td className="flex flex-col items-center">
-                        <span className="text-2xl font-semibold">{matiere?.designation || 'Matière inconnue'}</span>
-                        <span>{enseignant ? `${enseignantTitre} ${enseignant.nom} ${enseignant.prenom}` : 'Enseignant inconnu'}</span>
+                        <span className="font-size-2px font-semibold">{matiere?.designation || 'Matière inconnue'}</span>
+                        <span className="font-size-2px">{enseignant ? `${enseignantTitre} ${enseignant.nom} ${enseignant.prenom}` : 'Enseignant inconnu'}</span>
 
                     </td>
                     {selectedSequence === 'seq2' && <td>{previousNoteValue !== undefined && previousNoteValue !== null ? previousNoteValue : '-'}</td>}
@@ -262,7 +262,7 @@ const ReportCards = () => {
             );
         }).concat(
             <tr key={`total-${groupe}`}>
-                <td aria-colspan={'100%'}  className="!bg-secondary text-white uppercase font-bold">{groupe === 1 ? 'Matières Littéraires' : groupe === 2 ? 'Matières Scientifiques' : 'Matières Complémentaires'}</td>
+                <td aria-colspan={'200%'}  className="!bg-secondary text-white uppercase font-bold">{groupe === 1 ? 'Matières Littéraires' : groupe === 2 ? 'Matières Scientifiques' : 'Matières Complémentaires'}</td>
                 {(selectedSequence !=='seq2'&&selectedSequence!=='seq4'&&selectedSequence !=='seq6') && <td colspan={3} className="!bg-secondary text-white font-bold" >Totals Points:{totalPointsGroup}</td>}
                                         
                 {(selectedSequence !=='seq2'&&selectedSequence !== 'seq4'&&selectedSequence !=='seq6') && <td colspan={1} className="!bg-secondary text-white font-bold" >Total Coef: {totalCoefGroup}</td>}
@@ -300,14 +300,14 @@ const ReportCards = () => {
                     <div className="actions !w-auto">
                         <Button text={"Rafraîchir"} bg='black' icon={<RefreshOutlined />} height='2.5rem' handler={refresh} isLoading={isRefreshing} />
                     </div>
-                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-110 cursor-pointer py-5 px-10 ml-auto w-[30%]" onClick={handlePrint}>
+                    <div className="flex items-center justify-center bg-emerald-300 hover:bg-emerald-400 [&>*]:hover:text-white ease-in-out duration-300 hover:scale-120 cursor-pointer py-5 px-20 ml-auto w-[30%]" onClick={handlePrint}>
                         <Download className="text-emerald-800  !w-[35px] !h-[35px] " />
                         <span className="text-3xl font-bold">Imprimer</span>
                     </div>
                 </div>
                
 
-                <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[95%]">
+                <div className="flex my-5 p-3 !justify-between bg-orange-200 w-[95%]">
                 
                 <div className="ml-auto w-[30%]">
                     <SNMSelect label={'Classe'} placeholder={'Choisir la classe'} options={classes} handleChange={setSelectedClassId} />
@@ -341,31 +341,24 @@ const ReportCards = () => {
                     </div>
                     
                 </div>
-                <div className=" w-[95%]" ><ReportHeader 
+                <div className=" w-[100%]" ><ReportHeader 
                                     telephone={user ? user.telephone : ''} 
                                     anneeprecedent={year.year() - 1} 
                                     annee={year.year()} 
                                     logo={logo} // Remplacez par le chemin d'accès à votre logo
                                 />
                 </div>
-                <div>
-                    <h1 className="uppercase font-bold">
-                    {selectedSequence === 'seq1' && 'Bulletin de notes - Séquence 1'}
-                    {selectedSequence === 'seq2' && 'Bulletin de notes - Trimestre 1'}
-                    {selectedSequence === 'seq3' && 'Bulletin de notes - Séquence 3'}
-                    {selectedSequence === 'seq4' && 'Bulletin de notes - Trimestre 2'}
-                    {selectedSequence === 'seq5' && 'Bulletin de notes - Séquence 5'}
-                    {selectedSequence === 'seq6' && 'Bulletin de notes - Trimestre 3'}
-                </h1>
+                <div className="text-center">
+                   
+                   {selectedSequence === 'seq1' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase"  text={ 'Bulletin de notes - Séquence 1'} isGradient={false}/>}
+                   {selectedSequence === 'seq2' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase"  text={ 'Bulletin de notes - Trimestre 1'} isGradient={false}/>}
+                   {selectedSequence === 'seq3' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase" text={ 'Bulletin de notes - Séquence 3'} isGradient={false}/>}
+                   {selectedSequence === 'seq4' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase" text={ 'Bulletin de notes - Trimestre2'} isGradient={false}/>}
+                   {selectedSequence === 'seq5' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase" text={ 'Bulletin de notes - Séquence 5'} isGradient={false}/>}
+                   {selectedSequence === 'seq6' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase"  text={ 'Bulletin de notes - Trimestre 3'} isGradient={false}/>}
+               
                 </div>
-               <div className=" w-[95%]">
-               <StudentInfo 
-                student={selectedStudent} 
-                selectedClass={selectedClass} 
-                totalStudents={studentsData.length} 
-            />
-
-               </div>
+               
                                
                 
                             
@@ -374,7 +367,7 @@ const ReportCards = () => {
                 <div className="data" >
                     {isRefreshing ?
                         <div>
-                            <Skeleton variant="rectangular" width='100%' height={55} />
+                            <Skeleton variant="rectangular" width='200%' height={55} />
                             <div style={{ marginTop: '0.2rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }}>
                                 {
                                     Array.apply(null, { length: 25 }).map((value, index) =>
@@ -384,6 +377,14 @@ const ReportCards = () => {
                             </div>
                         </div> :
                         <div className="overflow-x-auto">
+                            <div className=" w-[100%]">
+               <StudentInfo 
+                student={selectedStudent} 
+                selectedClass={selectedClass} 
+                totalStudents={studentsData.length} 
+            />
+
+               </div>
                             <table className="">
                                 <thead>
                                     <tr className="[&>*]:uppercase !bg-secondary">
@@ -427,8 +428,7 @@ const ReportCards = () => {
                                     
                                 </tbody>
                             </table>
-                            <br >
-                               </br>
+                            
                                <Bilan
                 selectedSequence={selectedSequence}
                 totalPoints={totalPoints}
@@ -440,10 +440,12 @@ const ReportCards = () => {
                 getMention={getMention}
                 successRate={successRate}
             />
+            
 
                         </div>
                     }
                 </div>
+                
             </div>
 
             {/* Section d'impression */}
@@ -453,7 +455,7 @@ const ReportCards = () => {
                     <div  className="data">
                         {isRefreshing ?
                                 <div>
-                                    <Skeleton variant="rectangular" width='100%' height={55} />
+                                    <Skeleton variant="rectangular" width='200%' height={55} />
                                     <div style={{ marginTop: '0.2rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr' }}>
                                         {
                                             Array.apply(null, { length: 25 }).map((value, index) =>
@@ -462,26 +464,26 @@ const ReportCards = () => {
                                         }
                                     </div>
                                 </div> :<div className="overflow-x-auto">
-                                <div className=" w-[95%]" ><ReportHeader 
+                                <div className=" w-[100%]" ><ReportHeader 
                                     telephone={user ? user.telephone : ''} 
                                     anneeprecedent={year.year() - 1} 
                                     annee={year.year()} 
                                     logo={logo} // Remplacez par le chemin d'accès à votre logo
                                 />
                                 </div>
-                                <div>
-                    <h1 className="uppercase font-bold">
-                    {selectedSequence === 'seq1' && 'Bulletin de notes - Séquence 1'}
-                    {selectedSequence === 'seq2' && 'Bulletin de notes - Trimestre 1'}
-                    {selectedSequence === 'seq3' && 'Bulletin de notes - Séquence 3'}
-                    {selectedSequence === 'seq4' && 'Bulletin de notes - Trimestre 2'}
-                    {selectedSequence === 'seq5' && 'Bulletin de notes - Séquence 5'}
-                    {selectedSequence === 'seq6' && 'Bulletin de notes - Trimestre 3'}
-                </h1>
+                                <div className="text-center">
+                   
+                   {selectedSequence === 'seq1' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase"  text={ 'Bulletin de notes - Séquence 1'} isGradient={false}/>}
+                   {selectedSequence === 'seq2' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase"  text={ 'Bulletin de notes - Trimestre 1'} isGradient={false}/>}
+                   {selectedSequence === 'seq3' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase" text={ 'Bulletin de notes - Séquence 3'} isGradient={false}/>}
+                   {selectedSequence === 'seq4' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase" text={ 'Bulletin de notes - Trimestre2'} isGradient={false}/>}
+                   {selectedSequence === 'seq5' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase" text={ 'Bulletin de notes - Séquence 5'} isGradient={false}/>}
+                   {selectedSequence === 'seq6' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase"  text={ 'Bulletin de notes - Trimestre 3'} isGradient={false}/>}
+               
                 </div>
                                
                                
-                                <div className=" w-[95%]">
+                                <div className=" w-[100%]">
                <StudentInfo 
                 student={selectedStudent} 
                 selectedClass={selectedClass} 
@@ -525,8 +527,7 @@ const ReportCards = () => {
                            
                         </tbody>
                     </table>
-                    <br >
-                               </br>
+                    
                                <Bilan
                 selectedSequence={selectedSequence}
                 totalPoints={totalPoints}
@@ -536,7 +537,10 @@ const ReportCards = () => {
                 classMin={classMin}
                 classMax={classMax}
                 getMention={getMention}
+                successRate={successRate}
             />
+            
+                   
                     </div>
                     }
                     </div>
