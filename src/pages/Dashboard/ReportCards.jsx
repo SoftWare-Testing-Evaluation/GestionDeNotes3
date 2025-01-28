@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useAlert } from 'react-alert-with-buttons';
-import "../../styles/Dashboard/students.css";
+import "../../styles/Dashboard/reportcards.css";
 import { students } from "../../assets/lordicons/index.js";
 import { Skeleton } from "@mui/material";
 import Button from "../../components/Button/Button.jsx";
@@ -341,13 +341,13 @@ const ReportCards = () => {
                     </div>
                     
                 </div>
-                <div className=" w-[100%]" ><ReportHeader 
+                <ReportHeader 
                                     telephone={user ? user.telephone : ''} 
                                     anneeprecedent={year.year() - 1} 
                                     annee={year.year()} 
                                     logo={logo} // Remplacez par le chemin d'accès à votre logo
                                 />
-                </div>
+                
                 <div className="text-center">
                    
                    {selectedSequence === 'seq1' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase"  text={ 'Bulletin de notes - Séquence 1'} isGradient={false}/>}
@@ -464,13 +464,13 @@ const ReportCards = () => {
                                         }
                                     </div>
                                 </div> :<div className="overflow-x-auto">
-                                <div className=" w-[100%]" ><ReportHeader 
+                               <ReportHeader 
                                     telephone={user ? user.telephone : ''} 
                                     anneeprecedent={year.year() - 1} 
                                     annee={year.year()} 
                                     logo={logo} // Remplacez par le chemin d'accès à votre logo
                                 />
-                                </div>
+                               
                                 <div className="text-center">
                    
                    {selectedSequence === 'seq1' &&<Typography style={{fontSize:'20px',fontWeight:'bold'}} className="uppercase"  text={ 'Bulletin de notes - Séquence 1'} isGradient={false}/>}
@@ -539,12 +539,10 @@ const ReportCards = () => {
                 getMention={getMention}
                 successRate={successRate}
             />
-            
                    
                     </div>
                     }
                     </div>
-                    
                 </div>
             </div>
         </div>

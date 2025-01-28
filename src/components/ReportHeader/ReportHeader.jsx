@@ -21,8 +21,10 @@ const ReportHeader = ({ telephone, anneeprecedent, annee, logo }) => {
                     <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="Délégation Régionale du Sud" isGradient={false} />
                 </div>
             </div>
-            <div style={{ width: '20%',height:'100%'}} >
-                <img src={logo} alt="Logo" style={{ width: '100%', height: '100%'}} />
+            <div style={{ width: '20%',align:'center'
+
+            }} >
+                <img src={logo} alt="Logo" style={{ width: '100%', height: '70%'}} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column',width: '35%',alignItems:'center' ,padding:'5px',height:'100%' }}>
                 <div>

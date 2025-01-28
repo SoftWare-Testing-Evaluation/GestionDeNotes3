@@ -99,7 +99,7 @@ const Bilan = ({
             </tr>
             <tbody>
             <tr>
-                <td className=" uppercase">{getMention(totalCoef ? (totalPoints / totalCoef).toFixed(2) : '-')}</td>
+                <td className="py-4 uppercase">{getMention(totalCoef ? (totalPoints / totalCoef).toFixed(2) : '-')}</td>
                 
             </tr>
           </tbody>
