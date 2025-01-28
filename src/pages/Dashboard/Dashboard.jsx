@@ -68,26 +68,7 @@ const Dashboard = () => {
             fetchStatistics();
         }
     }, [selectedYear, selectedSequence, classesData, dispatch]);
-     // Exemple de données de test
- /*    const classess = ['Sixième (6e)','Cinquième (5e)','Quatrième (4e)','Troisième (3e)','Seconde (2nde)','Première (1ere)', 'Terminale (Tle)']
-     const statistiques = [
-        { Id: 1, value: 0,ref: useRef(0),label: classess[0],
-            icon: home, },
-        { Id: 2, value: 20, ref: useRef(1),label:classess[1],
-            icon: home,},
-        { Id: 3, value: 40,ref: useRef(2),label:classess[2],
-            icon: home, },
-        {Id: 4, value: 60,ref: useRef(3),label: classess[3],
-            icon: home,},
-        {Id: 5, value: 80, ref: useRef(4),label:classess[4],
-            icon: home,},
-        { Id: 6, value: 100 ,ref: useRef(5),label: classess[5],
-            icon: home,},
-    ];
-    const pieData = statistiques.map(stat => ({
-        Id: stat.Id,
-        value: stat.value,
-    }));*/
+
     
 
     const handleLogout = () => {
