@@ -122,7 +122,7 @@ const Bilan = ({
 </div>
 <div className="w-[100%] mt-2">
             <Typography style={{fontSise:'12px'}} text={"NA => {Compétence(s) Non Acquis(es)}; ECA => {Compétence(s) en cours d'acquisition}"} isGradient={false}/> 
-            <Typography style={{fontSise:'12px'}} text={"AC => {Compétence(s) Acquis(es)}; EX => {Expert}"} isGradient={false}/>     
+            <Typography style={{fontSise:'12px'}} text={"A => {Compétence(s) Acquis(es)}; A+ => {Expert}"} isGradient={false}/>     
             <hr style={{ 
         width: '100%',        // S'adapte à la largeur du conteneur
         border: 'none',      // Supprime le style par défaut

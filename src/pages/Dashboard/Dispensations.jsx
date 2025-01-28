@@ -50,7 +50,10 @@ const Dispensations = () => {
 
     const refresh = () => {
         setIsRefreshing(true);
-        dispatch(loadDispensations()).finally(() => setIsRefreshing(false));
+        dispatch(loadDispensations())
+        dispatch(loadEnseignants());
+        dispatch(loadClasses());
+        dispatch(loadMatieres()).finally(() => setIsRefreshing(false));
     };
 
     const handleDelete = async (id) => {

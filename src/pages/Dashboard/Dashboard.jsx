@@ -16,6 +16,7 @@ import { fetchElevesParClasse } from '../../slices/eleveSlice';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { calculerStatistiquesClasses } from '../../utils/calculerStatistiquesClasses.js'; // Assurez-vous d'importer la fonction
 
 const Dashboard = () => {
     const dispatch = useDispatch();
@@ -27,7 +28,17 @@ const Dashboard = () => {
     const tRefs = useRef(10);
     const [isLogingOut, setIsLogingOut] = useState(false);
     const [selectedYear, setSelectedYear] = useState(dayjs(new Date().getFullYear(), 'YYYY')); // Utiliser dayjs ici
+    const [selectedSequence, setSelectedSequence] = useState('seq1'); // État pour la séquence
+    const [classStatistics, setClassStatistics] = useState([]); // État pour stocker les statistiques
 
+    const sequenceOptions = [
+        { id: 'seq1', nom: 'Séquence 1' },
+        { id: 'seq2', nom: 'Séquence 2' },
+        { id: 'seq3', nom: 'Séquence 3' },
+        { id: 'seq4', nom: 'Séquence 4' },
+        { id: 'seq5', nom: 'Séquence 5' },
+        { id: 'seq6', nom: 'Séquence 6' },
+    ];
     // Charger les enseignants et les classes lors du montage du composant
     useEffect(() => {
         dispatch(loadEnseignants());
@@ -46,6 +57,18 @@ const Dashboard = () => {
         dispatch({ type: 'UPDATE_ELEVES_PAR_CLASSE', payload: newElevesParClasse });
     }, [selectedYear, classesData, dispatch]);
 
+    // Charger les statistiques de classe lorsque l'année ou la séquence est sélectionnée
+    useEffect(() => {
+        if (classesData.length > 0) {
+            const fetchStatistics = async () => {
+                const statistics = await calculerStatistiquesClasses(dispatch, classesData, selectedYear.year(), selectedSequence);
+                setClassStatistics(statistics);
+                console.log(classStatistics);
+            };
+            fetchStatistics();
+        }
+    }, [selectedYear, selectedSequence, classesData, dispatch]);
+    
     const handleLogout = () => {
         setIsLogingOut(true);
         setTimeout(() => {
@@ -90,8 +113,8 @@ const Dashboard = () => {
                     </aside>
 
                     <Typography text={'Classes'} className='title text-3xl font-bold text-primary ' />
-                    <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[45%]">
-                <div className="ml-auto w-[100%]">
+                    <div className="flex my-5 p-3 !justify-between bg-orange-100 w-[95%] ">
+                <div className="ml-auto w-[30%]">
 
                     {/* Champ pour sélectionner l'année avec un calendrier */}
                     <p className="text-secondary font-bold">Année</p>
@@ -109,6 +132,18 @@ const Dashboard = () => {
                         />
                     </LocalizationProvider>
                     </div>
+                    <div className="ml-auto w-[40%]">
+                            <p className="text-secondary font-bold">Séquence</p>
+                            <select
+                                value={selectedSequence}
+                                onChange={(e) => setSelectedSequence(e.target.value)}
+                                className="sequence-selector"
+                            >
+                                {sequenceOptions.map(option => (
+                                    <option key={option.id} value={option.id}>{option.nom}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     <section className="numbers">
@@ -142,17 +177,14 @@ const Dashboard = () => {
                                 <PieChart
                                     sx={{
                                         [`& .${pieArcLabelClasses.root}`]: {
-                                            fill: 'white',
+                                            fill: 'red',
                                             fontWeight: 'bold',
                                         }
                                     }}
                                     series={[
                                         {
-                                            data: classesData.map(classe => ({
-                                                nom: classe.nom,
-                                                valeur: eleves.filter(eleve => eleve.idClasseEtude === classe.id && eleve.anneeInscription === selectedYear.year()).length,
-                                            })),
-                                            arcLabel: (item) => `(${item.valeur})`,
+                                            data: classStatistics,
+                                            arcLabel: (item) => `(${item.successRate})`,
                                         }
                                     ]}
                                 />
@@ -164,6 +196,8 @@ const Dashboard = () => {
                                         { data: [35, 44, 24, 23, 23] },
                                         { data: [51, 6, 49, 23, 23] },
                                     ]}
+                                    xAxis={[{ data: ['s1', 's2', 's3'], scaleType: 'band' }]}
+                                    margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
                                 />
                             </aside>
                         </div>

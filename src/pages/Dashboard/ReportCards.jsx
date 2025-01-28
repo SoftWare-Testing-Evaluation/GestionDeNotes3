@@ -239,7 +239,6 @@ const ReportCards = () => {
                     totalCoef +=coefficient;
                 }
                 
-                
             return (
                 <tr key={index}>
                     <td className="flex flex-col items-center">

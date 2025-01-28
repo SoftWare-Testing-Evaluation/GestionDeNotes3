@@ -19,6 +19,7 @@ export const loadDispensations = createAsyncThunk(
 export const addDispenser = createAsyncThunk(
     'dispensations/addDispenser',
     async (dispenserData, { rejectWithValue }) => {
+        console.log(dispenserData);
         try {
             const response = await apiClient.post('/dispensations', dispenserData);
             return response.data; // Retourne la dispensation ajoutée

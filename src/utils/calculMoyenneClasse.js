@@ -1,5 +1,17 @@
 // calculMoyenneClasse.js
 export const calculMoyenneClasse = (studentsData, allNotes, dispensations, selectedSequence) => {
+     // Vérification que studentsData est un tableau
+     if (!Array.isArray(studentsData)) {
+        console.error("studentsData n'est pas un tableau", studentsData);
+        return {
+            classAverage: 0,
+            classMin: null,
+            classMax: null,
+            successRate: 0,
+            sortedStudents: [],
+        };
+    }
+
     const studentAverages = studentsData.map(student => {
         const studentNotes = allNotes.filter(note => note.idEleve === student.id);
         let totalPoints = 0;
