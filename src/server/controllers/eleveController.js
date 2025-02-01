@@ -1,22 +1,23 @@
-// controllers/eleveController.js
 const Eleve = require('../models/Eleve');
 const Inscription = require('../models/Inscription');
 const ClasseEtude = require('../models/ClasseEtude');
 const { Op } = require('sequelize');
 
-
 exports.createEleve = async (req, res) => {
   try {
-    const { idClasseEtude, nom, prenom, dateNaissance, lieuNaissance, nomPere, nomMere, sexe,redoublant} = req.body;
+    const { idClasseEtude,matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere,telPere, nomMere,telMere, sexe, redoublant } = req.body;
 
     // Générer le matricule
-    const anneeInscription = new Date().getFullYear() ;
-    const lettre = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+   const anneeInscription = new Date().getFullYear();
+   /* const lettre = String.fromCharCode(65 + Math.floor(Math.random() * 26));
     const chiffres = Math.floor(1000 + Math.random() * 9000);
-    const matricule = `${anneeInscription% 100}${lettre}${chiffres}`;
+    const matricule = `${anneeInscription % 100}${lettre}${chiffres}`;
+*/
+    // Récupérer l'URL de la photo
+    const urlPhoto = req.file ? `/uploads/${req.file.filename}` : null; // Chemin relatif vers la photo
 
-    const eleve = await Eleve.create({ matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere, nomMere, sexe});
-    
+    const eleve = await Eleve.create({ matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere,telPere, nomMere,telMere, sexe, urlPhoto });
+
     // Récupérer la dernière inscription pour calculer le numéro d'ordre
     const dernierNumeroOrdre = await Inscription.max('numeroDordre', {
       where: {
@@ -25,8 +26,20 @@ exports.createEleve = async (req, res) => {
     });
     const numeroDordre = dernierNumeroOrdre ? dernierNumeroOrdre + 1 : 1;
 
+    // Vérification de l'unicité de l'inscription
+    const existingInscription = await Inscription.findOne({
+      where: {
+        idEleve: eleve.id,
+        anneeInscription
+      }
+    });
+
+    if (existingInscription) {
+      return res.status(400).json({ message: 'L\'élève est déjà inscrit dans une classe pour cette année.' });
+    }
+
     // Créer l'inscription
-    await Inscription.create({ idEleve: eleve.id, idClasseEtude, anneeInscription, numeroDordre,redoublant });
+    await Inscription.create({ idEleve: eleve.id, idClasseEtude, anneeInscription, numeroDordre, redoublant });
 
     res.status(201).json(eleve);
   } catch (error) {
@@ -81,7 +94,7 @@ exports.updateEleve = async (req, res) => {
     let nouvelleInscription = null;
 
     // Vérification du changement de classe
-    if (req.body.idClasseEtude) {
+    if (req.body.idClasseEtude && req.body.annee) {
       const inscriptions = await Inscription.findAll({
         where: { idEleve: eleve.id }
       });
@@ -89,12 +102,24 @@ exports.updateEleve = async (req, res) => {
       const oldIdClassEtude = inscriptions.length > 0 ? inscriptions[inscriptions.length - 1].idClasseEtude : null;
 
       if (oldIdClassEtude !== req.body.idClasseEtude) {
+        // Vérification de l'unicité de l'inscription
+        const existingInscription = await Inscription.findOne({
+          where: {
+            idEleve: eleve.id,
+            anneeInscription: req.body.annee
+          }
+        });
+
+        if (existingInscription) {
+          return res.status(400).json({ message: 'Cet élève est déjà inscrit dans une autre classe pour cette année.' });
+        }
+
         // Création d'une nouvelle inscription
-        const anneeInscription = new Date().getFullYear();
+        const anneeInscription = req.body.annee;
         const dernierNumeroOrdre = await Inscription.max('numeroDordre', {
           where: {
             idClasseEtude: req.body.idClasseEtude,
-            anneeInscription: anneeInscription // Utilisation de l'année actuelle
+            anneeInscription: anneeInscription
           }
         });
         const numeroDordre = dernierNumeroOrdre ? dernierNumeroOrdre + 1 : 1;
@@ -103,7 +128,8 @@ exports.updateEleve = async (req, res) => {
           idEleve: eleve.id,
           idClasseEtude: req.body.idClasseEtude,
           anneeInscription: anneeInscription,
-          numeroDordre
+          numeroDordre,
+          redoublant:"NON"
         });
       }
     }
@@ -122,6 +148,7 @@ exports.updateEleve = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 
 

@@ -33,9 +33,17 @@ const Eleve = sequelize.define('Eleve', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  telPere:{
+    type:DataTypes.STRING,
+    allowNull:true
+  },
   nomMere: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
+  },
+  telMere:{
+    type:DataTypes.STRING,
+    allowNull:true
   },
   sexe: {
     type: DataTypes.STRING,

@@ -3,7 +3,10 @@ const express = require('express');
 const router = express.Router();
 const eleveController = require('../controllers/eleveController');
 
-router.post('/', eleveController.createEleve);
+const upload = require('../middleware/multer');
+
+// Route pour créer un élève avec upload de photo
+router.post('/', upload.single('photo'), eleveController.createEleve);
 router.get('/', eleveController.getEleves);
 router.get('/:id', eleveController.getEleve);
 router.get('/matricule/:matricule', eleveController.getEleveByMatricule);

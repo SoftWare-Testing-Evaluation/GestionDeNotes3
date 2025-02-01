@@ -12,15 +12,19 @@ const StudentForm = ({ onClose }) => {
     const navigate=useNavigate();
     const classes = useSelector((state) => state.classes.classes); // Récupérer les classes depuis le store Redux
     const [formData, setFormData] = useState({
+        matricule:'',
         nom: '',
         prenom: '',
         dateNaissance: '',
         lieuNaissance: '',
         sexe: '',
         nomPere: '',
+        telPere:'',
         nomMere: '',
+        telMere:'',
         redoublant:'',
         idClasseEtude: null, // Cette propriété sera remplie par le Select
+        photo: null, // Ajout du champ pour la photo
     });
 
     const handleChange = (e, fieldName) => {
@@ -30,6 +34,28 @@ const StudentForm = ({ onClose }) => {
             [fieldName]: value
         });
     };
+    const handleFileChange = (e) => {
+        setFormData({
+            ...formData,
+            photo: e.target.files[0] // Stocker le fichier photo
+        });
+    };
+    const handleTelPChange = (value) => {
+            setFormData({
+                ...formData,
+                ['telPere']: value,
+            });   
+    };
+    const handleTelMChange = (value) => {
+        setFormData({
+            ...formData,
+            ['telMere']: value,
+        });   
+};
+
+   
+
+
 
     const handleClassChange = (e) => {
         const value = parseInt(e.target.value, 10); // Convertir en entier
@@ -39,11 +65,17 @@ const StudentForm = ({ onClose }) => {
         });
     };
 
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        
+        
+        
+
         try {
-            await dispatch(addEleve(formData)); // Appeler le thunk pour ajouter l'élève
+            await dispatch(addEleve(formData)); // Envoyer le FormData
+            
+            console.log(formData)
             onClose();
         } catch (error) {
             console.error("Erreur lors de l'ajout de l'élève:", error);
@@ -53,12 +85,20 @@ const StudentForm = ({ onClose }) => {
     return (
         <div className='form'>
             <form>
+            <InputText label={'Matricule'} helper={'Entrer le matricule de l\'étudiant'} type="text" handler={(e) => handleChange(e, 'matricule')} />
                 <InputText label={'Nom'} helper={'Entrer le nom de l\'étudiant'} type="text" handler={(e) => handleChange(e, 'nom')} />
                 <InputText label={'Prenom'} helper={'Entrer le prenom de l\'étudiant'} type="text" handler={(e) => handleChange(e, 'prenom')} />
                 <InputText label={'Date de naissance'} helper={'Entrer la date de naissance de l\'étudiant'} type="date" handler={(e) => handleChange(e, 'dateNaissance')} />
                 <InputText label={'Lieu de naissance'} helper={'Entrer le lieu de naissance de l\'étudiant'} type="text" handler={(e) => handleChange(e, 'lieuNaissance')} />
                 <InputText label={'Nom du père'} helper={'Entrer le nom du père de l\'étudiant'} type="text" handler={(e) => handleChange(e, 'nomPere')} />
+                <InputText label={'Contact du père'} helper={'Enter le contact du père'} type={'tel'} name={'telPere'} handler={handleTelPChange}  />
                 <InputText label={'Nom de la mère'} helper={'Entrer le nom de la mère de l\'étudiant'} type="text" handler={(e) => handleChange(e, 'nomMere')} />
+                <InputText label={'Contact du père'} helper={'Enter le contact de la mère'} type={'tel'} name={'telMere'} handler={handleTelMChange}  />
+                {/* Champ pour la photo */}
+            <div style={{ marginBottom: '20px' }}>
+                <label htmlFor="photo">Photo</label>
+                <input type="file" id="photo" accept="image/*" onChange={handleFileChange} />
+            </div>
                 <div style={{display:'flex', flexDirection:'row', width:'auto', marginBottom:'20px', justifyContent:'space-between'}}>
                     <div  style={{display:'flex', flexDirection:'column', width:'40%'}}>
                     <label htmlFor="classe">Sexe</label>

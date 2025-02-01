@@ -1,5 +1,3 @@
-
-// models/Inscription.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
 const ClasseEtude = require('./ClasseEtude');
@@ -35,11 +33,18 @@ const Inscription = sequelize.define('Inscription', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  redoublant:{
-    type:DataTypes.STRING,
-    allowNull:true,
+  redoublant: {
+    type: DataTypes.STRING,
+    allowNull: true,
     defaultValue: null // Valeur par défaut à NULL
   }
+}, {
+  indexes: [
+    {
+      unique: true,
+      fields: ['idEleve', 'anneeInscription']
+    }
+  ]
 });
 
 Inscription.belongsTo(ClasseEtude, { foreignKey: 'idClasseEtude' });

@@ -78,45 +78,13 @@ const Students = () => {
     const currentClass = classes.find(classe => classe.id === classeId);
     const className = currentClass ? currentClass.nom : null; // Utiliser null si la classe n'est pas trouvée
 
-    /* function TeacherRow({ id, matricule, nom, prenom, dateNaissance, sexe }) {
-        const dispatch = useDispatch();
-        return (
-            <tr>
-                <td>{id}</td>
-                <td>{matricule}</td>
-                <td>{nom}</td>
-                <td>{prenom}</td>
-                <td>{dateNaissance}</td>
-                <td>{sexe}</td>
-                <td className="option-buttons option flex items-center justify-center py-2 gap-2">
-                    <EditOutlined className="bg-emerald-300 text-emerald-800 rounded-full p-2 hover:bg-emerald-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" />
-                    <DeleteOutline className="bg-red-300 text-red-800 rounded-full p-2 hover:bg-red-400 hover:text-white !w-[35px] !h-[35px] ease-in-out duration-300 hover:scale-110 cursor-pointer" onClick={() =>
-                        alert.open({
-                            message: `Really delete, ${nom} ${prenom}?`,
-                            buttons: [
-                                {
-                                    label: "Yes",
-                                    onClick: () => {
-                                        // Implement deleteAdmin function here
-                                        alert.close();
-                                    },
-                                    style: { backgroundColor: "#990000", marginRight: "1rem", color: "white" },
-                                },
-                                {
-                                    label: "No",
-                                    onClick: () => alert.close(),
-                                },
-                            ],
-                        })} />
-                </td>
-            </tr>
-        );
-    } */
-        function TeacherRow({ id,numeroDordre, matricule, nom, prenom, dateNaissance, sexe }) {
+
+        function TeacherRow({ id,numeroDordre, matricule, nom, prenom,nomPere,telPere,nomMere,telMere,dateNaissance, sexe }) {
             const [isEditing, setIsEditing] = useState(false);
-            const [editedStudent, setEditedStudent] = useState({ id, matricule, nom, prenom, dateNaissance, sexe });
+            const [editedStudent, setEditedStudent] = useState({ id, matricule, nom, prenom,telPere,telMere, dateNaissance, sexe });
             const [isNewInscription, setIsNewInscription] = useState(false);
             const [selectedClassId, setSelectedClassId] = useState(null);
+            const [selectedYear, setSelectedYear] = useState(dayjs(new Date().getFullYear())); // Par défaut, l'année actuelle
         
             const handleEdit = () => {
                 setIsEditing(true);
@@ -126,6 +94,7 @@ const Students = () => {
                 const eleveData = { ...editedStudent };
                 if (isNewInscription && selectedClassId) {
                     eleveData.idClasseEtude = selectedClassId; // Ajout de l'id de la classe si c'est une nouvelle inscription
+                    eleveData.annee = selectedYear.year(); // Ajout de l'année d'inscription
                 }
                 await dispatch(updateEleve({ id, eleveData }));
                 setIsEditing(false);
@@ -173,11 +142,22 @@ const Students = () => {
             return (
                 <tr>
                     <td>{numeroDordre}</td>
-                    <td>{matricule}</td>
+                    <td>{isEditing ? <input value={editedStudent.matricule} onChange={(e) => setEditedStudent({ ...editedStudent, matricule: e.target.value })} /> : matricule}</td>
                     <td>{isEditing ? <input value={editedStudent.nom} onChange={(e) => setEditedStudent({ ...editedStudent, nom: e.target.value })} /> : nom}</td>
                     <td>{isEditing ? <input value={editedStudent.prenom} onChange={(e) => setEditedStudent({ ...editedStudent, prenom: e.target.value })} /> : prenom}</td>
                     <td>{dateNaissance}</td>
                     <td>{sexe}</td>
+                    <td >
+                        <span className="font-size-2px font-semibold">{nomPere || 'inconnue'}/</span>
+                        <span className="font-size-2px">{isEditing ? <input value={editedStudent.telPere} onChange={(e) => setEditedStudent({ ...editedStudent, telPere: e.target.value })} /> :telPere}</span>
+
+                    </td>
+                    <td>
+                        <span className="font-size-2px font-semibold">{nomMere || 'inconnue'}/</span>
+                        <span className="font-size-2px">{isEditing ? <input value={editedStudent.telMere} onChange={(e) => setEditedStudent({ ...editedStudent, telMere: e.target.value })} /> :telMere }</span>
+
+                    </td>
+
                     <td className="option-buttons option flex items-center justify-center py-2 gap-2">
                         {isEditing ? (
                             <>
@@ -190,6 +170,7 @@ const Students = () => {
                                     Nouvelle Inscription
                                 </label>
                                 {isNewInscription && (
+                                    <>
                                     <Select
                                         placeholder={'Choisir la classe'}
                                         indicator={<KeyboardArrowDown />}
@@ -199,6 +180,20 @@ const Students = () => {
                                             <Option value={elt.id} key={elt.id}>{elt.nom}</Option>
                                         ))}
                                     </Select>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                            label="Sélectionnez une année"
+                                            views={['year']}
+                                            value={selectedYear}
+                                            onChange={(newValue) => {
+                                                if (newValue) {
+                                                    setSelectedYear(newValue);
+                                                }
+                                            }}
+                                            renderInput={(params) => <input {...params} className="year-selector" />}
+                                        />
+                                    </LocalizationProvider>
+                                </>
                                 )}
                                 <Button text="Sauvegarder" handler={handleSave} />
                                 <Button text="Annuler" handler={() => setIsEditing(false)} />
@@ -305,6 +300,8 @@ const Students = () => {
                                         <th>Prenom(s)</th>
                                         <th>Date de Naissance</th>
                                         <th>Sexe</th>
+                                        <th>pere/tel</th>
+                                        <th>Mere/tel</th>
                                         <th>Option</th>
                                     </tr>
                                 </thead>
