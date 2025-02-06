@@ -2,21 +2,46 @@ const Eleve = require('../models/Eleve');
 const Inscription = require('../models/Inscription');
 const ClasseEtude = require('../models/ClasseEtude');
 const { Op } = require('sequelize');
+const cloudinary = require('../config/cloudinary');
+const sharp = require('sharp');
 
 exports.createEleve = async (req, res) => {
   try {
-    const { idClasseEtude,matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere,telPere, nomMere,telMere, sexe, redoublant } = req.body;
-
+    const { idClasseEtude,matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere,telPere, nomMere,telMere, sexe, redoublant,images } = req.body;
+console.log(req.body);
     // Générer le matricule
    const anneeInscription = new Date().getFullYear();
    /* const lettre = String.fromCharCode(65 + Math.floor(Math.random() * 26));
     const chiffres = Math.floor(1000 + Math.random() * 9000);
     const matricule = `${anneeInscription % 100}${lettre}${chiffres}`;
 */
-    // Récupérer l'URL de la photo
-    const urlPhoto = req.file ? `/uploads/${req.file.filename}` : null; // Chemin relatif vers la photo
+console.log('Contenu de "images" dans req.body:', images);
+   // Récupérer l'URL de la photo
 
-    const eleve = await Eleve.create({ matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere,telPere, nomMere,telMere, sexe, urlPhoto });
+   console.log(req.files); // Vérifiez les fichiers reçusconst images = req.files; // Utilisez multer pour gérer les fichiers
+  
+   /// Créer l'élève sans les images
+   const eleve = await Eleve.create({
+     matricule, nom, prenom, dateNaissance, lieuNaissance,
+     sexe, nomPere, telPere, nomMere, telMere, redoublant
+   });
+
+   // Vérifier si des images ont été envoyées
+   if (req.files && req.files.length > 0) {
+     try {
+       // Télécharger les images sur Cloudinary
+       const imageUrls = await Promise.all(req.files.map(async (image) => {
+         const result = await cloudinary.uploader.upload(image.buffer, { resource_type: 'auto' });
+         return result.secure_url;
+       }));
+
+       // Mettre à jour l'élève avec les URLs des images
+       await eleve.update({ urlPhoto: imageUrls[0] });
+     } catch (error) {
+       console.log('Erreur lors de l\'upload des images sur Cloudinary :', error);
+       return res.status(500).json({ message: 'Erreur lors de l\'upload des images' });
+     }
+   }
 
     // Récupérer la dernière inscription pour calculer le numéro d'ordre
     const dernierNumeroOrdre = await Inscription.max('numeroDordre', {

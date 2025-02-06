@@ -85,7 +85,10 @@ const Students = () => {
             const [isNewInscription, setIsNewInscription] = useState(false);
             const [selectedClassId, setSelectedClassId] = useState(null);
             const [selectedYear, setSelectedYear] = useState(dayjs(new Date().getFullYear())); // Par défaut, l'année actuelle
-        
+         // Fonction pour formater la date
+     const formatDate = (date) => {
+        return dayjs(date).format('DD/MM/YYYY');
+    };
             const handleEdit = () => {
                 setIsEditing(true);
             };
@@ -145,7 +148,7 @@ const Students = () => {
                     <td>{isEditing ? <input value={editedStudent.matricule} onChange={(e) => setEditedStudent({ ...editedStudent, matricule: e.target.value })} /> : matricule}</td>
                     <td>{isEditing ? <input value={editedStudent.nom} onChange={(e) => setEditedStudent({ ...editedStudent, nom: e.target.value })} /> : nom}</td>
                     <td>{isEditing ? <input value={editedStudent.prenom} onChange={(e) => setEditedStudent({ ...editedStudent, prenom: e.target.value })} /> : prenom}</td>
-                    <td>{dateNaissance}</td>
+                    <td>{formatDate(dateNaissance)}</td>
                     <td>{sexe}</td>
                     <td >
                         <span className="font-size-2px font-semibold">{nomPere || 'inconnue'}/</span>

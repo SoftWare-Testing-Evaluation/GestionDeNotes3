@@ -15,8 +15,9 @@ export const fetchEleveById = createAsyncThunk('eleves/fetchEleveById', async (i
 });
 
 // Thunk pour ajouter un nouvel élève
-export const addEleve = createAsyncThunk('eleves/addEleve', async (eleveData) => {
-    const response = await apiClient.post('/eleves', eleveData);
+export const addEleve = createAsyncThunk('eleves/addEleve', async (formData) => {
+    console.log(formData);
+    const response = await apiClient.post('/eleves', formData);
     return response.data;
 });
 

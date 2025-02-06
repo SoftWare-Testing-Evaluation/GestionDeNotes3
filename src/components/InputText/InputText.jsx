@@ -7,7 +7,7 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css'
 import './input_text.css';
 
-const InputText = ({label, helper, icon, type, handler, name, isTextArea, isCategory=false,defaultValue, className}) => {
+const InputText = ({label, helper, icon, type, handler, name, isTextArea, isCategory=false,defaultValue, className,value}) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const togglePasswordVisibility = () => {
@@ -48,6 +48,7 @@ const InputText = ({label, helper, icon, type, handler, name, isTextArea, isCate
                 placeholder={helper}
                 type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
                 onChange={handler}
+                value={value}
                 name={name}
                 className="input-field"
                 autoComplete={name}

@@ -1,6 +1,7 @@
 import React from 'react';
 import Typography from '../Typography/Typography.jsx';
 import dayjs from 'dayjs';
+import { FaUserCircle } from 'react-icons/fa'; // Importer une icône de personne
 
 const StudentInfo = ({ student, selectedClass, totalStudents }) => {
      // Fonction pour formater la date
@@ -13,7 +14,7 @@ const StudentInfo = ({ student, selectedClass, totalStudents }) => {
     };
     return (
          <div className="flex  p-2 !justify-between bg-[#fdba74] w-[100%]">
-            <div style={{ display: 'flex', flexDirection: 'column' }} className="w-[40%] ">
+            <div style={{ display: 'flex', flexDirection: 'column' }} className="w-[35%] ">
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography style={{ fontSize: '15px' }} text={"Nom et Prénom:"} isGradient={false} />
                     <Typography style={{ fontWeight: 'bold', fontSize: '15px' }} text={`${student ? student.nom : ''} ${student ? student.prenom : ''}`} isGradient={false} />
@@ -38,7 +39,7 @@ const StudentInfo = ({ student, selectedClass, totalStudents }) => {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', marginRight:'2px'}} className="w-[28%] ">
+            <div style={{ display: 'flex', flexDirection: 'column', marginRight:'2px'}} className="w-[25%] ">
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography style={{ fontSize: '15px' }} text={"Classe:"} isGradient={false} />
                     <Typography style={{ fontWeight: 'bold', fontSize: '15px' }} text={selectedClass ? selectedClass.nom : 'Classe inconnue'} isGradient={false} />
@@ -57,6 +58,26 @@ const StudentInfo = ({ student, selectedClass, totalStudents }) => {
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography style={{ fontSize: '15px' }} text={"Redt: "} isGradient={false} />
                     <Typography style={{ fontWeight: 'bold', fontSize: '15px' }} text={student ? student.Inscriptions[0]?.redoublant : ''} isGradient={false} />
+                </div>
+            </div>
+             {/* Cadre pour la photo */}
+             <div className="w-[10%] flex justify-center items-center">
+                <div style={{
+                    width: '100px',
+                    height: '130px',
+                    border: '2px solid #000',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                    backgroundColor: '#f0f0f0'
+                }}>
+                    {student && student.urlPhoto ? (
+                        <img src={student.urlPhoto} alt="Photo de l'élève" style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
+                    ) : (
+                        <FaUserCircle size={60} color="#ccc" /> // Icône de personne si pas de photo
+                    )}
                 </div>
             </div>
         </div>

@@ -27,7 +27,7 @@ app.use(cors({
 app.use('/auth', require('./routes/authRoutes')); // Route pour l'authentification
 app.use('/classeEtude', authMiddleware, require('./routes/classeEtudeRoutes'));
 app.use('/prefetEtudes',require('./routes/prefetEtudeRoutes')); // Routes pour les préfets d'étude
-app.use('/eleves', authMiddleware, require('./routes/eleveRoutes')); // Routes pour les eleves
+app.use('/eleves', require('./routes/eleveRoutes')); // Routes pour les eleves
 app.use('/enseignants', authMiddleware, require('./routes/enseignantRoutes')); // Routes pour les enseignants
 app.use('/matieres', authMiddleware, require('./routes/matiereRoutes')); // Routes pour les matières
 app.use('/dispensations', authMiddleware, require('./routes/dispenserRoutes')); // Routes pour les dispensations
