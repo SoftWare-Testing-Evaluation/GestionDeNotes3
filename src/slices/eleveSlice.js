@@ -17,15 +17,32 @@ export const fetchEleveById = createAsyncThunk('eleves/fetchEleveById', async (i
 // Thunk pour ajouter un nouvel élève
 export const addEleve = createAsyncThunk('eleves/addEleve', async (formData) => {
     console.log(formData);
-    const response = await apiClient.post('/eleves', formData);
+    const response = await apiClient.post('/eleves', formData,{
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response.data;
 });
 
 // Thunk pour mettre à jour un élève
-export const updateEleve = createAsyncThunk('eleves/updateEleve', async ({ id, eleveData }) => {
-    const response = await apiClient.put(`/eleves/${id}`, eleveData);
-    return response.data;
-});
+export const updateEleve = createAsyncThunk(
+    'eleves/updateEleve',
+    async ({ id, formData }, { rejectWithValue }) => {
+        console.log(formData);
+        try {
+            const response = await apiClient.put(`/eleves/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Spécifier le type de contenu
+                },
+            });
+            return response.data; // Retourner les données mises à jour
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 
 // Thunk pour supprimer un élève
 export const deleteEleve = createAsyncThunk('eleves/deleteEleve', async (id) => {

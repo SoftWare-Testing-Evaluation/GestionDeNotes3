@@ -25,10 +25,9 @@ const StudentForm = ({ onClose }) => {
     const [telMere, setTelMere] = useState('');
     const [redoublant, setRedoublant] = useState('');
     const [idClasseEtude, setIdClasseEtude] = useState('');
-    const [images, setImages] = useState([]);
+    const [image, setImage] = useState(null); // Changer ici
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
     const handleTelPChange = (value) => {
         setTelPere(value);     
 };
@@ -36,8 +35,8 @@ const handleTelMChange = (value) => {
     setTelMere(value);   
 };
 const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImages(files); // Stocker directement les fichiers
+    const file = e.target.files[0]; // Prendre le premier fichier
+    setImage(file); // Stocker le fichier
 };
 
 const handleSubmit = async (e) => {
@@ -57,11 +56,11 @@ const handleSubmit = async (e) => {
     formDataToSend.append('redoublant', redoublant);
     formDataToSend.append('idClasseEtude', idClasseEtude);
 
-    // Ajout des images individuellement
-    images.forEach((image) => {
-        console.log(image)
-        formDataToSend.append('images', image); // Ajoute chaque image
-    });
+   
+        // Ajout de l'image
+        if (image) {
+            formDataToSend.append('images', image); // Ajoutez l'image
+        }
 
     // Vérifiez le contenu de formDataToSend
     for (const entry of formDataToSend.entries()) {
@@ -82,7 +81,7 @@ const handleSubmit = async (e) => {
 
     return (
         <div className='form'>
-            <form onSubmit={handleSubmit}  enctype = " multipart/form-data ">
+            <form onSubmit={handleSubmit}   encType="multipart/form-data">
                 <InputText label={'Matricule'} helper={'Entrer le matricule de l\'étudiant'} type="text" value={matricule} handler={(e) => setMatricule(e.target.value)} />
                 <InputText label={'Nom'} helper={'Entrer le nom de l\'étudiant'} type="text" value={nom} handler={(e) => setNom(e.target.value)} />
                 <InputText label={'Prénom'} helper={'Entrer le prénom de l\'étudiant'} type="text" value={prenom} handler={(e) => setPrenom(e.target.value)} />
@@ -95,15 +94,15 @@ const handleSubmit = async (e) => {
 
                 <div style={{ marginBottom: '20px' }}>
                     <label htmlFor="photo">Photos</label>
-                    <input type="file" accept="image/*" multiple onChange={handleFileChange} />
+                    <input type="file" accept="image/*" onChange={handleFileChange} />
                 </div>
 
                 <div className="images-preview-container">
-                    {images.map((image, index) => (
-                        <div key={index} className="image-preview">
-                            <img src={URL.createObjectURL(image)} alt={`preview ${index}`} />
+                    {image && (
+                        <div className="image-preview">
+                            <img src={URL.createObjectURL(image)} alt="preview" /> {/* Afficher la première image */}
                         </div>
-                    ))}
+                    )}
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '20px', justifyContent: 'space-between' }}>

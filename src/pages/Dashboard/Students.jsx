@@ -79,101 +79,147 @@ const Students = () => {
     const className = currentClass ? currentClass.nom : null; // Utiliser null si la classe n'est pas trouvée
 
 
-        function TeacherRow({ id,numeroDordre, matricule, nom, prenom,nomPere,telPere,nomMere,telMere,dateNaissance, sexe }) {
-            const [isEditing, setIsEditing] = useState(false);
-            const [editedStudent, setEditedStudent] = useState({ id, matricule, nom, prenom,telPere,telMere, dateNaissance, sexe });
-            const [isNewInscription, setIsNewInscription] = useState(false);
-            const [selectedClassId, setSelectedClassId] = useState(null);
-            const [selectedYear, setSelectedYear] = useState(dayjs(new Date().getFullYear())); // Par défaut, l'année actuelle
-         // Fonction pour formater la date
-     const formatDate = (date) => {
-        return dayjs(date).format('DD/MM/YYYY');
-    };
-            const handleEdit = () => {
-                setIsEditing(true);
-            };
-        
-            const handleSave = async () => {
-                const eleveData = { ...editedStudent };
-                if (isNewInscription && selectedClassId) {
-                    eleveData.idClasseEtude = selectedClassId; // Ajout de l'id de la classe si c'est une nouvelle inscription
-                    eleveData.annee = selectedYear.year(); // Ajout de l'année d'inscription
-                }
-                await dispatch(updateEleve({ id, eleveData }));
-                setIsEditing(false);
-            };
-        
-            const handleDelete = () => {
-                alert.open({
-                    message: `Voulez-vous vraiment supprimer ${nom} ${prenom} ?`,
-                    buttons: [
-                        {
-                            label: "Oui",
-                            onClick: async () => {
-                                await dispatch(deleteEleve(id));
-                                alert.close();
-                            },
-                            style: { backgroundColor: "#990000", marginRight: "1rem", color: "white" },
+    function TeacherRow({ id, numeroDordre, matricule, nom, prenom, nomPere, telPere, nomMere, telMere, dateNaissance, sexe }) {
+        const [isEditing, setIsEditing] = useState(false);
+        const [editedStudent, setEditedStudent] = useState({ id, matricule, nom, prenom, telPere, telMere, dateNaissance, sexe });
+        const [isNewInscription, setIsNewInscription] = useState(false);
+        const [selectedClassId, setSelectedClassId] = useState(null);
+        const [selectedYear, setSelectedYear] = useState(dayjs(new Date().getFullYear())); // Par défaut, l'année actuelle
+        const [selectedFile, setSelectedFile] = useState(null); // État pour le fichier sélectionné
+    
+        const formatDate = (date) => {
+            return dayjs(date).format('DD/MM/YYYY');
+        };
+    
+        const handleEdit = () => {
+            setIsEditing(true);
+        };
+    
+        const handleSave = async () => {
+            const eleveData = { ...editedStudent };
+    
+            // Si une nouvelle inscription est nécessaire, ajoutez les détails
+            if (isNewInscription && selectedClassId) {
+                eleveData.idClasseEtude = selectedClassId; // Ajout de l'id de la classe si c'est une nouvelle inscription
+                eleveData.annee = selectedYear.year(); // Ajout de l'année d'inscription
+            }
+    
+            console.log(eleveData)
+            // Créer un FormData pour inclure le fichier image
+            const formData = new FormData();
+            if (selectedFile) {
+                formData.append('images', selectedFile); // Ajouter l'image si elle est fournie
+            }
+            Object.keys(eleveData).forEach(key => {
+                formData.append(key, eleveData[key]);
+            });
+    
+            await dispatch(updateEleve({ id, formData })); // Passer formData à la fonction de mise à jour
+            setIsEditing(false);
+        };
+    
+        const handleDelete = () => {
+            alert.open({
+                message: `Voulez-vous vraiment supprimer ${nom} ${prenom} ?`,
+                buttons: [
+                    {
+                        label: "Oui",
+                        onClick: async () => {
+                            await dispatch(deleteEleve(id));
+                            alert.close();
                         },
-                        {
-                            label: "Non",
-                            onClick: () => alert.close(),
+                        style: { backgroundColor: "#990000", marginRight: "1rem", color: "white" },
+                    },
+                    {
+                        label: "Non",
+                        onClick: () => alert.close(),
+                    },
+                ],
+            });
+        };
+    
+        const handleRemoveFromClass = () => {
+            alert.open({
+                message: `Voulez-vous vraiment retirer ${nom} ${prenom} de cette classe ?`,
+                buttons: [
+                    {
+                        label: "Oui",
+                        onClick: async () => {
+                            await dispatch(removeEleveFromClass({ idEleve: id, idClasse: classeId }));
+                            alert.close();
                         },
-                    ],
-                });
-            };
-            const handleRemoveFromClass = () => {
-                alert.open({
-                    message: `Voulez-vous vraiment retirer ${nom} ${prenom} de cette classe ?`,
-                    buttons: [
-                        {
-                            label: "Oui",
-                            onClick: async () => {
-                                await dispatch(removeEleveFromClass({ idEleve: id, idClasse: classeId }));
-                                alert.close();
-                            },
-                            style: { backgroundColor: "#990000", marginRight: "1rem", color: "white" },
-                        },
-                        {
-                            label: "Non",
-                            onClick: () => alert.close(),
-                        },
-                    ],
-                });
-            };
-        
-            return (
-                <tr>
-                    <td>{numeroDordre}</td>
-                    <td>{isEditing ? <input value={editedStudent.matricule} onChange={(e) => setEditedStudent({ ...editedStudent, matricule: e.target.value })} /> : matricule}</td>
-                    <td>{isEditing ? <input value={editedStudent.nom} onChange={(e) => setEditedStudent({ ...editedStudent, nom: e.target.value })} /> : nom}</td>
-                    <td>{isEditing ? <input value={editedStudent.prenom} onChange={(e) => setEditedStudent({ ...editedStudent, prenom: e.target.value })} /> : prenom}</td>
-                    <td>{formatDate(dateNaissance)}</td>
-                    <td>{sexe}</td>
-                    <td >
-                        <span className="font-size-2px font-semibold">{nomPere || 'inconnue'}/</span>
-                        <span className="font-size-2px">{isEditing ? <input value={editedStudent.telPere} onChange={(e) => setEditedStudent({ ...editedStudent, telPere: e.target.value })} /> :telPere}</span>
-
-                    </td>
-                    <td>
-                        <span className="font-size-2px font-semibold">{nomMere || 'inconnue'}/</span>
-                        <span className="font-size-2px">{isEditing ? <input value={editedStudent.telMere} onChange={(e) => setEditedStudent({ ...editedStudent, telMere: e.target.value })} /> :telMere }</span>
-
-                    </td>
-
-                    <td className="option-buttons option flex items-center justify-center py-2 gap-2">
-                        {isEditing ? (
-                            <>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={isNewInscription}
-                                        onChange={(e) => setIsNewInscription(e.target.checked)}
-                                    />
-                                    Nouvelle Inscription
-                                </label>
-                                {isNewInscription && (
-                                    <>
+                        style: { backgroundColor: "#990000", marginRight: "1rem", color: "white" },
+                    },
+                    {
+                        label: "Non",
+                        onClick: () => alert.close(),
+                    },
+                ],
+            });
+        };
+    
+        const handleFileChange = (e) => {
+            setSelectedFile(e.target.files[0]); // Stocker le fichier sélectionné
+        };
+    
+        const removeSelectedFile = () => {
+            setSelectedFile(null); // Réinitialiser le fichier sélectionné
+        };
+    
+        return (
+            <tr>
+                <td>{numeroDordre}</td>
+                <td>{isEditing ? <input value={editedStudent.matricule} onChange={(e) => setEditedStudent({ ...editedStudent, matricule: e.target.value })} /> : matricule}</td>
+                <td>{isEditing ? <input value={editedStudent.nom} onChange={(e) => setEditedStudent({ ...editedStudent, nom: e.target.value })} /> : nom}</td>
+                <td>
+                    {isEditing ? (
+                        <div>
+                            <input
+                                value={editedStudent.prenom}
+                                onChange={(e) => setEditedStudent({ ...editedStudent, prenom: e.target.value })}
+                            />
+                             <input
+                type="file"
+                id="file-upload" // Ajoutez un id à l'input
+                accept="image/*"
+                onChange={handleFileChange}
+                
+            />
+           
+                            {selectedFile && (
+                                <div className="image-preview">
+                                    <img src={URL.createObjectURL(selectedFile)} alt="Aperçu" style={{ width: '100px', height: '100px' }} />
+                                    <Button  text={"Annuler l'image "} handler={removeSelectedFile}/>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        prenom
+                    )}
+                </td>
+                <td>{formatDate(dateNaissance)}</td>
+                <td>{sexe}</td>
+                <td>
+                    <span className="font-size-2px font-semibold">{nomPere || 'inconnue'}/</span>
+                    <span className="font-size-2px">{isEditing ? <input value={editedStudent.telPere} onChange={(e) => setEditedStudent({ ...editedStudent, telPere: e.target.value })} /> : telPere}</span>
+                </td>
+                <td>
+                    <span className="font-size-2px font-semibold">{nomMere || 'inconnue'}/</span>
+                    <span className="font-size-2px">{isEditing ? <input value={editedStudent.telMere} onChange={(e) => setEditedStudent({ ...editedStudent, telMere: e.target.value })} /> : telMere}</span>
+                </td>
+                <td className="option-buttons option flex items-center justify-center py-2 gap-2">
+                    {isEditing ? (
+                        <>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={isNewInscription}
+                                    onChange={(e) => setIsNewInscription(e.target.checked)}
+                                />
+                                Nouvelle Inscription
+                            </label>
+                            {isNewInscription && (
+                                <>
                                     <Select
                                         placeholder={'Choisir la classe'}
                                         indicator={<KeyboardArrowDown />}
@@ -197,22 +243,22 @@ const Students = () => {
                                         />
                                     </LocalizationProvider>
                                 </>
-                                )}
-                                <Button text="Sauvegarder" handler={handleSave} />
-                                <Button text="Annuler" handler={() => setIsEditing(false)} />
-                                <Button text="Retirer de la classe" handler={handleRemoveFromClass} />
-                            </>
-                        ) : (
-                            <>
-                                <EditOutlined onClick={handleEdit} className="bg-emerald-300 cursor-pointer" />
-                                <DeleteOutline onClick={handleDelete} className="bg-red-300 cursor-pointer" />
-                            </>
-                        )}
-                    </td>
-                </tr>
-            );
-        }
-        
+                            )}
+                            <Button text="Sauvegarder" handler={handleSave} />
+                            <Button text="Annuler" handler={() => setIsEditing(false)} />
+                            <Button text="Retirer de la classe" handler={handleRemoveFromClass} />
+                        </>
+                    ) : (
+                        <>
+                            <EditOutlined onClick={handleEdit} className="bg-emerald-300 cursor-pointer" />
+                            <DeleteOutline onClick={handleDelete} className="bg-red-300 cursor-pointer" />
+                        </>
+                    )}
+                </td>
+            </tr>
+        );
+    }
+    
         
          
         

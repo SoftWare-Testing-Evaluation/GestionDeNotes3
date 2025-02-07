@@ -7,7 +7,9 @@ const sharp = require('sharp');
 
 exports.createEleve = async (req, res) => {
   try {
-    const { idClasseEtude,matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere,telPere, nomMere,telMere, sexe, redoublant,images } = req.body;
+     
+
+    const { idClasseEtude,matricule, nom, prenom, dateNaissance, lieuNaissance, nomPere,telPere, nomMere,telMere, sexe, redoublant } = req.body;
 console.log(req.body);
     // Générer le matricule
    const anneeInscription = new Date().getFullYear();
@@ -15,10 +17,10 @@ console.log(req.body);
     const chiffres = Math.floor(1000 + Math.random() * 9000);
     const matricule = `${anneeInscription % 100}${lettre}${chiffres}`;
 */
-console.log('Contenu de "images" dans req.body:', images);
+console.log('Contenu de "images" dans req.body:', req.body.images);
    // Récupérer l'URL de la photo
-
-   console.log(req.files); // Vérifiez les fichiers reçusconst images = req.files; // Utilisez multer pour gérer les fichiers
+const image=req.file;
+   console.log('Contenu de "images" dans req.files:',image); // Vérifiez les fichiers reçusconst images = req.files; // Utilisez multer pour gérer les fichiers
   
    /// Créer l'élève sans les images
    const eleve = await Eleve.create({
@@ -27,16 +29,25 @@ console.log('Contenu de "images" dans req.body:', images);
    });
 
    // Vérifier si des images ont été envoyées
-   if (req.files && req.files.length > 0) {
-     try {
-       // Télécharger les images sur Cloudinary
-       const imageUrls = await Promise.all(req.files.map(async (image) => {
-         const result = await cloudinary.uploader.upload(image.buffer, { resource_type: 'auto' });
-         return result.secure_url;
-       }));
+    // Vérifier si une image a été envoyée
+    if (image) { // Utilisez req.file au lieu de req.files
+      try {
+        // Télécharger l'image sur Cloudinary
+        const result = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+            if (error) {
+              console.error("Erreur lors de l'upload de l'image :", error);
+              reject(error);
+            } else {
+              resolve(result.secure_url);
+            }
+          });
+          stream.end(image.buffer); // Utiliser req.file
+        });
 
-       // Mettre à jour l'élève avec les URLs des images
-       await eleve.update({ urlPhoto: imageUrls[0] });
+        console.log(result);
+        // Mettre à jour l'élève avec l'URL de l'image
+        await eleve.update({ urlPhoto: result }); // Mettre à jour avec une seule URL
      } catch (error) {
        console.log('Erreur lors de l\'upload des images sur Cloudinary :', error);
        return res.status(500).json({ message: 'Erreur lors de l\'upload des images' });
@@ -112,6 +123,46 @@ exports.updateEleve = async (req, res) => {
     if (!eleve) {
       return res.status(404).json({ message: 'Élève non trouvé' });
     }
+    console.log(req.body)
+     // Vérifier si une nouvelle image a été fournie
+     const image = req.file; // Utilisez req.file pour récupérer l'image
+     console.log('Contenu de "images" dans req.files:',image); // Vérifiez les fichiers reçusconst images = req.files; // Utilisez multer pour gérer les fichiers
+     // Si une image est fournie, uploader la nouvelle image et supprimer l'ancienne
+     if (image) {
+       try {
+         // Supprimer l'ancienne image de Cloudinary
+         
+         const oldImageUrl = eleve.urlPhoto; // Récupérer l'URL de l'ancienne image
+         if(oldImageUrl){
+          console.log("url de l'ancienne image: ", oldImageUrl)
+         const publicId = oldImageUrl.split('/').pop().split('.')[0]; // Extraire le public ID de l'URL
+         console.log("le public ID de l'URL: ", publicId)
+
+         await cloudinary.uploader.destroy(publicId); // Supprimer l'ancienne image
+
+         }
+         
+ 
+         // Télécharger la nouvelle image sur Cloudinary
+         const result = await new Promise((resolve, reject) => {
+           const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+             if (error) {
+               console.error("Erreur lors de l'upload de l'image :", error);
+               reject(error);
+             } else {
+               resolve(result.secure_url);
+             }
+           });
+           stream.end(image.buffer);
+         });
+ 
+         // Mettre à jour l'élève avec l'URL de la nouvelle image
+         await eleve.update({ urlPhoto: result });
+       } catch (error) {
+         console.log('Erreur lors de l\'upload de l\'image sur Cloudinary :', error);
+         return res.status(500).json({ message: 'Erreur lors de l\'upload de l\'image' });
+       }
+     }
 
     // Mise à jour des informations de l'élève
     await eleve.update(req.body);
@@ -158,7 +209,7 @@ exports.updateEleve = async (req, res) => {
         });
       }
     }
-
+console("donnee de l'eleve:",eleve)
     // Retourner l'élève avec la nouvelle inscription si elle a été créée
     if (nouvelleInscription) {
       return res.status(200).json({

@@ -10,12 +10,12 @@ const authMiddleware = require('../middleware/authMiddleware');
 const storage = multer.memoryStorage(); // Utiliser la mémoire pour le stockage temporaire
 const upload = multer({ storage });
 // Route pour créer un élève avec upload de photo
-router.post('/',authMiddleware, upload.array('images',10), eleveController.createEleve);
+router.post('/',authMiddleware, upload.single('images'), eleveController.createEleve);
 router.get('/',authMiddleware, eleveController.getEleves);
 router.get('/:id',authMiddleware, eleveController.getEleve);
 router.get('/matricule/:matricule',authMiddleware, eleveController.getEleveByMatricule);
 router.get('/classe/:idClasseEtude/:annee',authMiddleware, eleveController.getElevesParClasse);
-router.put('/:id',authMiddleware, eleveController.updateEleve);
+router.put('/:id',authMiddleware,upload.single('images'), eleveController.updateEleve);
 router.delete('/:id',authMiddleware, eleveController.deleteEleve);
 router.delete('/retirer/:idEleve/:idClasse',authMiddleware, eleveController.removeEleveFromClass);
 module.exports = router;
