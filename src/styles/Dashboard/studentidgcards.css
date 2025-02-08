@@ -1,0 +1,229 @@
+.students {
+    /* background-color: $primary; */
+    height: 100%;
+    width: calc(100% - 300px);
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.students .container {
+    width: 99%;
+    height: 98%;
+    background-color: var(--bg);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.students .container header {
+    width: 95%;
+    /* background-color: red; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2rem 0;
+}
+
+.students .container header .texts {
+    width: 90%;
+    height: 100%;
+
+    /* background-color: green; */
+}
+
+.students .container header .texts .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+
+}
+
+.students .container header .profile {
+    width: 3%;
+    height: 70%;
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.25rem;
+
+}
+
+.students .container section.stats {
+    /* background-color: green; */
+    width: 95%;
+
+}
+
+.students .container section.stats section.numbers {
+    /* background-color: yellow; */
+    width: 100%;
+    min-height: 7rem;
+
+}
+
+.students .container section.stats section.numbers aside {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-content: space-between;
+    background-color: var(--white);
+    border-radius: 10px;
+    height: 100%;
+    padding: 20px;
+    width: 25rem;
+    cursor: pointer;
+}
+
+.students .container section.stats section.numbers aside .icon {
+    width: 20%;
+    height: 100%;
+    /* background-color:red; */
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.students .container section.stats section.numbers aside .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 75%;
+    height: 100%;
+
+}
+
+.students .container section.stats section.numbers aside .content .title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--black);
+}
+
+.students .container .actions {
+    display: flex;
+    justify-content: start;
+    margin: 1rem 0;
+    width: 95%;
+
+    /* background-color: orange; */
+
+}
+
+.students .container .actions .refresh {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+    color: white;
+    cursor: pointer;
+}
+
+.data {
+    position: relative;
+    width: 95%;
+    margin: 1rem auto;
+    margin-bottom: 100px;
+    /* height: 100vh!important; */
+    /* background-color: red; */
+    /* overflow-y: scroll; */
+
+}
+
+.data table tr td {
+    text-align: center;
+    border: 1px solid #fdba74;
+}
+
+.data table tr th.option {
+    width: 15rem;
+    background-color: var(--white);
+}
+
+.data table tr .option {
+    border: white;
+}
+
+.data table thead tr th {
+    background-color: #fdba74;
+    color: var(--black);
+    width: 15rem;
+    height: 3.5rem;
+    font-size: 1.25rem;
+    border-right: 2px dashed #fdba74;
+}
+
+.data table tbody tr:nth-of-type(odd) {
+    background-color: var(--white);
+}
+
+.data table tbody tr:nth-of-type(even) td {
+    background-color: #fdbb742f;
+    border: 1px solid white;
+}
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    table {
+        width: 100%; /* Utilisez toute la largeur de la page */
+        font-size: 11px; /* Réduisez la taille de la police pour l'impression */
+    }
+
+    th, td {
+        padding: 2px; /* Réduisez le remplissage pour les cellules */
+    }
+
+    /* Réduire la taille de la police spécifiquement pour les en-têtes */
+    table thead tr th {
+        font-size: 12px; /* Taille de police pour les en-têtes */
+    }
+}
+
+.student-card {
+    position: relative;
+    
+    border: 1px solid #ccc;
+    
+    border-radius: 8px;
+    text-align: center;
+   
+}
+
+.flag {
+    display: flex;
+    height: 20px; /* Ajustez la hauteur selon vos besoins */
+    width: 100%; /* Prend toute la largeur de la carte */
+}
+
+.red {
+    background-color: #EF3340; /* Rouge */
+    flex: 1;
+}
+
+.yellow {
+    background-color: #FDD835; /* Jaune */
+    flex: 1;
+}
+
+.green {
+    background-color: #009639; /* Vert */
+    flex: 1;
+}
+
+.student-photo {
+    
+    border-radius: 0%; /* Pour une image ronde */
+    margin-bottom: 10px; /* Espacement en bas de l'image */
+}

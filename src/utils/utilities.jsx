@@ -32,29 +32,24 @@ export const classLinks = (refs) => [
         icon: students,
         ref: refs[1]
     },
-    {
-        name: 'Absences',
-        link: '/hours',
-        icon: hours,
-        ref: refs[2]
-    },
+    
     {
         name: 'Notes',
         link: '/notes',
         icon: reportCard,
-        ref: refs[3]
+        ref: refs[2]
     },
     {
         name: 'Bulletins',
         link: '/report-cards',
         icon: reportCard,
-        ref: refs[4]
+        ref: refs[3]
     },
     {
-        name: 'IdCards',
+        name: 'CIS',
         link: '/student-cards',
-        icon: home,
-        ref: refs[5]
+        icon: reportCard,
+        ref: refs[4]
     }
     
 ]
