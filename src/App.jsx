@@ -21,6 +21,7 @@ import ReportCards from './pages/Dashboard/ReportCards.jsx'
 import ScrollToTop from './utils/ScrollToTop.jsx'
 import Layout from './containers/Layout.jsx'
 import Dispensations from './pages/Dashboard/Dispensations.jsx'
+import StudentIDCards from './pages/Dashboard/StudentIDCards.jsx'
 
 function App() {
 
@@ -43,6 +44,7 @@ function App() {
                         <Route path="subjects" element={<Subjects />} />
                         <Route path="students" element={<Students />} />
                         <Route path="dispensations" element={<Dispensations />} />
+                        <Route path="student-cards" element={<StudentIDCards />} />
                         <Route path="hours" element={<Hours />} />
                         <Route path="notes" element={<Notes />} />
                         <Route path="report-cards" element={<ReportCards />} />

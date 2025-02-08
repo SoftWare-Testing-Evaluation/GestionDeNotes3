@@ -18,7 +18,7 @@ export const generateRef = (refID, useRef) => {
 
 export const classes = ['Sixième (6e)','Cinquième (5e)','Quatrième (4e)','Troisième (3e)','Seconde (2nde)','Première (1ere)', 'Terminale (Tle)']
 export const sequences = ['ES1','ES2','ES3','ES4','ES5','ES6']
-export const sidebarCriteria = (pathname) => pathname === '/subjects' || pathname === '/students' || pathname === '/hours' || pathname === '/notes' || pathname === '/report-cards'
+export const sidebarCriteria = (pathname) => pathname === '/subjects' || pathname === '/students' || pathname === '/hours' || pathname === '/notes' || pathname === '/report-cards'|| pathname === '/student-cards'
 export const classLinks = (refs) => [
     {
         name: 'Matières',
@@ -50,6 +50,12 @@ export const classLinks = (refs) => [
         icon: reportCard,
         ref: refs[4]
     },
+    {
+        name: 'IdCards',
+        link: '/student-cards',
+        icon: home,
+        ref: refs[5]
+    }
     
 ]
 export const mainLinks = (refs) => [

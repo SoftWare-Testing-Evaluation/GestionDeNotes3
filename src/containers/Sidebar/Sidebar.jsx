@@ -12,18 +12,19 @@ const Sidebar = () => {
     const ref3 = useRef(3)
     const ref4 = useRef(4)
     const ref5 = useRef(5)
+    const ref6= useRef(6)
     const params = useParams()
     const [path, setPath] = useState(window.location.pathname)
-    const [paths, setPaths] = useState(mainLinks([generateRef(1, useRef), generateRef(2, useRef), generateRef(3, useRef), generateRef(4, useRef),generateRef(5, useRef)]))
+    const [paths, setPaths] = useState(mainLinks([generateRef(1, useRef), generateRef(2, useRef), generateRef(3, useRef), generateRef(4, useRef),generateRef(5, useRef),generateRef(6, useRef)]))
     const location = useLocation();
     const { hash, pathname, search } = location;
-
+   
     useEffect(() => {
         // console.log('Called!')
         console.log(pathname)
         setPath(window.location.pathname)
         if (sidebarCriteria(pathname)) {
-            setPaths(classLinks([ref1, ref2, ref3, ref4, ref5]))
+            setPaths(classLinks([ref1, ref2, ref3, ref4, ref5,ref6]))
         }
         else {
             setPaths(mainLinks([ref1, ref2, ref3, ref4]))
