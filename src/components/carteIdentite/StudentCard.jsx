@@ -108,20 +108,16 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
             <div className="text-rigth w-[70%]"><h2 className="font-bold text-[10px] uppercase text-[#093c69] ml-2">{student.prenom}</h2></div>
         </div>
         <div className="flex flex-row w-[100%] items-start p-[0%] m-[0%] ">
-            <div className="text-left ml-2 w-[30%]"><p className="text-[10px]">Père/Father:</p></div>
-            <div className="text-rigth w-[70%]"><h2 className="font-bold text-[10px] uppercase text-[#093c69] ml-2">{student.nomPere}</h2></div>
-        </div>
-        <div className="flex flex-row w-[100%] items-start p-[0%] m-[0%] ">
-            <div className="text-left ml-2 w-[30%]"><p className="text-[10px]">Mère/Mother:</p></div>
-            <div className="text-rigth w-[70%]"><h2 className="font-bold text-[10px] uppercase text-[#093c69] ml-2">{student.nomMere}</h2></div>
-        </div>
-        <div className="flex flex-row w-[100%] items-start p-[0%] m-[0%] ">
             <div className="text-left ml-2 w-[30%]"><p className="text-[10px]">Né(e)le/Born on:</p></div>
             <div className="text-rigth w-[70%]"><h2 className="font-bold text-[10px] uppercase text-black ml-2">{dayjs(student.dateNaissance).format('DD/MM/YYYY')}</h2></div>
         </div>
         <div className="flex flex-row w-[100%] items-start p-[0%] m-[0%] ">
             <div className="text-left ml-2 w-[30%]"><p className="text-[10px]">à/At:</p></div>
             <div className="text-rigth w-[70%]"><h2 className="font-bold text-[10px] uppercase text-black ml-2">{student.lieuNaissance}</h2></div>
+        </div>
+        <div className="flex flex-row w-[100%] items-start p-[0%] m-[0%] ">
+            <div className="text-left ml-2 w-[30%]"><p className="text-[10px]">Contacts/Contacts:</p></div>
+            <div className="text-rigth w-[70%]"><h2 className="font-bold text-[10px]  text-black ml-2">{student.telPere||''}/{student.telMere||''}</h2></div>
         </div>
         <div className="flex flex-row w-[100%] items-start p-[0%] m-[0%] ">
             <div className="text-left ml-2 w-[30%]"><p className="text-[10px]">Classe:</p></div>
