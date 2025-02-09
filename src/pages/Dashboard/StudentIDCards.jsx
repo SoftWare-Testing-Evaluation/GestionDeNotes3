@@ -32,10 +32,8 @@ const StudentIDCards = () => {
     const [filteredStudents, setFilteredStudents] = useState([]);
     const contentRef = useRef();
 
-    const handlePrint = useReactToPrint({
-        content: () => contentRef.current,
-        onAfterPrint: () => console.log("Impression terminée"),
-    });
+    const handlePrint = useReactToPrint({contentRef})
+        
 
     useEffect(() => {
         dispatch(loadClasses());
@@ -145,7 +143,8 @@ const StudentIDCards = () => {
                         <div className="">
                            <div>
                                 {studentsData.length > 0 ? (
-                        <StudentCard students={studentsData} logo={logo} selectedClasse={selectedClass ? selectedClass: ''} />
+                        <StudentCard students={studentsData} logo={logo} selectedClasse={selectedClass ? selectedClass: ''} anneeprecedent={year.year() - 1} 
+                        annee={year.year()} user={user}  />
                     ) : (
                         <Typography text="Aucun élève trouvé pour cette classe." />
                     )}
@@ -176,9 +175,10 @@ const StudentIDCards = () => {
                                             )
                                         }
                                     </div>
-                                </div> :<div className="overflow-x-auto">
+                                </div> :<div className=" ">
                                 {studentsData.length > 0 ? (
-                        <StudentCard students={studentsData} logo={logo} />
+                        <StudentCard students={studentsData} logo={logo} selectedClasse={selectedClass ? selectedClass: ''} anneeprecedent={year.year() - 1} 
+                        annee={year.year()} user={user}  />
                     ) : (
                         <Typography text="Aucun élève trouvé pour cette classe." />
                     )}
