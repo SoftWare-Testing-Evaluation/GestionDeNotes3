@@ -121,7 +121,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
         </div>
         <div className="flex flex-row w-[100%] items-start p-[0%] m-[0%] ">
             <div className="text-left ml-2 w-[30%]"><p className="text-[10px]">Classe:</p></div>
-            <div className="text-rigth w-[70%]"><h2 className="font-bold text-[10px] text-black ml-2">{selectedClasse?.nom || 'inconnue'}</h2></div>
+            <div className="text-rigth w-[70%]"><h2 className="font-bold text-[10px] text-black ">{selectedClasse?.nom || 'inconnue'}</h2></div>
         </div>
     </div>
 </div>
