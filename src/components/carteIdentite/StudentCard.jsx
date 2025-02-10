@@ -5,7 +5,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
     return (
         <div className="">
         {students.map((student, index) => (
-            <div key={student.id} className="student-card w-[50%] h-[20%] m-[15px] p-[5px] " >
+            <div key={student.id} className="student-card w-[100%] h-[20%] m-[5px] p-[5px] " >
                  
                 <div className="flex flex-row justify-between">
                     <div className="flex flex-col w-[50%]">
@@ -16,7 +16,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
                             <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>delegation regionale du sud</p>
                             <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>delegation departementale de la vallée du ntem</p>
                         </div>
-                        <div className="flag" style={{ display: "flex",height: "10px",width: "100%" ,marginRight:'5px'}}>
+                        <div className="flag" style={{ display: "flex",height: "8px",width: "100%" ,marginRight:'5px'}}>
                         <div style={{backgroundColor: "#4CAF50",flex: 1}}></div>
                         <div style={{backgroundColor: "#F44336",flex: 1,position: "relative"}}>
                             <div style={{color: "#FFC107",position: "absolute",top: "50%",left: "50%",transform: "translate(-50%, -50%)" }}>&#9733;</div>
@@ -35,7 +35,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
                             <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>regional delegation of sud</p>
                             <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>divisional Delegation of the NTEM Valley</p>
                         </div>
-                        <div className="flag" style={{ display: "flex",height: "10px",width: "100%"}}>
+                        <div className="flag" style={{ display: "flex",height: "8px",width: "100%"}}>
                         <div style={{backgroundColor: "#4CAF50",flex: 1}}></div>
                         <div style={{backgroundColor: "#F44336",flex: 1,position: "relative"}}>
                             <div style={{color: "#FFC107",position: "absolute",top: "50%",left: "50%",transform: "translate(-50%, -50%)" }}>&#9733;</div>
@@ -45,9 +45,16 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
                     </div>
                     
                 </div>
-                <div className="w-[100%] mb-[10px]"> <h1 style={{fontWeight: 'bold',fontSize:'20px', width:"100%",color:'#093c69'}}>DIOCESE D'EBOLOWA/COLLEGE MGR NKOU</h1></div>
+                <div className="w-[100%] mt-[5px]"> <h1 style={{fontWeight: 'bold',fontSize:'15px', width:"100%",color:'#093c69'}}>DIOCESE D'EBOLOWA/COLLEGE MGR NKOU</h1></div>
                     
-                <div className="flex flex-row justify-between mb-[10px] ">
+                <div className="flex flex-row justify-between mb-[8px] ">
+                
+    <div className="w-[4%] h-[168px] mr-[2px] p-[2px] rounded-[4px] bg-red-500 flex items-center justify-center">
+        <p className="font-bold text-[6px] uppercase text-white transform rotate-90 whitespace-nowrap">
+            carte d'identite scolaire/school identity card
+        </p>
+    </div>
+
                     <div className="w-[30%] m-[0%] p-[0%] mb-[1px]">
                     <div style={{ width: '100px', height: '95px',align:'center'}} >
                      <img src={student.urlPhoto} alt={`${student.nom} ${student.prenom}`} style={{ width: '100%', height: '100%'}} />
@@ -63,24 +70,31 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
       {/* Cachet */}
       <div className="w-[100%] absolute inset-0">
         <img 
-            src={logo} 
+            src={user?.urlCachet||logo} 
             alt="cachet" 
             className="logo" 
             style={{ width: '100%', height: '100%', opacity: 2 }} // Ajustez la valeur d'opacité ici
         />
     </div>
+    
 </div>
-<p className="font-bold text-[8px] text-[#093c69] w-full">{user?.nom || 'Inconnue'} {user?.prenom || ''}</p>
+<div className="w-[100%] mt-[1px] flex flex-row">
+<div className="w-[50%] ">
+        <img 
+            src={user?.urlSignature||logo} 
+            alt="signature" 
+            className="logo" 
+            style={{ width: '100%', height: '100%', opacity: 2 }} // Ajustez la valeur d'opacité ici
+        />
+    </div>
+    <p className="font-bold text-[8px] text-[#093c69] w-full">{user?.nom || 'Inconnue'} {user?.prenom || ''}</p>
+</div>
 
-
                     </div>
-                    <div  className="w-[70%] flex flex-col">
-                    <div className="w-[100%] mb-[1px] p-[5px] rounded-[4px] bg-red-500" > 
-                            <h1 className="font-bold text-[10px] uppercase text-white w-full">carte d'identite scolaire/school identity card</h1>
-                    </div>
-                    <div className="w-[100%] mb-[5px] p-[2px] rounded-[4px]" > 
-                            <h1 className="font-bold text-[10px]  text-[#093c69] w-full">Année Scolaire/Academic year {anneeprecedent}-{annee}</h1>
-                    </div>
+                   
+                    <div  className="w-[66%] flex flex-col">
+                    
+                    
                     <div className="w-[100%] items-start" >
     <div className="w-[100%] items-start p-[0%] m-[0%]  " >
     <img 
@@ -88,7 +102,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
                         alt="cachet" 
                         className="logo absolute" 
                         style={{ 
-                            opacity: 0.5, // Rendre le cachet transparent
+                            opacity: 0.3, // Rendre le cachet transparent
                             top: '60%', // Positionner à partir du milieu
                             left: '60%', // Centrer horizontalement
                             transform: 'translate(-50%, -50%)', // Ajuster pour centrer
@@ -125,10 +139,14 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
         </div>
     </div>
 </div>
+                    
                     <div className="w-[100%] mt-[2px]" > 
                             <h1 className="font-bold text-[12px]  text-black w-full">Fait à KYE-OSSI, le {dayjs().format('DD/MM/YYYY')}</h1>
                     </div>
-                    <div className="w-[100%] mt-[1px]  text-rigth" > 
+                    <div className="w-[100%] mt-[3px] p-[2px] rounded-[4px]" > 
+                            <h1 className="font-bold text-[10px]  text-[#093c69] w-full">Validité/Validity {anneeprecedent}-{annee}</h1>
+                    </div>
+                    <div className="w-[100%] mt-[2px]  text-rigth" > 
                             <p className="font-bold text-[6px]  text-black w-full">Tel:{user?.telephone} / E-mail:{user?.email}</p>
                     </div>
                     </div>

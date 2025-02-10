@@ -32,7 +32,15 @@ const PrefetEtude = sequelize.define('PrefetEtude', {
   },
   telephone:{
     type:DataTypes.STRING,
-    allowNull:false
+    allowNull:true
+  },
+  urlCachet: { // Champ pour le cachet
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  urlSignature: { // Champ pour la signature
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   hooks: {

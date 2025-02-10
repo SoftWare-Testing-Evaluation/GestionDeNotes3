@@ -70,13 +70,19 @@ const createPrefetEtude = async (prefetData) => {
 const updateUserProfile = async (userId,userData) => {
         try {
             console.log(userData);
-            const response = await apiClient.put(`/prefetEtudes/${userId}`, userData);
+            const response = await apiClient.put(`/prefetEtudes/${userId}`, userData,{
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Spécifier le type de contenu pour le FormData
+                },
+            });
             
             return response.data; // Retourne les données mises à jour
         } catch (error) {
             throw new Error(handleError(error)); // Gère les erreurs
         }
     }
+
+    
 // Exporter les fonctions API
 export {
     fetchClassesEtude,

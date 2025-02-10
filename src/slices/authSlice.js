@@ -23,13 +23,14 @@ export const updateProfile = createAsyncThunk(
         try {
           
             const response = await updateUserProfile(userId,userData);
-            
+            console.log(response.data);
             return response.data; // Retourne les données mises à jour
         } catch (error) {
             return rejectWithValue(error.response.data); // Gère l'erreur
         }
     }
 );
+
 
 
 const authSlice = createSlice({

@@ -1,6 +1,7 @@
 // controllers/prefetEtudeController.js
 const PrefetEtude = require('../models/PrefetEtude');
 const { Op } = require('sequelize');
+const cloudinary = require('../config/cloudinary'); // Assurez-vous d'importer Cloudinary
 exports.createPrefetEtude = async (req, res) => {
   try {
     const { nom, prenom, email, password, login,telephone } = req.body;
@@ -72,12 +73,76 @@ exports.updatePrefetEtude = async (req, res) => {
       }
     }
 
-    await prefetEtude.update(req.body);
+    // Téléchargement des images si elles existent
+    let urlCachet = prefetEtude.urlCachet;
+    let urlSignature = prefetEtude.urlSignature;
+    console.log('contenu du body: ', req.body);
+
+    if (req.files) {
+      // Supprimer l'ancien cachet si un nouveau est fourni
+      if (req.files.cachet) {
+        console.log('cachet: ',req.files.cachet);
+        if (prefetEtude.urlCachet) {
+          await cloudinary.uploader.destroy(getPublicIdFromUrl(prefetEtude.urlCachet));
+        }
+        const resultCachet = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+            if (error) {
+              console.log("Erreur lors de l'upload du cachet :", error);
+              reject(error);
+            } else {
+              resolve(result.secure_url);
+            }
+          });
+          stream.end(req.files.cachet[0].buffer);
+        });
+        urlCachet = resultCachet;
+      }
+
+      // Supprimer l'ancienne signature si une nouvelle est fournie
+      if (req.files.signature) {
+        console.log('signature: ',req.files.signature);
+        if (prefetEtude.urlSignature) {
+          await cloudinary.uploader.destroy(getPublicIdFromUrl(prefetEtude.urlSignature));
+        }
+        const resultSignature = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+            if (error) {
+              console.log("Erreur lors de l'upload de la signature :", error);
+              reject(error);
+            } else {
+              resolve(result.secure_url);
+            }
+          });
+          stream.end(req.files.signature[0].buffer);
+        });
+        urlSignature = resultSignature;
+      }
+    }
+    console.log('url du cacher:', urlCachet);
+    console.log('url de la signatue: ', urlSignature)
+    // Mise à jour du préfet d'étude
+    await prefetEtude.update({
+      ...req.body,
+      urlCachet,
+      urlSignature
+    });
+
     res.status(200).json(prefetEtude);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
+// Fonction pour extraire l'ID public de l'URL Cloudinary
+function getPublicIdFromUrl(url) {
+  const parts = url.split('/');
+  const publicId = parts[parts.length - 1].split('.')[0];
+  return publicId;
+}
+
+
+
 exports.deletePrefetEtude = async (req, res) => {
   try {
     const prefetEtude = await PrefetEtude.findByPk(req.params.id);

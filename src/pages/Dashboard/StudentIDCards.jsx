@@ -140,21 +140,24 @@ const StudentIDCards = () => {
                                 }
                             </div>
                         </div> :
-                        <div className="">
-                           <div>
-                                {studentsData.length > 0 ? (
-                        <StudentCard students={studentsData} logo={logo} selectedClasse={selectedClass ? selectedClass: ''} anneeprecedent={year.year() - 1} 
-                        annee={year.year()} user={user}  />
-                    ) : (
-                        <Typography text="Aucun élève trouvé pour cette classe." />
-                    )}
-                           </div>
-                           
-                            
-                              
-            
-
-                        </div>
+                        <div className="flex flex-wrap justify-between w-full">
+                        {studentsData.length > 0 ? (
+                            studentsData.map((student, index) => (
+                                <div key={student.id} className="w-[48%] mb-[5px] mr-[2%]"> {/* Adjust width for two columns */}
+                                    <StudentCard 
+                                        students={[student]} // Pass a single student as an array
+                                        logo={logo} 
+                                        selectedClasse={selectedClass ? selectedClass : ''} 
+                                        anneeprecedent={year.year() - 1} 
+                                        annee={year.year()} 
+                                        user={user} 
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            <Typography text="Aucun élève trouvé pour cette classe." />
+                        )}
+                    </div>
                     }
                 </div>
                 
@@ -175,19 +178,23 @@ const StudentIDCards = () => {
                                             )
                                         }
                                     </div>
-                                </div> :<div className=" ">
-                                {studentsData.length > 0 ? (
-                        <StudentCard students={studentsData} logo={logo} selectedClasse={selectedClass ? selectedClass: ''} anneeprecedent={year.year() - 1} 
-                        annee={year.year()} user={user}  />
-                    ) : (
-                        <Typography text="Aucun élève trouvé pour cette classe." />
-                    )}
-                               
-                        
-                            
-                    
-                               
-                   
+                                </div> :<div className="flex flex-wrap justify-between w-full">
+                        {studentsData.length > 0 ? (
+                            studentsData.map((student, index) => (
+                                <div key={student.id} className="w-[48%] mb-[5px] mr-[2%]"> {/* Adjust width for two columns */}
+                                    <StudentCard 
+                                        students={[student]} // Pass a single student as an array
+                                        logo={logo} 
+                                        selectedClasse={selectedClass ? selectedClass : ''} 
+                                        anneeprecedent={year.year() - 1} 
+                                        annee={year.year()} 
+                                        user={user} 
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            <Typography text="Aucun élève trouvé pour cette classe." />
+                        )}
                     </div>
                     }
                     </div>

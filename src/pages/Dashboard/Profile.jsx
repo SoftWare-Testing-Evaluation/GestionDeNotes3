@@ -22,6 +22,8 @@ const Profile = () => {
         telephone: '',
         password: '',
         login: '',
+        cachet: null, // Pour le fichier cachet
+        signature: null, // Pour le fichier signature
     });
 
     useEffect(() => {
@@ -31,9 +33,11 @@ const Profile = () => {
                 nom: user.nom,
                 prenom: user.prenom,
                 email: user.email,
-                telephone: user.telephone || '', // Assurez-vous que telephone n'est pas null
-                password: '', // Réinitialiser le mot de passe
+                telephone: user.telephone || '',
+                password: '',
                 login: user.login,
+                cachet: null,
+                signature: null,
             });
         }
     }, [user]);
@@ -43,18 +47,34 @@ const Profile = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleUpdate = async (e) => {
-        e.preventDefault(); // Empêche le comportement par défaut de soumission du formulaire
-        setIsLoading(true);
-        try {
-            const { id, ...updatedData } = Object.fromEntries(
-                Object.entries(formData).filter(([key, value]) => value !== '')
-            );
+    const handleFileChange = (e) => {
+        const { name } = e.target;
+        setFormData({ ...formData, [name]: e.target.files[0] }); // Mettre à jour le fichier sélectionné
+    };
 
-            await dispatch(updateProfile({ userId: user.id, userData: updatedData })); // Mettez à jour le profil
-            setMessageError(''); // Réinitialiser les erreurs
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setMessageError(''); // Réinitialiser les erreurs
+
+        const { id, cachet, signature, ...updatedData } = formData;
+        const formDataToSend = new FormData();
+
+        // Ajouter les données mises à jour
+        Object.keys(updatedData).forEach(key => {
+            formDataToSend.append(key, updatedData[key]);
+        });
+
+        // Ajouter les fichiers si disponibles
+        if (cachet) formDataToSend.append('cachet', cachet);
+        if (signature) formDataToSend.append('signature', signature);
+
+        try {
+            console.log(formDataToSend)
+            await dispatch(updateProfile({ userId: id, userData: formDataToSend }));
+            // Optionnel : Afficher un message de succès ici
         } catch (error) {
-            setMessageError('Erreur lors de la mise à jour du profil',error);
+            setMessageError('Erreur lors de la mise à jour du profil');
         } finally {
             setIsLoading(false);
         }
@@ -72,25 +92,31 @@ const Profile = () => {
                         )}
                         <Typography text={'Profile'} className='title text-center !text-3xl' isGradient />
                     </div>
-                    
                 </header>
 
                 {loading ? (
                     <Loader />
                 ) : (
-                    <form id='form' >
-                        <div className="inputs" onSubmit={handleUpdate}>
-                            <InputText defaultValue={formData.nom} label={'First name'} helper={'Your first name'} type="text" handler={handleChange} name="nom" />
-                            <InputText defaultValue={formData.prenom} label={'Last name'} helper={'Your last name'} type="text" handler={handleChange} name="prenom" />
-                            <InputText defaultValue={formData.email} label={'Email'} helper={'Your email address'} type="email" handler={handleChange} name="email" />
-                            <InputText label={'Phone number'} helper={'Your Phone Number'} type={'tel'} name={'telephone'} handler={()=>{handleChange}} />
+                    <form id='form' onSubmit={handleUpdate}>
+                        <div className="inputs">
+                            <InputText defaultValue={formData.nom} label={'First name'} handler={handleChange} name="nom" />
+                            <InputText defaultValue={formData.prenom} label={'Last name'} handler={handleChange} name="prenom" />
+                            <InputText defaultValue={formData.email} label={'Email'} handler={handleChange} name="email" />
+                            <InputText defaultValue={formData.telephone} type={'tel'} label={'Phone number'} handler={()=>{handleChange}} name="telephone" />
                         </div>
                         <div className="inputs">
-                            <InputText label={'New Password'} helper={'Your new password'} type="password" handler={handleChange} name="password" />
-                            <InputText defaultValue={formData.login} label={'Your login'} helper={'Your login'} type="text" handler={handleChange} name="login" />
+                            <InputText label={'New Password'} type="password" handler={handleChange} name="password" />
+                            <InputText defaultValue={formData.login} label={'Your login'} handler={handleChange} name="login" />
                         </div>
 
-                        <div className='gap-1' />
+                        {/* Champs pour le cachet et la signature */}
+                        <div className="inputs">
+                            <label htmlFor="cachet">Upload Cachet:</label>
+                            <input type="file" id="cachet" name="cachet" accept="image/*" onChange={handleFileChange} />
+                            <label htmlFor="signature">Upload Signature:</label>
+                            <input type="file" id="signature" name="signature" accept="image/*" onChange={handleFileChange} />
+                        </div>
+
                         {messageError && (
                             <div style={{ position: 'relative', marginTop: '1rem' }}>
                                 <Close onClick={() => setMessageError('')} sx={{ position: 'absolute', right: '0.25em', top: '25%', zIndex: '5', cursor: 'pointer', color: 'gray' }} />
