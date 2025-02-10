@@ -78,6 +78,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
 </div>
 {/* Cachet */}
 <div className="w-[50%] absolute inset-0 ml-[50%]">
+    
   <img 
     src={user?.urlCachet||logo} 
     alt="cachet" 
