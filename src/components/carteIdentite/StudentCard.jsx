@@ -61,34 +61,32 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
                    
                     </div>
                     <div className="relative w-[100%] mt-[5px] p-[5px] flex flex-row">
-    {/* Conteneur de texte */}
-    <div className="w-[100%] h-[25px]  z-20"> {/* Assurez-vous que le texte soit au-dessus */}
-        <div className="w-[100%]  p-[0px]">
-            <h1 className="font-bold text-[6px] text-black w-full">Le Principal/The principal</h1>
-        </div>
-    </div>
-      {/* Cachet */}
-      <div className="w-[100%] absolute inset-0">
-        <img 
-            src={user?.urlCachet||logo} 
-            alt="cachet" 
-            className="logo" 
-            style={{ width: '100%', height: '100%', opacity: 2 }} // Ajustez la valeur d'opacité ici
-        />
-    </div>
-    
+{/* Signature */}
+<div className="w-[50%] absolute inset-0">
+  <img 
+    src={user?.urlSignature||logo} 
+    alt="signature" 
+    className="logo" 
+    style={{ width: '100%', height: '100%', opacity: 2 }} // Ajustez la valeur d'opacité ici
+  />
 </div>
-<div className="w-[100%] mt-[1px] flex flex-row">
-<div className="w-[50%] ">
-        <img 
-            src={user?.urlSignature||logo} 
-            alt="signature" 
-            className="logo" 
-            style={{ width: '100%', height: '100%', opacity: 2 }} // Ajustez la valeur d'opacité ici
-        />
-    </div>
-    <p className="font-bold text-[8px] text-[#093c69] w-full">{user?.nom || 'Inconnue'} {user?.prenom || ''}</p>
+{/* Conteneur de texte */}
+<div className="w-[100%] h-[25px]  z-20"> {/* Assurez-vous que le texte soit au-dessus */}
+  <div className="w-[100%]  p-[0px]">
+    <h1 className="font-bold text-[6px] text-black w-full">Le Principal/The principal</h1>
+  </div>
 </div>
+{/* Cachet */}
+<div className="w-[50%] absolute inset-0 ml-[50%]">
+  <img 
+    src={user?.urlCachet||logo} 
+    alt="cachet" 
+    className="logo" 
+    style={{ width: '100%', height: '100%', opacity: 2 }} // Ajustez la valeur d'opacité ici
+  />
+</div>
+</div>
+<p className="font-bold text-[8px] text-[#093c69] w-full">{user?.nom || 'Inconnue'} {user?.prenom || ''}</p>
 
                     </div>
                    
