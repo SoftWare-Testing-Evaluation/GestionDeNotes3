@@ -20,7 +20,7 @@ import { loadEnseignants } from '../../slices/enseignantSlice';
 import { useReactToPrint } from "react-to-print";
 import SNMSelect from "../../components/SNMSelect/SNMSelect.jsx";
 import ReportHeader from "../../components/ReportHeader/ReportHeader.jsx";
-import logo from '../../assets/logo.svg'
+import logo from '../../assets/logo.jpeg'
 import Typography from "../../components/Typography/Typography.jsx";
 import StudentInfo from "../../components/StudentInfo/StudentInfo.jsx";
 import Bilan from "../../components/BilanGeneral/Bilan.jsx";

@@ -12,9 +12,9 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
                         <div className="w-[100%]">
                             <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase',fontWeight:'bold'}}>republique du cameroun</p>
                             <p style={{fontSize:"7px",width:'100%'}}>Paix-Travail-Patrie</p>
-                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>ministere des enseignements secondaires</p>
-                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>delegation regionale du sud</p>
-                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>delegation departementale de la vallée du ntem</p>
+                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>ministere de l'enseignement superieur</p>
+                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>université de yaoundé 1</p>
+                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>faculté des sciences</p>
                         </div>
                         <div className="flag" style={{ display: "flex",height: "8px",width: "100%" ,marginRight:'5px'}}>
                         <div style={{backgroundColor: "#4CAF50",flex: 1}}></div>
@@ -31,9 +31,9 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
                         <div className="w-[100%]">
                             <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase',fontWeight:'bold'}}>republic of cameroon</p>
                             <p style={{fontSize:"7px",width:'100%'}}>Peace-Work-Fatherland</p>
-                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>ministry of secondary education</p>
-                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>regional delegation of sud</p>
-                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>divisional Delegation of the NTEM Valley</p>
+                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>ministry of heiger education</p>
+                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>university of yaounde 1</p>
+                            <p style={{fontSize:"7px",width:'100%',textTransform:'uppercase'}}>faculty of science</p>
                         </div>
                         <div className="flag" style={{ display: "flex",height: "8px",width: "100%"}}>
                         <div style={{backgroundColor: "#4CAF50",flex: 1}}></div>
@@ -45,7 +45,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
                     </div>
                     
                 </div>
-                <div className="w-[100%] mt-[5px]"> <h1 style={{fontWeight: 'bold',fontSize:'15px', width:"100%",color:'#093c69'}}>DIOCESE D'EBOLOWA/COLLEGE MGR NKOU</h1></div>
+                <div className="w-[100%] mt-[5px]"> <h1 style={{fontWeight: 'bold',fontSize:'15px', width:"100%",color:'#093c69'}}>UNIVERSITE DE YAOUNDE 1</h1></div>
                     
                 <div className="flex flex-row justify-between mb-[8px] ">
                 
@@ -73,7 +73,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
 {/* Conteneur de texte */}
 <div className="w-[100%] h-[25px]  z-20"> {/* Assurez-vous que le texte soit au-dessus */}
   <div className="w-[100%]  p-[0px]">
-    <h1 className="font-bold text-[6px] text-black w-full">Le Principal/The principal</h1>
+    <h1 className="font-bold text-[6px] text-black w-full">Le Doyen/The Dean</h1>
   </div>
 </div>
 {/* Cachet */}
@@ -140,7 +140,7 @@ const StudentCard = ({ students, logo,selectedClasse,anneeprecedent,annee,user }
 </div>
                     
                     <div className="w-[100%] mt-[2px]" > 
-                            <h1 className="font-bold text-[12px]  text-black w-full">Fait à KYE-OSSI, le {dayjs().format('DD/MM/YYYY')}</h1>
+                            <h1 className="font-bold text-[12px]  text-black w-full">Fait à YAOUNDE, le {dayjs().format('DD/MM/YYYY')}</h1>
                     </div>
                     <div className="w-[100%] mt-[3px] p-[2px] rounded-[4px]" > 
                             <h1 className="font-bold text-[10px]  text-[#093c69] w-full">Validité/Validity {anneeprecedent}-{annee}</h1>

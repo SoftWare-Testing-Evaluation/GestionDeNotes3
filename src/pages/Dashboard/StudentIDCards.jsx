@@ -15,8 +15,9 @@ import Typography from "../../components/Typography/Typography.jsx";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from "dayjs";
-import logo from '../../assets/logo.svg'
+import logo from '../../assets/logo.jpeg'
 import StudentCard from "../../components/carteIdentite/StudentCard.jsx";
+
 
 const StudentIDCards = () => {
     const navigate = useNavigate();

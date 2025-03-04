@@ -5,8 +5,8 @@
   "description": "My Electron application description",
   "main": ".webpack/main",
   "build": {
-    "name": "MgrNKOU-college",
-    "productName": "MgrNKOU-college"
+    "name": "Université de yaoundé 1",
+    "productName": "GestionDeNotes"
   },
   "scripts": {
     "start": "electron-forge start",
@@ -42,8 +42,8 @@
   },
   "keywords": [],
   "author": {
-    "name": "EssiJunior && KemthoPaul",
-    "email": "nessipjunior@gmail.com && zidanekemtho@gmail.com"
+    "name": "KemthoPaul && Dr Kimbi Xaveria",
+    "email": "zidanekemtho@gmail.com && kdxaveria@gmail.com"
   },
   "license": "MIT",
   "dependencies": {

@@ -3,6 +3,7 @@ import Typography from '../Typography/Typography.jsx';
 
 const ReportHeader = ({ telephone, anneeprecedent, annee, logo }) => {
     return (
+        
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' ,padding:'12px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', width: '35%',alignItems:'center' ,padding:'5px',height:'100%' }}>
                <div> 
@@ -15,10 +16,10 @@ const ReportHeader = ({ telephone, anneeprecedent, annee, logo }) => {
                 <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="*****" isGradient={false} />
                </div>
                 <div>
-                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="Ministère des Enseignements Secondaires" isGradient={false} />
+                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="Ministère de l'enseignement supérieur" isGradient={false} />
                 </div>
                 <div>
-                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="Délégation Régionale du Sud" isGradient={false} />
+                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="université de yaoundé 1" isGradient={false} />
                 </div>
             </div>
             <div style={{ width: '20%',align:'center'
@@ -28,22 +29,22 @@ const ReportHeader = ({ telephone, anneeprecedent, annee, logo }) => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column',width: '35%',alignItems:'center' ,padding:'5px',height:'100%' }}>
                 <div>
-                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="DIOCESE D'EBOLOWA" isGradient={false} />
+                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="REPUBLIC OF CAMEROON" isGradient={false} />
                 </div>
                 <div>
-                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="COLLEGE MGR NKOU" isGradient={false} />
+                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="Peace-Work-Fatherland" isGradient={false} />
                 </div>
                 <div>
-                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="Ora et Labora" isGradient={false} />
+                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text={"*****"} isGradient={false} />
                 </div>
                 <div>
-                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text={`Téléphone: ${telephone}`} isGradient={false} />
+                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="MINISTRY OF HIGHER EDUCATION" isGradient={false} />
                 </div>
                 <div>
-                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="------------------" isGradient={false} />
+                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text="UNIVERSITY OF YAOUNDE 1" isGradient={false} />
                 </div>
                 <div>
-                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text={`Année Scolaire: ${anneeprecedent}/${annee}`} isGradient={false} />
+                    <Typography style={{ fontWeight: 'bold', fontSize: '14px' }} text={"FACULTY OF SCIENCE"} isGradient={false} />
                 </div>
             </div>
         </div>
