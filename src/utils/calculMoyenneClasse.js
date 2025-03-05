@@ -1,4 +1,4 @@
-// calculMoyenneClasse.js
+//src/utils/calculMoyenneClasse.js
 export const calculMoyenneClasse = (studentsData, allNotes, dispensations, selectedSequence) => {
      // Vérification que studentsData est un tableau
      if (!Array.isArray(studentsData)) {

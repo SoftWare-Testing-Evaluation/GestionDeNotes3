@@ -11,17 +11,6 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   logging: false
 });
 
-
-/* const PrefetEtude = require('./models/PrefetEtude');
-const ClasseEtude = require('./models/ClasseEtude');
-const Enseignant = require('./models/Enseignant');
-const Eleve = require('./models/Eleve');
-const Inscription = require('./models/Inscription');
-const Note = require('./models/Note');
-const Dispenser = require('./models/Dispenser');
-const Matiere = require('./models/Matiere');
-  */
- 
 // Tester la connexion et synchroniser les modèles
 (async () => {
   try {

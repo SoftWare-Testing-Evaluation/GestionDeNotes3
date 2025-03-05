@@ -1,4 +1,4 @@
-// calculerStatistiquesClasses.js
+//src/utils/calculerStatistiquesClasses.js
 import { fetchElevesParClasse } from "../slices/eleveSlice";
 import { loadMatieresByClasse } from '../slices/matiereSlice';
 import { loadNotesByMatiereAndClasse } from '../slices/noteSlice';
