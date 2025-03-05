@@ -13,7 +13,7 @@ const app = express();
 
 // Middleware pour parser le JSON
 app.use(express.json());
-
+let server; // Déclarez une variable pour le serveur
 
 // Configurer CORS
 app.use(cors({
@@ -41,7 +41,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Démarrer le serveur
 const start=()=>{
   const PORT = process.env.PORT || 8080; // Utiliser 8080 si PORT n'est pas défini
-  app.listen(PORT, () => {
+  server=app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
   });
   
@@ -56,4 +56,12 @@ const start=()=>{
       console.error('Impossible de se connecter à la base de données :', err);
     })
   }
-  module.exports={start}
+  // Fonction pour arrêter le serveur
+const stop = async () => {
+  if (server) {
+    await server.close();
+    console.log('Serveur arrêté.');
+  }
+};
+
+module.exports = { start, stop, app };
