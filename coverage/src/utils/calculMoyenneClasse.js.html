@@ -1,0 +1,358 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for src/utils/calculMoyenneClasse.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> calculMoyenneClasse.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/52</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/48</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/11</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/46</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">//src/utils/calculMoyenneClasse.js
+export const calculMoyenneClasse = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>tudentsData, allNotes, dispensations, selectedSequence) =&gt; {</span>
+     // Vérification que studentsData est un tableau
+<span class="cstat-no" title="statement not covered" >     if (!Array.isArray(studentsData)) {</span>
+<span class="cstat-no" title="statement not covered" >        console.error("studentsData n'est pas un tableau", studentsData);</span>
+<span class="cstat-no" title="statement not covered" >        return {</span>
+            classAverage: 0,
+            classMin: null,
+            classMax: null,
+            successRate: 0,
+            sortedStudents: [],
+        };
+    }
+&nbsp;
+    const studentAverages = <span class="cstat-no" title="statement not covered" >studentsData.map(<span class="fstat-no" title="function not covered" >student </span>=&gt; {</span>
+        const studentNotes = <span class="cstat-no" title="statement not covered" >allNotes.filter(<span class="fstat-no" title="function not covered" >note </span>=&gt; <span class="cstat-no" title="statement not covered" >note.idEleve === student.id)</span>;</span>
+        let totalPoints = <span class="cstat-no" title="statement not covered" >0;</span>
+        let totalCoef = <span class="cstat-no" title="statement not covered" >0;</span>
+&nbsp;
+        // Vérifiez si les notes de l'étudiant existent
+<span class="cstat-no" title="statement not covered" >        if (studentNotes.length === 0) {</span>
+<span class="cstat-no" title="statement not covered" >            return { id: student.id, average: null, name: student.nom, firstName: student.prenom }; </span>// Ajout des noms
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        studentNotes.forEach(<span class="fstat-no" title="function not covered" >note </span>=&gt; {</span>
+            const coefficient = <span class="cstat-no" title="statement not covered" >getCoefficient(note.idMatiere, dispensations);</span>
+            let noteValue = <span class="cstat-no" title="statement not covered" >0;</span>
+&nbsp;
+            // Récupérer la note selon la séquence sélectionnée
+<span class="cstat-no" title="statement not covered" >            if (selectedSequence === 'seq1') {</span>
+<span class="cstat-no" title="statement not covered" >                noteValue = note.seq1 || 0;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (selectedSequence === 'seq2') {</span>
+<span class="cstat-no" title="statement not covered" >                noteValue = (note.seq1 + note.seq2) / 2 || 0;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (selectedSequence === 'seq3') {</span>
+<span class="cstat-no" title="statement not covered" >                noteValue = note.seq3 || 0;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (selectedSequence === 'seq4') {</span>
+<span class="cstat-no" title="statement not covered" >                noteValue = (note.seq3 + note.seq4) / 2 || 0;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (selectedSequence === 'seq5') {</span>
+<span class="cstat-no" title="statement not covered" >                noteValue = note.seq5 || 0;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (selectedSequence === 'seq6') {</span>
+<span class="cstat-no" title="statement not covered" >                noteValue = (note.seq5 + note.seq6) / 2 || 0;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            totalPoints += noteValue * coefficient;</span>
+<span class="cstat-no" title="statement not covered" >            totalCoef += coefficient;</span>
+        });
+&nbsp;
+        const average = <span class="cstat-no" title="statement not covered" >totalCoef &gt; 0 ? (totalPoints / totalCoef) : 0;</span> // Éviter NaN
+<span class="cstat-no" title="statement not covered" >        return { id: student.id, average, name: student.nom, firstName: student.prenom }; </span>// Ajout des noms
+    });
+&nbsp;
+    // Trier les élèves par moyenne décroissante, puis par nom et prénom
+    const sortedStudents = <span class="cstat-no" title="statement not covered" >studentAverages.sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (b.average !== a.average) {</span>
+<span class="cstat-no" title="statement not covered" >            return (b.average || 0) - (a.average || 0);</span>
+        }
+        // Si les moyennes sont égales, trier par nom
+<span class="cstat-no" title="statement not covered" >        if (a.name !== b.name) {</span>
+<span class="cstat-no" title="statement not covered" >            return a.name.localeCompare(b.name);</span>
+        }
+        // Si les noms sont égaux, trier par prénom
+<span class="cstat-no" title="statement not covered" >        return a.firstName.localeCompare(b.firstName);</span>
+    });
+&nbsp;
+    // Calculer la moyenne générale, min et max après le tri
+    const totalAverage = <span class="cstat-no" title="statement not covered" >sortedStudents.reduce(<span class="fstat-no" title="function not covered" >(s</span>um, student) =&gt; <span class="cstat-no" title="statement not covered" >sum + (student.average || 0),</span> 0);</span>
+    const classAverage = <span class="cstat-no" title="statement not covered" >sortedStudents.length &gt; 0 ? totalAverage / sortedStudents.length : 0;</span>
+&nbsp;
+    // Inclure les moyennes égales à zéro dans le calcul de la moyenne minimale
+    const validAverages = <span class="cstat-no" title="statement not covered" >sortedStudents.map(<span class="fstat-no" title="function not covered" >s </span>=&gt; <span class="cstat-no" title="statement not covered" >s.average)</span>.filter(<span class="fstat-no" title="function not covered" >avg </span>=&gt; <span class="cstat-no" title="statement not covered" >avg !== null)</span>;</span>
+    const classMin = <span class="cstat-no" title="statement not covered" >validAverages.length &gt; 0 ? Math.min(...validAverages) : null;</span>
+    const classMax = <span class="cstat-no" title="statement not covered" >Math.max(...validAverages);</span>
+&nbsp;
+    // Calculer le pourcentage de réussite
+    const successfulStudentsCount = <span class="cstat-no" title="statement not covered" >sortedStudents.filter(<span class="fstat-no" title="function not covered" >student </span>=&gt; <span class="cstat-no" title="statement not covered" >student.average &gt;= 10)</span>.length;</span>
+    const successRate = <span class="cstat-no" title="statement not covered" >sortedStudents.length &gt; 0 ? (successfulStudentsCount / sortedStudents.length) * 100 : 0;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return {</span>
+        classAverage,
+        classMin,
+        classMax,
+        successRate, // Ajout du pourcentage de réussite
+        sortedStudents,
+    };
+};
+&nbsp;
+const getCoefficient = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>atiereId, dispensations) =&gt; {</span>
+    const dispensation = <span class="cstat-no" title="statement not covered" >dispensations.find(<span class="fstat-no" title="function not covered" >d </span>=&gt; <span class="cstat-no" title="statement not covered" >d.idMatiere === matiereId)</span>;</span>
+<span class="cstat-no" title="statement not covered" >    return dispensation ? dispensation.coefficient : 0;</span>
+};
+&nbsp;
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-03-05T19:49:08.770Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    
